@@ -6,4 +6,4 @@ fi
 
 BASEDIR=$( dirname $0 )
 
-sudo pychroot -B "${BASEDIR}/build/${PROJECT}/packages":/usr/portage/packages  "${BASEDIR}/build/${PROJECT}/chroot"
+sudo pychroot -B "${BASEDIR}/build/${PROJECT}/packages":/var/cache/binpkgs  "${BASEDIR}/build/${PROJECT}/chroot"

@@ -2,9 +2,7 @@
 source "$BASEDIR/scripts/functions.sh"
 
 ckmkdir "${PROJECT_DIR}/packages"
-ckmkdir "${PROJECT_DIR}/chroot/usr/portage/packages"
-
-#mount --bind "${PROJECT_DIR}/packages" "${PROJECT_DIR}/chroot/usr/portage/packages"
+ckmkdir "${PROJECT_DIR}/chroot/var/cache/binpkgs"
 
 if [[ ! -z "$2" ]]; then
   USE="export USE='${2}'"
@@ -19,8 +17,7 @@ echo SHELL="/bin/bash" >> "${PROJECT_DIR}/chroot/em-$$"
 echo TERM="linux" >> "${PROJECT_DIR}/chroot/em-$$"
 echo "$USE" >> "${PROJECT_DIR}/chroot/em-$$"
 echo -n '$(which eatmydata) ' >> "${PROJECT_DIR}/chroot/em-$$" ; echo "emerge --autounmask-backtrack=y $1" >> "${PROJECT_DIR}/chroot/em-$$"
-pychroot -B "${PROJECT_DIR}/packages":"/usr/portage/packages" "${PROJECT_DIR}/chroot" env -i bash --login  /em-$$
+pychroot -B "${PROJECT_DIR}/packages":"/var/cache/binpkgs" "${PROJECT_DIR}/chroot" env -i bash --login  /em-$$
 
 rm "${PROJECT_DIR}/chroot/em-$$"
 
-#umount "${PROJECT_DIR}/chroot/usr/portage/packages"

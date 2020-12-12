@@ -1,0 +1,14 @@
+#! /bin/bash -e
+source "$BASEDIR/scripts/functions.sh"
+
+
+
+
+echo "Running $@"
+
+echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
+echo "$@" >> "${PROJECT_DIR}/chroot/em-$$"
+pychroot "${PROJECT_DIR}/chroot" bash --login  /em-$$
+
+rm "${PROJECT_DIR}/chroot/em-$$"
+

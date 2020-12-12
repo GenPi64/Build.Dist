@@ -1,0 +1,63 @@
+#!/usr/bin/python
+import json
+import os
+import sys
+import shutil
+
+def system(*args):
+    os.system(*args) and sys.exit(1)
+
+CONFIG_DIR = os.environ['CONFIG_DIR']
+PROJECT_DIR = os.environ['PROJECT_DIR']
+PROJECT = os.environ['PROJECT']
+CHROOT_DIR = os.environ['CHROOT_DIR']
+PARSERS = os.environ['PARSERS']
+
+print(f"Copying portage config files for {PROJECT}")
+
+sys.path.insert(0, CONFIG_DIR)
+import config
+config = getattr(config, PROJECT)
+
+def copyconf(conf, file):
+    if isinstance(conf, dict):
+        print(f"Writing config file {file}")
+        with open(file, 'w') as f:
+            for key, val in conf.items():
+                if isinstance(val, (list, tuple, set)):
+                    val = str.join(" ", val)
+                val = json.dumps(val)
+                    
+                print(f"{key}={val}", file=f)
+    else:
+        print(f"Copying config file {file}")
+        if not conf.startswith("/"):
+            conf = f'{CONFIG_DIR}/{conf}'
+        system(f"mkdir -p {os.path.dirname(file)}")
+        if os.path.isdir(file):
+            shutil.copytree(conf, file, dirs_exist_ok=True)
+        else:
+            shutil.copy2(conf, file)        
+    
+def copydir(conf, dest):
+    for node, content in conf.items():
+        if node.endswith('/'):
+            d = os.path.join(dest, node)
+
+            if isinstance(content, str):
+                shutil.copytree(os.path.join(CONFIG_DIR, content), d, dirs_exist_ok=True)
+            else:
+                system(f'mkdir -p {repr(d)}')
+                copydir(content, d)
+        else:
+            copyconf(content, os.path.join(dest, node))
+            
+        
+portage = config['portage']
+
+copydir(portage, f"{CHROOT_DIR}/etc/portage")
+
+system(f"{PARSERS}/emerge/emerge dev-vcs/git")
+
+system(f"{PARSERS}/emerge/emerge --sync")
+

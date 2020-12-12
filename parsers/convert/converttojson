@@ -1,0 +1,25 @@
+#!/usr/bin/python3
+import json
+import sys
+
+with open(sys.argv[1],"r") as f:
+  MANIFEST=f.readlines()
+manifest=[]
+
+print( "loading manifest")
+for entry in MANIFEST:
+  entry=entry.split("#")[0]
+  line=entry.split("+|+")
+  if len(line)<2: 
+    continue
+  item={}
+  item['name']=line[0]
+  item['deps']=line[1].split(",")
+  item['parser']=line[2]
+  item['args']=line[3:]
+  if "\n" in item['args']: item['args'].remove("\n")
+  manifest.append(item)
+print("load complete")
+
+with open(sys.argv[2], 'w') as f:
+  f.write(json.dumps(manifest, separators=(', ', ': ')).replace("}, ", "},\n").replace('[', '[\n', 1).rsplit(']', 1)[0]+'\n]\n')

@@ -1,0 +1,32 @@
+#! /bin/bash -e
+tail -n+10 $0 > $PROJECT_DIR/chroot/etc/init.d/mdadm-shutdown
+chmod +x $PROJECT_DIR/chroot/etc/init.d/mdadm-shutdown
+ln -s /etc/init.d/mdadm-shutdown $PROJECT_DIR/chroot/etc/runlevels/shutdown
+exit
+
+
+
+
+#!/sbin/openrc-run
+# Copyright 2020 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+name="mdadm-shutdown"
+description=""
+
+depend() {
+ after mount-ro
+ }
+
+start() {
+
+   ebegin 'Shutting down md devices'
+   mdadm --wait-clean --scan --quiet >/dev/null 2>&1
+   start-stop-daemon --stop --pidfile /var/run/mdadm.pid
+   ret=$?
+   rm -f /var/run/mdadm.pid
+   output=$(mdadm -Ss 2>&1)
+   eend ${ret}
+}
+
+

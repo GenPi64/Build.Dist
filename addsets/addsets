@@ -1,0 +1,4 @@
+#!/bin/bash
+for((i=0;i<$(${SCRIPTS}/config/getconfig sets "#");i++)); do
+    cp ${CONFIG_DIR}/sets/$(${SCRIPTS}/config/getconfig sets $i) ${CHROOT_DIR}/etc/portage/sets/
+done

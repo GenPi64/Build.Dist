@@ -1,0 +1,15 @@
+#! /bin/bash -e
+
+rm "$PROJECT_DIR"/chroot/em-* || echo "no scripts to clean"
+
+mount --bind $PROJECT_DIR/packages $PROJECT_DIR/chroot/usr/portage/packages
+
+
+mkdir -p "$PROJECT_DIR/chroot/opt/netdata/usr/sbin/"
+
+
+ln -s /usr/sbin/netdata $PROJECT_DIR/chroot/opt/netdata/usr/sbin/netdata || echo "Couldn't create symlink, assuming it's already there."
+
+tar -f $PROJECT_DIR/latest-$PROJECT.tar --create --preserve-permissions --numeric-owner --xattrs --acls --directory "$PROJECT_DIR/chroot" .
+
+umount $PROJECT_DIR/chroot/usr/portage/packages

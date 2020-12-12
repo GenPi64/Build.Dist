@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ $(${PARSERS}/config/getconfig overlays 0 sync-type) == "git" ]; then
+    git clone --depth $(${PARSERS}/config/getconfig overlays 0 sync-depth) \
+	$(${PARSERS}/config/getconfig overlays 0 sync-uri) \
+	${CHROOT_DIR}/$(${PARSERS}/config/getconfig overlays 0 location)
+	
+fi
+

@@ -1,0 +1,6 @@
+[
+    {"name": "gentoo-arm-base", "deps": [""], "parser": "includejson", "args": ["gentoo-arm.json"]},
+    {"name": "packstage4", "deps": ["gentoo-arm-base"], "parser": "packstage4", "args": [""]},
+    {"name": "packgenpi", "deps": ["packstage4"], "parser": "buildimage", "args": [""]},
+    {"name": "done", "deps": ["packgenpi"], "parser": "echo", "args": ["Done!"]}
+]

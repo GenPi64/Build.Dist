@@ -1,0 +1,45 @@
+#!/usr/bin/python3
+import os
+import sys
+import subprocess
+from sys import exit
+
+os.chdir(os.environ['PROJECT_DIR'])
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+
+import config
+config = getattr(config, os.environ['PROJECT'])
+
+image = config['image']
+
+os.system(f"truncate -s {image['size']} {image['name']}") and exit(1)
+os.system(f"losetup -f {image['name']}") and exit(1)
+p = subprocess.Popen(["/sbin/losetup", "-j", image['name']], stdout=subprocess.PIPE)
+p.wait()
+LOOP = p.stdout.read().decode("charmap").split(": ", 1)[0]
+
+os.system(f"parted {LOOP} mklabel {image['format']}") and exit(1)
+start = '1MiB'
+for idx,partition in enumerate(image['partitions']):
+    end = partition['end']
+    os.system(f"parted {LOOP} mkpart primary {start} {end}") and exit(1)
+    start = end
+
+    os.system(f"partprobe {LOOP}") and exit(1)
+    os.system(f"mkfs.{partition['format']} {LOOP}p{idx+1}") and exit(1)
+
+os.system('mkdir -p image')
+
+for p in image['mount-order']:
+    target = "image"+image['partitions'][p]['mount-point']
+    os.system(f"mkdir -p {target}") and exit(1)
+    os.system(f"mount {LOOP}p{p+1} {target} -o {image['partitions'][p]['mount-options']}") and exit(1)
+
+
+os.chdir("image")
+
+os.system(f"tar -P -xaf ../latest-{os.environ['PROJECT']}.tar") and exit(1)
+os.chdir('..')
+
+os.system("umount --recursive image") and exit(1)
+os.system(f"losetup -d {LOOP}") and exit(1)

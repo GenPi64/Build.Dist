@@ -1,0 +1,3 @@
+#! /bin/bash
+
+gksudo /usr/sbin/gparted $@

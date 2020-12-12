@@ -1,0 +1,8 @@
+#! /bin/bash -e
+pushd $(dirname $(realpath $0))
+
+for A in dist/* ; do
+  cp $A "${PROJECT_DIR}/chroot/usr/local/bin/"
+  chmod 555 "${PROJECT_DIR}/chroot/usr/local/bin/"$(basename $A)
+done
+

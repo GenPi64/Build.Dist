@@ -1,0 +1,14 @@
+#! /bin/bash -e
+
+
+if [[ ! -d "${PROJECT_DIR}/chroot" ]]; then
+  mkdir "${PROJECT_DIR}/chroot"
+fi
+
+pushd "$PROJECT_DIR/chroot" || exit 1
+
+stage3tb=$(${PARSERS}/config/getconfig stage3)
+
+tar -xapf "${BINARY_ASSETS}/stage3/${stage3tb}" --xattrs --exclude="dev/*" || tar --recursive-unlink -Uxapf "${BINARY_ASSETS}/stage3/${stage3tb}" --xattrs --exclude="dev/*"
+
+popd

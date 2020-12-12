@@ -1,0 +1,21 @@
+#!/usr/bin/python
+import os
+import sys
+
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+import config
+config = getattr(config, os.environ['PROJECT'])
+
+os.chdir(os.environ['CHROOT_DIR'])
+
+os.system("mkdir -p etc/portage/repos.conf")
+
+for overlay in config['overlays']:
+    with open(f"etc/portage/repos.conf/{overlay['name']}.conf", "w") as f:
+        if overlay['name'] == 'gentoo':
+            f.write('[DEFAULT]\n')
+            f.write('main-repo = gentoo\n\n')
+        f.write(f'[{overlay["name"]}]\n\n')
+        for key, value in overlay.items():
+            if key != 'name':
+                f.write(f"{key} = {value}\n")

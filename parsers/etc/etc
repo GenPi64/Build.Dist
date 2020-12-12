@@ -1,0 +1,56 @@
+#!/usr/bin/python
+
+import os
+import sys
+import shutil
+
+def system(*args):
+    os.system(*args) and sys.exit(1)
+
+CONFIG_DIR = os.environ['CONFIG_DIR']
+PROJECT_DIR = os.environ['PROJECT_DIR']
+PROJECT = os.environ['PROJECT']
+CHROOT_DIR = os.environ['CHROOT_DIR']
+PARSERS = os.environ['PARSERS']
+
+print(f"Copying etc config files for {PROJECT}")
+
+sys.path.insert(0, CONFIG_DIR)
+import config
+config = getattr(config, PROJECT)
+
+def copyconf(conf, file):
+    if isinstance(conf, dict):
+        with open(file, 'w') as f:
+
+            for key, val in conf.items():
+                if isinstance(val, (list, tuple, set)):
+                    val = str.join(" ", val)
+                    val = json.dumps(val)
+                    
+                    print(f"{key}={val}", file=f)
+    else:
+        if not conf.startswith("/"):
+            conf = f'{CONFIG_DIR}/{conf}'
+        shutil.copy2(conf, file)        
+    
+def copydir(conf, dest):
+    for node, content in conf.items():
+        if node.endswith('/'):
+            d = os.path.join(dest, node)
+            system('mkdir -p {repr(d)}')
+            copydir(content, d)
+        else:
+            copyconf(content, os.path.join(dest, node))
+
+
+copydir(config['etc'], f"{CHROOT_DIR}/etc")
+            
+#additional restrictions
+
+
+system(f"chmod 700 {CHROOT_DIR}/etc/shadow")
+
+system(f"pychroot {CHROOT_DIR} /usr/sbin/locale-gen")
+system(f"pychroot {CHROOT_DIR} /usr/sbin/env-update")
+

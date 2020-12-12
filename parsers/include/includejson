@@ -1,0 +1,153 @@
+#! /usr/bin/python3
+
+import subprocess
+import sys
+import time
+import os
+import lockfile
+import json
+
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+
+import config
+config = getattr(config, os.environ['PROJECT'])
+
+def writecompleted(JobName):
+  lock=lockfile.LockFile(os.path.join(PROJECT_DIR,"completed"))
+  while not lock.is_locked():
+    try:
+      lock.acquire()
+    except AlreadyLocked:
+      pass
+    except LockFailed:
+      print( "ABORT: FILE LOCKING NOT SUPPORTED.")
+      exit(1)
+    time.sleep(1)
+  f=open(os.path.join(PROJECT_DIR,"completed"),"a")
+  f.write(JobName)
+  f.write("\n")
+  f.close()
+  lock.release()
+
+#Manifest format
+#name+|+dependency,dependency+|+parser[+|+ arguments ]...
+
+PROJECT_DIR=os.environ['PROJECT_DIR']
+
+MANIFEST=open(sys.argv[1],"r").readlines()
+completed=["",]
+print( "loading manifest")
+with open(sys.argv[1], 'r') as f:
+  manifest = json.load(f)
+
+for idx, item in enumerate(manifest):
+  if "--allprev--" in item['deps']:
+    item['deps'].remove("--allprev--")
+    for thing in manifest[:idx-2]:
+      item['deps'].append(thing['name'])
+  
+print("load complete")
+
+print("Loading status")
+try:
+  with open(os.path.join(os.environ['PROJECT_DIR'],"completed"),"r") as f:
+    for entry in f.readlines():
+      completed.append(entry.strip('\n'))
+  print(completed)
+  dump=[]
+  for item in manifest:
+    if item['name'] in completed:
+      dump.append(item)
+  for item in dump:
+    manifest.remove(item)
+except:
+  print("status not loadable")
+
+print("load complete")
+print(manifest)
+
+def checkdeps(manifest):
+  for item in manifest:
+    print("checking ",item['name'])
+    for dep in item['deps']:  #Yes, I know this will skip things because removing the items collapses the list and foreach doesn't catch that.  It just makes it take multiple passes, which it will be doing anyway.
+      if dep in completed: item['deps'].remove(dep)
+
+
+def execute(manifest):
+  print("completed=",completed)
+  print("manifest=",manifest)
+  jobs=[]
+  for item in manifest:
+    print("executing ",item['name'],"deps",item['deps'])
+    if not item['deps']:
+      print("all deps satisfied for",item['name'])
+
+      env=item.get('env',{}).copy()
+
+      def copyenv(vars):
+        for var in vars:
+          v = os.environ.get(var, None)
+          if v is not None:
+            env[var]=v
+      
+      copyenv( ('PROJECT','PARSERS','BINARY_ASSETS','SCRIPTS','CALLBACKS','BASEDIR','PROJECT_DIR','CHROOT_DIR', 'CONFIG_DIR', "DISTCC_HOSTS") )
+
+      env['TERM'] = config.get('TERM', 'dumb')
+      
+      jobs.append( (subprocess.Popen([os.path.join(os.environ['PARSERS'],item['parser'],item['parser'])]+item['args'],env=env),item['name']) )
+      manifest.remove(item)
+  return( jobs)
+
+def checkjob(jobs):
+  print("running jobs",jobs)
+  onefinished=False
+  while not onefinished and jobs:
+    for job in jobs:
+      job[0].poll()
+      if job[0].returncode != None:
+        onefinished=True
+        if job[0].returncode == 0:
+          print( "jobdone",job[1])
+          completed.append(job[1])
+          writecompleted(job[1])
+          jobs.remove(job)
+        else:
+          print("FATAL: JOBFAILED ",job[1])
+          jobs.remove(job)
+          while jobs:
+            print("Waiting for jobs to complete...")
+            checkjob(jobs)
+            time.sleep(10)
+          exit(1)
+    time.sleep(1)
+
+jobs=[]
+emptyloops=0
+while manifest:
+  checkdeps(manifest)
+  jobs1=jobs+execute(manifest)
+  jobs=jobs1
+  if len(jobs) == 0:
+    emptyloops+=1
+    print("No Jobs Running... ",emptyloops)
+  else:
+    emptyloops=0
+
+  if emptyloops > 100:
+    print("No jobs running.  Exiting.")
+    exit(1)
+  
+  checkjob(jobs)
+
+  time.sleep(1)
+  
+
+print ("waiting for jobs to complete")
+while jobs:
+  checkjob(jobs)
+  time.sleep(1)
+    
+
+
+  
+

@@ -1,0 +1,26 @@
+[
+    {"name": "stage3", "deps": [""], "parser": "stage3", "args": [""]},
+    {"name": "qemu", "deps": ["stage3"], "parser": "qemu", "args": [""]},
+    {"name": "config", "deps": ["qemu"], "parser": "config", "args": [""]},
+    {"name": "overlays", "deps": ["config"], "parser": "overlays", "args": [""]},
+    {"name": "git", "deps": ["overlays"], "parser": "git", "args": [""]},
+    {"name": "portage", "deps": ["git"], "parser": "portage", "args": [""]},
+    {"name": "etc", "deps": ["portage"], "parser": "etc", "args": [""]},
+    {"name": "distcc", "deps": ["etc"], "parser": "emerge", "args": ["distcc -1bk"], "env": {"USE": "-X"}},
+    {"name": "certifi", "deps": ["distcc"], "parser": "emerge", "args": ["dev-python/certifi"]},
+    {"name": "distcchost", "deps": ["distcc"], "parser": "distcc", "args": [""]},
+    {"name": "screen", "deps": ["distcchost", "certifi"], "parser": "emerge", "args": ["-v1k app-misc/screen", "", ""]},
+    {"name": "update_portage", "deps": ["screen"], "parser": "emerge", "args": ["-v1bkj portage"]},
+    {"name": "locale", "deps": ["update_portage"], "parser": "rawcommand", "args": ["eselect locale set en_US.utf8"]},
+    {"name": "updateudev", "deps": ["locale"], "parser": "emerge", "args": ["--update eudev"]},
+    {"name": "users", "deps": ["config", "update_portage"], "parser": "users", "args": [""]},
+    {"name": "emergesystem", "deps": ["--allprev--"], "parser": "emerge", "args": ["-v1bk --update --deep --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system"], "env": {"USE": "-X"}},
+    {"name": "setprofile", "deps": ["emergesystem", "config"], "parser": "setprofile", "args": [""]},
+    {"name": "kernel", "deps": ["setprofile", "users"], "parser": "emerge", "args": ["$(/em-config kernel '* ')"]},
+    {"name": "emergeworld", "deps": ["--allprev--"], "parser": "emerge", "args": ["-v1bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system"]},
+    {"name": "addsets", "deps": ["--allprev--"], "parser": "addsets", "args": [""]},
+    {"name": "emergeworld", "deps": ["--allprev--"], "parser": "emerge", "args": ["-v1bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
+    {"name": "rcupdate", "deps": ["emergeworld"], "parser": "rcupdate", "args": [""]}
+
+    
+]

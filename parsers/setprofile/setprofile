@@ -1,0 +1,11 @@
+#! /bin/bash -e
+
+pushd $(dirname $0)
+
+PROFILE=$($CHROOT_DIR/em-config profile)
+
+
+
+pychroot $PROJECT_DIR/chroot bash -c "eselect profile set ${PROFILE}"
+
+popd

@@ -1,0 +1,18 @@
+#!/usr/bin/python
+import json
+import os
+
+conffile = os.environ['CONFIG_DIR']+'/config.py'
+target = os.environ['CHROOT_DIR']+'/em-config'
+
+with open(conffile, 'r') as c:
+    config = {}
+    exec(compile(c.read(), conffile, 'exec'), config)
+
+with open(f'{target}.json', 'w') as f:
+    json.dump(config[os.environ['PROJECT']], f)
+
+emconfig = os.path.dirname(__file__)+'/emconfig'
+
+
+os.system(f'cp {emconfig} {target}')

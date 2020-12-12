@@ -1,0 +1,10 @@
+#! /bin/bash -e
+
+echo "making gparted use gksudo instead of pkexec"
+
+pushd "$(dirname $0)"
+cp -rpvL gparted-pkexec "${PROJECT_DIR}/chroot/usr/bin/gparted-pkexec"
+chown root:root "${PROJECT_DIR}/chroot/usr/bin/gparted-pkexec"
+chmod 755 "${PROJECT_DIR}/chroot/usr/bin/gparted-pkexec"
+popd
+

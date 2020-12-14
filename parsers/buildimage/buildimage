@@ -23,10 +23,14 @@ start = '1MiB'
 for idx,partition in enumerate(image['partitions']):
     end = partition['end']
     os.system(f"parted {LOOP} mkpart primary {start} {end}") and exit(1)
+    if flags := partition.get('flags'):
+        for f,v in flags.items():
+            os.system(f"parted {LOOP} set {idx+1} {f} {v}") and exit(1)
     start = end
 
     os.system(f"partprobe {LOOP}") and exit(1)
-    os.system(f"mkfs.{partition['format']} {LOOP}p{idx+1}") and exit(1)
+    
+    os.system(f"mkfs.{partition['format']} {LOOP}p{idx+1} {partition.get('args', '')}") and exit(1)
 
 os.system('mkdir -p image')
 
@@ -39,7 +43,11 @@ for p in image['mount-order']:
 os.chdir("image")
 
 os.system(f"tar -P -xaf ../latest-{os.environ['PROJECT']}.tar") and exit(1)
+with open("boot/cmdline.txt", "w") as f:
+    f.write(config['cmdline'])
 os.chdir('..')
+
+
 
 os.system("umount --recursive image") and exit(1)
 os.system(f"losetup -d {LOOP}") and exit(1)

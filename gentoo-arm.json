@@ -17,13 +17,13 @@
     {"name": "eix", "deps": ["update_portage"], "parser": "emerge", "args": ["eix"]},
     {"name": "eixupdate", "deps": ["eix"], "parser": "rawcommand", "args": ["eix-update"]},
     {"name": "bison", "deps": ["eixupdate"], "parser": "emerge", "args": ["-v1 --usepkg-exclude=bison bison"]},
-    {"name": "emergesystem", "deps": ["--allprev--"], "parser": "emerge", "args": ["-v1bk --update --deep --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system", "-X sqlite"]},
+    {"name": "emergesystem", "deps": ["--allprev--"], "parser": "emerge", "args": ["-v1bk --update --deep --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system", "-X sqlite -introspection -gtk -elogind -policykit -qt5 -qt4"]},
     {"name": "setprofile", "deps": ["emergesystem", "config"], "parser": "setprofile", "args": [""]},
-    {"name": "kernel", "deps": ["setprofile", "users"], "parser": "emerge", "args": ["$(/em-config kernel '* ')"]},
-    {"name": "emergeworld", "deps": ["--allprev--"], "parser": "emerge", "args": ["-v1bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system"]},
-    {"name": "addsets", "deps": ["--allprev--"], "parser": "addsets", "args": [""]},
-    {"name": "emergeworld", "deps": ["--allprev--"], "parser": "emerge", "args": ["-v1bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
-    {"name": "rcupdate", "deps": ["emergeworld"], "parser": "rcupdate", "args": [""]}
-
+    {"name": "emergeprofile", "deps": ["--allprev--"], "parser": "emerge", "args": ["-v1bk --update --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system"]},
+    {"name": "addsets", "deps": ["emergeprofile"], "parser": "addsets", "args": [""]},
+    {"name": "emergeworld", "deps": ["addsets"], "parser": "emerge", "args": ["-v1bke --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
+    {"name": "depclean", "deps": ["emergeworld"], "parser": "emerge", "args": ["-v --depclean"]},
+    {"name": "rcupdate", "deps": ["depclean"], "parser": "rcupdate", "args": [""]}
+    
     
 ]

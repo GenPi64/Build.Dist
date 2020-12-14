@@ -22,3 +22,8 @@ sys-fs/dosfstools
 sys-fs/btrfs-progs
 sys-process/iotop
 sys-process/lsof
+app-admin/sudo
+app-portage/gentoolkit
+app-misc/screen
+sys-devel/distcc
+sys-process/cronie

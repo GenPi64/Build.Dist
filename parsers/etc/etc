@@ -50,6 +50,7 @@ copydir(config['etc'], f"{CHROOT_DIR}/etc")
 
 
 system(f"chmod 700 {CHROOT_DIR}/etc/shadow")
+system(f"chmod 755 {CHROOT_DIR}/etc/profile")
 
 system(f"pychroot {CHROOT_DIR} /usr/sbin/locale-gen")
 system(f"pychroot {CHROOT_DIR} /usr/sbin/env-update")

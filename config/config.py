@@ -10,7 +10,7 @@ Base = {
             FFLAGS="${CFLAGS}",
             CHOST="aarch64-unknown-linux-gnu",
             USE="bindist -systemd elogind".split(),
-            FEATURES="parallel-fetch buildpkg collision-protect binpkg-multi-instance getbinpkg ".split(),
+            FEATURES="parallel-fetch parallel-install buildpkg collision-protect binpkg-multi-instance getbinpkg ".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
             INPUT_DEVICES="evdev synaptics",
@@ -54,14 +54,17 @@ Base = {
             'location': '/var/db/repos/gentoo',
             'sync-type': 'git',
             'sync-depth': '1',
-            'sync-uri': 'https://anongit.gentoo.org/git/repo/gentoo.git',
+            'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
             'auto-sync': 'yes',
+            'sync-git-verify-commit-signature': 'true'
+            
         }
     ],
-    "enable-services": [
-        "cronie",
-        "sshd"
-    ],
+    "services": {
+        "cronie": "default",
+        "sshd": "default",
+        "elogind": "default"
+    },
     'sets': [
         "standard"
     ],
@@ -69,6 +72,7 @@ Base = {
 }
 
 GenPi64 = Base | {
+    "cmdline": 'dwc_otg.lpm_enable=0 UUID="f917adb0-cc6e-488b-ab5a-c368ffc4a32a" rootfstype=btrfs elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
     "kernel": [
         "sys-kernel/bcm2711-kernel-bis-bin",
         "sys-boot/rpi3-64bit-firmware"
@@ -99,14 +103,15 @@ GenPi64 = Base | {
         "make.conf": Base["portage"]["make.conf"] | {
             "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe",
             "PORTAGE_BINHOST": "https://genpi64.com/",
-            "FEATURES": Base["portage"]["make.conf"]["FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split()
+            "FEATURES": Base["portage"]["make.conf"]["FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
+            "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"]
             
         },
         "binrepos.conf": "binrepo_genpi64.conf"
         
     },
     "stage3": "stage3-arm64-20201004T190540Z.tar.xz",
-    "profile": "default/linux/arm64/17.0",
+    "profile": "genpi64:default/linux/arm64/17.0/desktop/genpi64",
     'users': [
         dict(name="demouser",
              password="raspberrypi64",
@@ -138,13 +143,18 @@ GenPi64 = Base | {
                 'end': '256MiB',
                 'format': 'vfat',
                 'mount-point': '/boot',
-                'mount-options': 'noatime'
+                'mount-options': 'noatime',
+                'flags': {
+                    'lba': 'on'
+                }
+                
             },
             {
                 'end': '100%',
                 'format': 'btrfs',
                 'mount-point': '/',
-                'mount-options': 'compress=zstd:15,ssd,discard'
+                'mount-options': 'compress=zstd:15,ssd,discard',
+                'args': '--force --uuid=f917adb0-cc6e-488b-ab5a-c368ffc4a32c'
             }
         ]
     }
@@ -152,8 +162,7 @@ GenPi64 = Base | {
 }
 
 GenPi64Desktop = GenPi64 | {
-    "profile": "default/linux/arm64/17.0/desktop",
+    "profile": "genpi64:default/linux/arm64/17.0/desktop/genpi64",
 
 }
 
-globals()['nvros-arm'] = GenPi64Desktop

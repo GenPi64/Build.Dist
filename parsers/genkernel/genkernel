@@ -1,9 +1,0 @@
-#! /bin/bash -e
-
-pushd "$(dirname $0)"
-
-mkdir -p "${PROJECT_DIR}/chroot/etc/portage/patches/sys-kernel/genkernel-next"
-cp matrixraid.patch "${PROJECT_DIR}/chroot/etc/portage/patches/sys-kernel/genkernel-next/"
-
-popd
-

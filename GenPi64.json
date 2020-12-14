@@ -1,6 +1,7 @@
 [
     {"name": "gentoo-arm-base", "deps": [""], "parser": "includejson", "args": ["gentoo-arm.json"]},
-    {"name": "packstage4", "deps": ["gentoo-arm-base"], "parser": "packstage4", "args": [""]},
+    {"name": "kernel", "deps": ["gentoo-arm-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ')", "-checkboot"]},
+    {"name": "packstage4", "deps": ["kernel"], "parser": "packstage4", "args": [""]},
     {"name": "packgenpi", "deps": ["packstage4"], "parser": "buildimage", "args": [""]},
     {"name": "done", "deps": ["packgenpi"], "parser": "echo", "args": ["Done!"]}
 ]

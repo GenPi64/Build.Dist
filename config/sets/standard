@@ -9,11 +9,8 @@ app-portage/repoman
 app-eselect/eselect-timezone
 app-eselect/eselect-repository
 app-admin/rsyslog
-app-arch/unp
-app-misc/rlwrap
 app-misc/screen
 app-portage/flaggie
-net-analyzer/nethogs
 net-fs/sshfs
 net-misc/telnet-bsd
 sys-block/parted

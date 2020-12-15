@@ -1,4 +1,6 @@
 import os
+import uuid
+UUID=str(uuid.uuid4())
 
 Base = {
     'portage': {
@@ -45,7 +47,7 @@ Base = {
              groups="users,wheel,video,audio,adm,disk,lp,cdrom,usb,portage,cron".split(','),
              shell="/bin/bash",
              uid="1000"
-             )
+        )
     ],
     "locale": "en_US.utf8",
     "overlays": [
@@ -72,7 +74,7 @@ Base = {
 }
 
 GenPi64 = Base | {
-    "cmdline": 'dwc_otg.lpm_enable=0 UUID="f917adb0-cc6e-488b-ab5a-c368ffc4a32a" rootfstype=btrfs elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
+    "cmdline": f'dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootfstype=btrfs elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
     "kernel": [
         "sys-kernel/bcm2711-kernel-bis-bin",
         "sys-boot/rpi3-64bit-firmware"
@@ -107,7 +109,8 @@ GenPi64 = Base | {
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"]
             
         },
-        "binrepos.conf": "binrepo_genpi64.conf"
+        "binrepos.conf": "binrepo_genpi64.conf",
+        "package.mask": "package.mask"
         
     },
     "stage3": "stage3-arm64-20201004T190540Z.tar.xz",
@@ -133,6 +136,7 @@ GenPi64 = Base | {
         
     ],
 
+    'sets': Base['sets'] + ['pi4'],
     'image': {
         'name': 'GenPi64.img',
         'size': '8G',
@@ -154,7 +158,7 @@ GenPi64 = Base | {
                 'format': 'btrfs',
                 'mount-point': '/',
                 'mount-options': 'compress=zstd:15,ssd,discard',
-                'args': '--force --uuid=f917adb0-cc6e-488b-ab5a-c368ffc4a32c'
+                'args': f'--force --uuid={UUID}'
             }
         ]
     }
@@ -163,6 +167,6 @@ GenPi64 = Base | {
 
 GenPi64Desktop = GenPi64 | {
     "profile": "genpi64:default/linux/arm64/17.0/desktop/genpi64",
-
+    'sets': GenPi64['sets'] + ['pi4desktop']
 }
 

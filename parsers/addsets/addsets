@@ -1,5 +1,8 @@
 #!/bin/bash
 mkdir -p ${CHROOT_DIR}/etc/portage/sets/
+echo > ${CHROOT_DIR}/var/lib/portage/world_sets
+
 for((i=0;i<$(${PARSERS}/config/getconfig sets "#");i++)); do
     cp ${CONFIG_DIR}/sets/$(${PARSERS}/config/getconfig sets $i) ${CHROOT_DIR}/etc/portage/sets/
+    echo @$(${PARSERS}/config/getconfig sets $i) >> ${CHROOT_DIR}/var/lib/portage/world_sets 
 done

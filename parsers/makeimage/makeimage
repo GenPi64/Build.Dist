@@ -1,0 +1,49 @@
+#!/usr/bin/python3
+import os
+import sys
+import json
+import subprocess
+from sys import exit
+
+os.chdir(os.environ['PROJECT_DIR'])
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+
+import config
+config = getattr(config, os.environ['PROJECT'])
+
+image = config['image']
+
+os.system(f"truncate -s {image['size']} {image['name']}") and exit(1)
+
+os.system(f"parted {image['name']} mklabel {image['format']}") and exit(1)
+start = '1MiB'
+for idx,partition in enumerate(image['partitions']):
+    end = partition['end']
+    os.system(f"parted {image['name']} mkpart primary {start} {end}") and exit(1)
+    if flags := partition.get('flags'):
+        for f,v in flags.items():
+            os.system(f"parted {image['name']} set {idx+1} {f} {v}") and exit(1)
+    start = end
+
+if image['format'] == 'gpt':
+    prted = '/sbin/sgdisk'
+elif image['format'] == 'msdos':
+    prted = '/sbin/fdisk'
+
+    
+p = subprocess.Popen([prted, image['name']], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+p.stdin.write(f"x\ni\n0x{image['uuid']}\nr\nw\n".encode('charmap'))
+p.stdin.close()
+p.wait()
+p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), exit(1))
+
+
+os.system(f"losetup -P -f {image['name']}") and exit(1)
+p = subprocess.Popen(["/sbin/losetup", "-l", "-J", "-j", image['name']], stdout=subprocess.PIPE)
+p.wait()
+p.poll() and exit(1)
+LOOP = json.load(p.stdout)['loopdevices'][0]['name']
+
+for idx,partition in enumerate(image['partitions']):
+    os.system(f"mkfs.{partition['format']} {LOOP}p{idx+1} {partition.get('args', '')}") and exit(1)
+

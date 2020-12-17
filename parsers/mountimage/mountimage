@@ -1,0 +1,25 @@
+#!/usr/bin/python
+import os
+from sys import exit
+
+os.chdir(os.environ['PROJECT_DIR'])
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+
+import config
+config = getattr(config, os.environ['PROJECT'])
+
+image = config['image']
+
+
+os.chdir(os.environ['CHROOT_DIR'])
+p = subprocess.Popen(["/sbin/losetup", "-l", "-J", "-j", image['name']], stdout=subprocess.PIPE)
+p.wait()
+p.poll() and exit(1)
+LOOP = json.load(p.stdout)['loopdevices'][0]['name']
+
+
+
+for p in image['mount-order']:
+    target = "image"+image['partitions'][p]['mount-point']
+    os.system(f"mkdir -p {target}") and exit(1)
+    os.system(f"mount {LOOP}p{p+1} {target} -o {image['partitions'][p]['mount-options']}") and exit(1)

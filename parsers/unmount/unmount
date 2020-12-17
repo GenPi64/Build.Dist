@@ -1,0 +1,4 @@
+#!/bin/bash
+pushd ${PROJECT_DIR}
+
+umount --recursive image

@@ -1,0 +1,5 @@
+#!/bin/bash
+pushd ${PROJECT_DIR}/image
+
+tar -P -xaf ../latest-{os.environ['PROJECT']}.tar
+

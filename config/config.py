@@ -1,6 +1,13 @@
 import os
 import uuid
-UUID=str(uuid.uuid4())
+
+if os.path.exists(p:=os.path.join(os.environ['PROJECT_DIR'], 'uuid')):
+    with open(p) as f:
+        UUID = f.read()
+else:
+    UUID=str(uuid.uuid4())[:8]
+    with open(p, 'w') as f:
+        f.write(UUID)
 
 Base = {
     'portage': {
@@ -74,7 +81,7 @@ Base = {
 }
 
 GenPi64 = Base | {
-    "cmdline": f'dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootfstype=btrfs elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
+    "cmdline": 'dwc_otg.lpm_enable=0 root=PARTUUID=%{UUID}s rootfstype=%{fstype} elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
     "kernel": [
         "sys-kernel/bcm2711-kernel-bis-bin",
         "sys-boot/rpi3-64bit-firmware"
@@ -113,7 +120,7 @@ GenPi64 = Base | {
         "package.mask": "package.mask"
         
     },
-    "stage3": "stage3-arm64-20201004T190540Z.tar.xz",
+    "stage3": os.environ.get("STAGE3", "stage3-arm64-20201004T190540Z.tar.xz"),
     "profile": "genpi64:default/linux/arm64/17.0/desktop/genpi64",
     'users': [
         dict(name="demouser",
@@ -142,6 +149,7 @@ GenPi64 = Base | {
         'size': '8G',
         'format': 'msdos',
         'mount-order': [1,0],
+        'uuid': UUID,
         'partitions': [
             {
                 'end': '256MiB',
@@ -158,7 +166,7 @@ GenPi64 = Base | {
                 'format': 'btrfs',
                 'mount-point': '/',
                 'mount-options': 'compress=zstd:15,ssd,discard',
-                'args': f'--force --uuid={UUID}'
+                'args': f'--force'
             }
         ]
     }
@@ -167,6 +175,9 @@ GenPi64 = Base | {
 
 GenPi64Desktop = GenPi64 | {
     "profile": "genpi64:default/linux/arm64/17.0/desktop/genpi64",
-    'sets': GenPi64['sets'] + ['pi4desktop']
+    'sets': GenPi64['sets'] + ['pi4desktop'],
+    'image': GenPi64['image'] | {
+        'name': 'GenPi64Desktop.img'
+    }
 }
 

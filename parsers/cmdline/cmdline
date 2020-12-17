@@ -1,0 +1,16 @@
+#!/usr/bin/python
+import os
+from sys import exit
+
+os.chdir(os.environ['PROJECT_DIR'])
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+
+import config
+config = getattr(config, os.environ['PROJECT'])
+
+image = config['image']
+UUID = image['uuid']
+with open("image/boot/cmdline.txt", "w") as cmdline:
+    p = image['mount-order'][0]
+    uuid = UUID+'-%02i'%(p+1)
+    cmdline.write(config['cmdline'] % dict(UUID=UUID, fstype=image['partitions']['format']))

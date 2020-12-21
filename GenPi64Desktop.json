@@ -2,7 +2,7 @@
     {"name": "genpi64-lite", "deps": [""], "parser": "includejson", "args": ["GenPi64.json"], "env": {"PROJECT": "GenPi64"}},
     {"name": "reconfig", "deps": ["genpi64-lite"], "parser": "config", "args": [""]},
     {"name": "desktopsets", "deps": ["reconfig"], "parser": "addsets", "args": [""]},
-    {"name": "emergedesktop", "deps": ["desktopsets"], "parser": "emerge", "args": ["-v1bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"], "env":{"SUPPRESS_BASHRC_MAKEOPTS": "1"}},
+    {"name": "emergedesktop", "deps": ["desktopsets"], "parser": "emerge", "args": ["-v1bk --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"], "env":{"SUPPRESS_BASHRC_MAKEOPTS": "1"}},
     {"name": "desktopdepclean", "deps": ["emergedesktop"], "parser": "emerge", "args": ["-v --depclean"]},
     {"name": "repackstage4", "deps": ["desktopdepclean"], "parser": "packstage4", "args": [""]},
     {"name": "packgenpidesktop", "deps": ["repackstage4"], "parser": "buildimage", "args": [""]}

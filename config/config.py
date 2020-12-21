@@ -19,7 +19,7 @@ Base = {
             FFLAGS="${CFLAGS}",
             CHOST="aarch64-unknown-linux-gnu",
             USE="bindist -systemd elogind".split(),
-            FEATURES="parallel-fetch parallel-install buildpkg collision-protect binpkg-multi-instance getbinpkg ".split(),
+            FEATURES="parallel-fetch distcc parallel-install buildpkg binpkg-multi-instance getbinpkg ".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
             INPUT_DEVICES="evdev synaptics",
@@ -81,7 +81,7 @@ Base = {
 }
 
 GenPi64 = Base | {
-    "cmdline": 'dwc_otg.lpm_enable=0 root=PARTUUID=%{UUID}s rootfstype=%{fstype} elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
+    "cmdline": 'dwc_otg.lpm_enable=0 root=PARTUUID=%(UUID)s rootfstype=%(fstype)s elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
     "kernel": [
         "sys-kernel/bcm2711-kernel-bis-bin",
         "sys-boot/rpi3-64bit-firmware"
@@ -181,3 +181,5 @@ GenPi64Desktop = GenPi64 | {
     }
 }
 
+
+globals()['gentoo-arm'] = Base

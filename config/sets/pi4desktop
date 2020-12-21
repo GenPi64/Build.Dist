@@ -1,8 +1,5 @@
-media-video/pi-ffcam
-media-video/pi-ffplay
 x11-misc/rpi3-safecompositor
 x11-misc/rpi3-safecursor
-sys-apps/pitop-poweroff
 xfce-base/xfce4-meta
 www-client/firefox
 dev-util/geany

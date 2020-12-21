@@ -1,5 +1,8 @@
 #!/usr/bin/python
 import os
+import sys
+import subprocess
+import json
 from sys import exit
 
 os.chdir(os.environ['PROJECT_DIR'])
@@ -11,11 +14,12 @@ config = getattr(config, os.environ['PROJECT'])
 image = config['image']
 
 
-os.chdir(os.environ['CHROOT_DIR'])
+
+subprocess.Popen(['/sbin/losetup', '-P', '-f', image['name']]).wait()
 p = subprocess.Popen(["/sbin/losetup", "-l", "-J", "-j", image['name']], stdout=subprocess.PIPE)
 p.wait()
 p.poll() and exit(1)
-LOOP = json.load(p.stdout)['loopdevices'][0]['name']
+LOOP = json.loads(p.stdout.read())['loopdevices'][0]['name']
 
 
 

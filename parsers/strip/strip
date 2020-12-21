@@ -2,3 +2,7 @@
 pushd ${PROJECT_DIR}
 rm -r image/var/db/repos/*
 rm -r image/var/cache/distfiles/*
+rm -r image/var/cache/binpkgs/*
+rm -r image/usr/portage/distfiles/*
+rm -r image/usr/portage/packages/*
+

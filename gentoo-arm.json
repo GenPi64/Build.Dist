@@ -23,8 +23,11 @@
     {"name": "setprofile", "deps": ["emergesystem", "config"], "parser": "setprofile", "args": [""]},
     {"name": "emergeprofile", "deps": ["setprofile"], "parser": "emerge", "args": ["-v1bk --update --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system"]},
     {"name": "addsets", "deps": ["emergeprofile"], "parser": "addsets", "args": [""]},
-    {"name": "emergeworld", "deps": ["addsets"], "parser": "emerge", "args": ["-v1bke --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
-    {"name": "depclean", "deps": ["emergeworld"], "parser": "emerge", "args": ["-v --depclean"]},
+    {"name": "setuptools", "deps": ["addsets"], "parser": "emerge", "args": ["-v1 dev-python/setuptools", "python_targets_python3_7 python_targets_python3_8 -python_targets_python3_6 -python_targets_python3_9"]},
+    {"name": "workaround2", "deps": ["setuptools"], "parser": "emerge", "args": ["--update --deep dev-lang/python:3.9", "-bluetooth"]},
+    {"name": "emergeworld", "deps": ["workaround2"], "parser": "emerge", "args": ["-v1bk --deep --update --newuse --with-bdeps=y --keep-going --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"], "env":{"SUPPRESS_BASHRC_MAKEOPTS": "1"}},
+    {"name": "workaround1", "deps": ["emergeworld"], "parser": "emerge", "args": ["--update --newuse --deep --with-bdeps=y @world"]},
+    {"name": "depclean", "deps": ["workaround1"], "parser": "emerge", "args": ["-v --depclean"]},
     {"name": "rcupdate", "deps": ["depclean"], "parser": "rcupdate", "args": [""]}
     
     

@@ -1,0 +1,4 @@
+#!/bin/bash
+pushd ${PROJECT_DIR}
+rm -r image/var/db/repos/*
+rm -r image/var/cache/distfiles/*

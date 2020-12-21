@@ -1,11 +1,11 @@
 [
     {"name": "makeimage", "deps": [""], "parser": "makeimage", "args": [""]},
     {"name": "mountimage", "deps": ["makeimage"], "parser": "mountimage", "args": [""]},
-    {"name": "unpackstage4", "deps": ["unpackstage4"], "parser": "stage4", "args": [""]},
+    {"name": "unpackstage4", "deps": ["mountimage"], "parser": "unpackstage4", "args": [""]},
     {"name": "fstab", "deps": ["unpackstage4"], "parser": "fstab", "args": [""]},
     {"name": "cmdline", "deps": ["fstab"], "parser": "cmdline", "args": [""]},
     {"name": "firstboot", "deps": ["cmdline"], "parser": "firstboot", "args": [""]},
-    {"name": "strip", "deps": ["firstboot"], "parser": "rawcommand", "args": ["rm -r /var/db/repos/* /var/cache/binpkgs /var/cache/distfiles/*"]},
+    {"name": "strip", "deps": ["firstboot"], "parser": "strip", "args": [""]},
     {"name": "unmount-image", "deps": ["strip"], "parser": "unmount", "args": [""]},
-    {"name": "compress-image", "deps": ["unmount-image"], "parser": "compress", "args": [""]}
+    {"name": "compress-image", "deps": ["unmount-image"], "parser": "compress-image", "args": [""]}
 ]

@@ -41,7 +41,7 @@ Base = {
     "jobs": len(os.sched_getaffinity(0)),
     "load-average": len(os.sched_getaffinity(0)),
     "distcc": [
-        "192.168.1.43/16"
+        os.environ.get("DISTCC_HOSTS", "")
     ],
     "groups": [
         dict(name="cron", gid=16),

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 echo $PROJECT
 if [[ -z "$PROJECT" ]]; then
 	export PROJECT="gentoo-arm"

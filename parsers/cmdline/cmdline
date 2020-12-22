@@ -14,5 +14,5 @@ UUID = image['uuid']
 with open("image/boot/cmdline.txt", "w") as cmdline:
     p = image['mount-order'][0]
     uuid = UUID+'-%02i'%(p+1)
-    e = dict(UUID=UUID, fstype=image['partitions'][p]['format'])
+    e = dict(UUID=uuid, fstype=image['partitions'][p]['format'])
     cmdline.write(config['cmdline'] % e)

@@ -18,7 +18,7 @@
     {"name": "eix", "deps": ["update_portage"], "parser": "emerge", "args": ["eix"]},
     {"name": "eixupdate", "deps": ["eix"], "parser": "rawcommand", "args": ["eix-update"]},
     {"name": "bison", "deps": ["eixupdate"], "parser": "emerge", "args": ["-v1 --usepkg-exclude=bison bison"]},
-    {"name": "updatelibc", "deps": ["bison"], "parser": "emerge", "args": ["-v1 --update glibc"]},
+    {"name": "updatelibc", "deps": ["bison"], "parser": "emerge", "args": ["-v1bk --update glibc"]},
     {"name": "emergesystem", "deps": ["updatelibc"], "parser": "emerge", "args": ["-v1bk --update --deep --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system", "-X sqlite -introspection -gtk -elogind -policykit -qt5 -qt4"]},
     {"name": "setprofile", "deps": ["emergesystem", "config"], "parser": "setprofile", "args": [""]},
     {"name": "emergeprofile", "deps": ["setprofile"], "parser": "emerge", "args": ["-v1bk --update --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @system"]},

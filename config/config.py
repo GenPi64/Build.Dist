@@ -95,6 +95,7 @@ GenPi64 = Base | {
             'priority': '100',
             'auto-sync': 'yes',
             'sync-depth': '1',
+            'sync-git-clone-extra-opts': '--single-branch --branch alpha4'
         },
         {
             'name': 'genpi-tools',

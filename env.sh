@@ -3,7 +3,7 @@ export BASEDIR=${PWD}
 
 echo $PROJECT
 if [[ -z "$PROJECT" ]]; then
-	export PROJECT="gentoo-arm"
+	export PROJECT="GenPi64"
 fi
 
 if [[ -z "$PROJECT_DIR" ]]; then

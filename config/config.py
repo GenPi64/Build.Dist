@@ -185,7 +185,7 @@ GenPi64Desktop = GenPi64 | {
 }
 
 
-globals()['gentoo-arm'] = Base
+globals()['gentoo-arm'] = GenPi64
 
 
 GenPi32 = GenPi64 | {

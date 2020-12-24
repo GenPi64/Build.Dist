@@ -34,7 +34,7 @@ def copyconf(conf, file):
         if not conf.startswith("/"):
             conf = f'{CONFIG_DIR}/{conf}'
         system(f"mkdir -p {os.path.dirname(file)}")
-        if os.path.isdir(file):
+        if os.path.isdir(conf):
             shutil.copytree(conf, file, dirs_exist_ok=True)
         else:
             shutil.copy2(conf, file)        

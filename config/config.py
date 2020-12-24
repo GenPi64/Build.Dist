@@ -121,7 +121,9 @@ GenPi64 = Base | {
         "package.mask": "package.mask"
         
     },
-    "stage3": os.environ.get("STAGE3", "stage3-arm64-20201004T190540Z.tar.xz"),
+    "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
+    "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64.txt",
+    "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
     "profile": "genpi64:default/linux/arm64/17.0/desktop/genpi64",
     'users': [
         dict(name="demouser",
@@ -187,7 +189,9 @@ globals()['gentoo-arm'] = Base
 
 
 GenPi32 = GenPi64 | {
-    "stage3": "stage3-armv6j_hardfp-20200509T210605Z.tar.xz",
+    "stage3": "stage3-armv6j_hardfp.tar.xz",
+    "stage3url": "http://distfiles.gentoo.org/releases/arm/autobuilds/latest-stage3-armv6j_hardfp.txt",
+    "stage3mirror": "http://distfiles.gentoo.org/releases/arm/autobuilds/",
     "portage": GenPi64['portage'] | {
         "make.conf": GenPi64['portage']['make.conf'] | {
             "CFLAGS": "-O2 -pipe -march=armv6j -mfpu=vfp -mfloat-abi=hard -fomit-frame-pointer -fno-stack-protector",

@@ -184,3 +184,15 @@ GenPi64Desktop = GenPi64 | {
 
 
 globals()['gentoo-arm'] = Base
+
+
+GenPi32 = GenPi64 | {
+    "stage3": "stage3-armv6j_hardfp-20200509T210605Z.tar.xz",
+    "portage": GenPi64['portage'] | {
+        "make.conf": GenPi64['portage']['make.conf'] | {
+            "CFLAGS": "-O2 -pipe -march=armv6j -mfpu=vfp -mfloat-abi=hard -fomit-frame-pointer -fno-stack-protector",
+            "CHOST":"armv6j-unknown-linux-gnueabihf"
+        }
+    },
+    "profile": "default/linux/arm/17.0"
+}

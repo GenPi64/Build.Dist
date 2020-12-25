@@ -2,7 +2,7 @@
 
 pushd $(dirname $0)
 
-PROFILE=$($CHROOT_DIR/em-config profile)
+PROFILE=$(${PARSERS}/config/getconfig profile)
 
 
 

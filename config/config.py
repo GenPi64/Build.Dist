@@ -11,7 +11,6 @@ else:
 
 Base = {
     'portage': {
-            
         "make.conf": dict(
             CFLAGS="-march=native -O2 -pipe",
             CXXFLAGS="${CFLAGS}",
@@ -31,7 +30,6 @@ Base = {
             "app-editors/": "patches/app-editors",
             "sys-apps/": "patches/sys-apps"
         }
-        
     },
     "etc": {
         "locale.gen": "locale.gen",
@@ -62,11 +60,11 @@ Base = {
             'name': 'gentoo',
             'location': '/var/db/repos/gentoo',
             'sync-type': 'git',
+            'clone-depth': '1',
             'sync-depth': '1',
             'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true'
-            
         }
     ],
     "services": {
@@ -94,6 +92,7 @@ GenPi64 = Base | {
             'sync-uri': 'https://github.com/GenPi64/genpi64-overlay.git',
             'priority': '100',
             'auto-sync': 'yes',
+            'clone-depth': '1',
             'sync-depth': '1',
             'sync-git-clone-extra-opts': '--single-branch --branch alpha4'
         },
@@ -104,10 +103,9 @@ GenPi64 = Base | {
             'sync-uri': 'https://github.com/GenPi64/sakaki-tools.git',
             'priority': '50',
             'auto-sync': 'yes',
+            'clone-depth': '1',
             'sync-depth': '1',
         }
-        
-            
     ],
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
@@ -115,11 +113,9 @@ GenPi64 = Base | {
             "PORTAGE_BINHOST": "https://genpi64.com/",
             "FEATURES": Base["portage"]["make.conf"]["FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"]
-            
         },
         "binrepos.conf": "binrepo_genpi64.conf",
         "package.mask": "package.mask"
-        
     },
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
     "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64.txt",
@@ -143,7 +139,6 @@ GenPi64 = Base | {
         dict(name="cron", gid=16),
         dict(name="crontab", gid=248),
         dict(name="plugdev", gid=245),
-        
     ],
 
     'sets': Base['sets'] + ['pi4'],
@@ -162,7 +157,6 @@ GenPi64 = Base | {
                 'flags': {
                     'lba': 'on'
                 }
-                
             },
             {
                 'end': '100%',
@@ -173,7 +167,6 @@ GenPi64 = Base | {
             }
         ]
     }
-
 }
 
 GenPi64Desktop = GenPi64 | {

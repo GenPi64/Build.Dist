@@ -1,14 +1,53 @@
 #! /bin/bash -e
-cp "/usr/bin/qemu-arm" "$PROJECT_DIR/chroot/usr/bin/qemu-x86_64-arm"
-cp "/usr/bin/qemu-aarch64" "$PROJECT_DIR/chroot/usr/bin/qemu-x86_64-aarch64"
 
-if [[ ! -e /proc/sys/fs/binfmt_misc/arm ]]; then
-  echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-x86_64-arm:' > /proc/sys/fs/binfmt_misc/register
+cpu="$(uname -m)"
+case "${cpu}" in
+    armv[4-9]*)
+	cpu="arm"
+	;;
+    i386|i486|i586|i686|i86pc|BePC)
+	cpu="x86"
+	;;
+    x86_64)
+	cpu="x86_64"
+	;;
+    m68k)
+	cpu="m68k"
+	;;
+    mips*)
+	cpu="mips"
+	;;
+    "Power Macintosh"|ppc|ppc64)
+	cpu="ppc"
+	;;
+    s390*)
+	cpu="s390"
+	;;
+    sh*)
+	cpu="sh"
+	;;
+	sparc*)
+	    cpu="sparc"
+	    ;;
+esac
 
+if [ "${cpu}" != "aarch64" ] ; then
+
+    cp "/usr/bin/qemu-aarch64" "$PROJECT_DIR/chroot/usr/bin/qemu-${cpu}-aarch64"
+    if [[ ! -e /proc/sys/fs/binfmt_misc/aarch64 ]]; then
+	echo ':aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\xB7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-${cpu}-aarch64:' > /proc/sys/fs/binfmt_misc/register
+
+    fi
 fi
 
-if [[ ! -e /proc/sys/fs/binfmt_misc/aarch64 ]]; then
-  echo ':aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\xB7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-x86_64-aarch64:' > /proc/sys/fs/binfmt_misc/register
+if [ "${cpu}" != "arm" ] ; then
 
+    cp "/usr/bin/qemu-arm" "$PROJECT_DIR/chroot/usr/bin/qemu-${cpu}-arm"
+
+
+    if [[ ! -e /proc/sys/fs/binfmt_misc/arm ]]; then
+	echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-${cpu}-arm:' > /proc/sys/fs/binfmt_misc/register
+	
+    fi
 fi
 

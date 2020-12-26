@@ -6,6 +6,18 @@ Linux system (gcc, chroot, et cetera)
 Python3.9
 pychroot
 git
+python-lockfile
+### Filesystem creation tools
+btrfs-progs (or change the filesystem type and mount options in `config/config.py`)
+sgdisk (for gpt based disk images)
+sfdisk (for mbr based disk images)
+
+### If running from not aarch64
+qemu user static for aarch64 and arm
+
+### Extra requirements if not running on gentoo
+wget
+
 
 
 ## Usage
@@ -31,3 +43,11 @@ If you are building an arm target via qemu, you probably want a distcc server ru
 
 You can configure the project via `config/config.py`, the default one is fairly fleshed out, so feel free to poke at it to see how it works.
 The steps to execute are governed by the `.json` files in the project root.
+
+## Troubleshooting
+
+Compiling python often hangs running `compileall.py`.  It's safe to kill the hung tasks.  
+
+If you're getting "bad interpreter" errors, make sure you have qemu.
+
+If `. env.sh` you can manually run a parser and better assess its output.  You can also `pychroot $CHROOT_DIR` and manually tweak things inside the prefix.

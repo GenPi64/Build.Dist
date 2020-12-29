@@ -70,7 +70,8 @@ Base = {
     "services": {
         "cronie": "default",
         "sshd": "default",
-        "elogind": "default"
+        "elogind": "default",
+        "ntp-client": "default"
     },
     'sets': [
         "standard"

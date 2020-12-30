@@ -3,13 +3,18 @@ pushd ${BASEDIR}
 stage3=$(${PARSERS}/config/getconfig stage3)
 
 
-if [ -f "${BASEDIR}/build-binary-assets/stage3/${stage3}" ]; then
+if [ -f "${BINARY_ASSETS}/stage3/${stage3}" ]; then
    exit 0
 fi
+
+mkdir -p "${BINARY_ASSETS}/stage3/"
 
 stage3_url=$(${PARSERS}/config/getconfig stage3url)
 stage3_mirror=$(${PARSERS}/config/getconfig stage3mirror)
 
-wget ${stage3_mirror}/$(wget "${stage3_url}" -O - | tail -n 1 | cut -f 1 -d ' ' ) -O "${BASEDIR}/build-binary-assets/stage3/${stage3}"
+stage3_image=$(wget "${stage3_url}" -O - | tail -n 1 | cut -f 1 -d ' ' )
+
+
+wget ${stage3_mirror}/${stage3_image} -O "${BINARY_ASSETS}/stage3/${stage3}"
 
    

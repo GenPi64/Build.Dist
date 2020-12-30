@@ -8,7 +8,7 @@ echo "Running $@"
 
 echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
 echo "$@" >> "${PROJECT_DIR}/chroot/em-$$"
-pychroot "${PROJECT_DIR}/chroot" bash --login  /em-$$
+pychroot "${PROJECT_DIR}/chroot" /usr/bin/env -i bash --login /em-$$
 
 rm "${PROJECT_DIR}/chroot/em-$$"
 

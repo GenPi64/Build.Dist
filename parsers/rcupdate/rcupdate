@@ -11,13 +11,11 @@ service_count=$($PARSERS/config/getconfig services "#")
 for((i=0;$i<$service_count;i++)); do
     service=$($PARSERS/config/getconfig services $i)
     runlevel=$($PARSERS/config/getconfig services $service)
-  echo rc-update add "$service" "$runlevel"  >>  "${PROJECT_DIR}/chroot/em-$$"
-  
-
+    echo rc-update add "$service" "$runlevel"  >>  "${PROJECT_DIR}/chroot/em-$$"
 done
 
 
-pychroot "${PROJECT_DIR}/chroot" bash --login  /em-$$
+pychroot "${PROJECT_DIR}/chroot" /usr/bin/env -i bash --login /em-$$
 
 rm "${PROJECT_DIR}/chroot/em-$$"
 

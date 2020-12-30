@@ -179,8 +179,9 @@ GenPi64Desktop = GenPi64 | {
 }
 
 
-globals()['gentoo-arm'] = GenPi64
-
+GentooAMD64 = Base | {
+    # stuff
+}
 
 GenPi32 = GenPi64 | {
     "stage3": "stage3-armv6j_hardfp.tar.xz",

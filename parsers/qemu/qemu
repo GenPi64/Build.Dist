@@ -36,7 +36,7 @@ if [ "${cpu}" != "aarch64" ] ; then
     if [[ ! -e /proc/sys/fs/binfmt_misc/aarch64 ]]; then
 	cp "/usr/bin/qemu-aarch64" "$PROJECT_DIR/chroot/usr/bin/qemu-${cpu}-aarch64"
 
-	echo ':aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\xB7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-${cpu}-aarch64:' > /proc/sys/fs/binfmt_misc/register
+	echo ":aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\xB7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-${cpu}-aarch64:" > /proc/sys/fs/binfmt_misc/register
     else
 	dest=$(head /proc/sys/fs/binfmt_misc/aarch64 -n 2 | tail -n 1 | cut -d' ' -f 2)
 	cp "/usr/bin/qemu-aarch64" "${CHROOT_DIR}/${dest}"
@@ -46,7 +46,7 @@ fi
 if [ "${cpu}" != "arm" ] ; then
 
     if [[ ! -e /proc/sys/fs/binfmt_misc/arm ]]; then
-	echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-${cpu}-arm:' > /proc/sys/fs/binfmt_misc/register
+	echo ":arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-${cpu}-arm:" > /proc/sys/fs/binfmt_misc/register
     else
 	dest=$(head /proc/sys/fs/binfmt_misc/arm -n 2 | tail -n 1 | cut -d' ' -f 2)
 	cp "/usr/bin/qemu-arm" "${CHROOT_DIR}/${dest}"

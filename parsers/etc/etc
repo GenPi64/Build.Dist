@@ -27,13 +27,12 @@ def copyconf(conf, file):
                 if isinstance(val, (list, tuple, set)):
                     val = str.join(" ", val)
                     val = json.dumps(val)
-                    
                     print(f"{key}={val}", file=f)
     else:
         if not conf.startswith("/"):
             conf = f'{CONFIG_DIR}/{conf}'
         shutil.copy2(conf, file)        
-    
+
 def copydir(conf, dest):
     for node, content in conf.items():
         if node.endswith('/'):
@@ -45,7 +44,7 @@ def copydir(conf, dest):
 
 
 copydir(config['etc'], f"{CHROOT_DIR}/etc")
-            
+
 #additional restrictions
 
 

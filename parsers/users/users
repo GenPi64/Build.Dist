@@ -4,6 +4,6 @@ pushd $(dirname $0)
 
 cp setupusers $PROJECT_DIR/chroot/tmp
 
-pychroot $PROJECT_DIR/chroot bash tmp/setupusers
+pychroot $PROJECT_DIR/chroot /usr/bin/env -i bash -c tmp/setupusers
 
 popd

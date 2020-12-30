@@ -6,5 +6,7 @@ rm -r image/var/cache/binpkgs/*
 rm -r image/usr/portage/distfiles/*
 rm -r image/usr/portage/packages/*
 
-sed -i -E 's_distcc__' ${CHROOT_DIR}/etc/portage/make.conf
-echo "127.0.0.1" > ${CHROOT_DIR}/etc/distcc/hosts
+sed -i -E 's_distcc__' image/etc/portage/make.conf
+echo "127.0.0.1" > image/etc/distcc/hosts
+
+rm image/wget*.log

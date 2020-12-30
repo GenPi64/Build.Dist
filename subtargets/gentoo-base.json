@@ -1,5 +1,5 @@
 [
-    {"name": "config", "deps": ["qemu"], "parser": "config", "args": [""]},
+    {"name": "config", "deps": [""], "parser": "config", "args": [""]},
     {"name": "overlays", "deps": ["config"], "parser": "overlays", "args": [""]},
     {"name": "git", "deps": ["overlays"], "parser": "git", "args": [""]},
     {"name": "portage", "deps": ["git"], "parser": "portage", "args": [""]},

@@ -10,7 +10,10 @@ pushd "$PROJECT_DIR/chroot" || exit 1
 stage3tb=$(${PARSERS}/config/getconfig stage3)
 
 if [ -f "${BINARY_ASSETS}/stage3/${stage3tb}.DIGESTS" ]; then
-    [[ $(head -n 4 "${BINARY_ASSETS}/stage3/${stage3tb}.DIGESTS"  | tail -n 1 | cut -f 1 -d' ') == $(sha512sum "${BINARY_ASSETS}/stage3/${stage3tb}") ]] || exit 1
+    if [[ $(head -n 4 "${BINARY_ASSETS}/stage3/${stage3tb}.DIGESTS"  | tail -n 1 | cut -f 1 -d' ') == $(sha512sum "${BINARY_ASSETS}/stage3/${stage3tb}") ]]; then
+        echo "Stage3 archive is invalid, did your download fail?"
+        exit 1
+    fi
     
 fi
 

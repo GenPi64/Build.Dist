@@ -19,8 +19,8 @@ ckmkdir "$PROJECT_DIR"
 
 if test -f "${PROJECT}.json"; then
     $PARSERS/includejson/includejson ${PROJECT}.json
+    echo "run complete."
 else
-    $PARSERS/include/include ${PROJECT}.manifest
+    "No ${PROJECT}.json found. Try again."
 fi
 
-echo "run complete."

@@ -180,7 +180,41 @@ GenPi64Desktop = GenPi64 | {
 
 
 GentooAMD64 = Base | {
-    # stuff
+    "profile": "default:linux/amd64/17.1",
+    "kernel": ["sys-kernel/gentoo-kernel"],
+    'sets': Base['sets'] + ['amd64'],
+    "stage3": "stage3-amd64.tar.xz",
+    "stage3url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt",
+    "stage3mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/",
+    'portage': Base['portage'] | {
+        "make.conf": Base['portage']['make.conf'] | {
+            'CHOST': 'x86_64-unknown-linux-gnu'
+        }
+    },
+    'image': Base['image'] | {
+        'name': 'GentooAMD64Server.img',
+        'format': 'gpt',
+        'mount-order': [1,0],
+        'uuid': UUID,
+        'partitions': [
+            {
+                'end': '500MiB',
+                'format': 'vfat',
+                'mount-point': '/boot',
+                'mount-options': 'noatime',
+                'flags': {
+                    'boot': 'on'
+                }
+            },
+            {
+                'end': '100%',
+                'format': 'btrfs',
+                'mount-point': '/',
+                'mount-options': 'compress=zstd:15,ssd,discard',
+                'args': f'--force'
+            }
+        ]
+    }
 }
 
 GenPi32 = GenPi64 | {

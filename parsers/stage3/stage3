@@ -9,6 +9,11 @@ pushd "$PROJECT_DIR/chroot" || exit 1
 
 stage3tb=$(${PARSERS}/config/getconfig stage3)
 
+if [ -f "${BINARY_ASSETS}/stage3/${stage3tb}.DIGESTS" ]; then
+    [[ $(head -n 4 "${BINARY_ASSETS}/stage3/${stage3tb}.DIGESTS"  | tail -n 1 | cut -f 1 -d' ') == $(sha512sum "${BINARY_ASSETS}/stage3/${stage3tb}") ]] || exit 1
+    
+fi
+
 tar -xapf "${BINARY_ASSETS}/stage3/${stage3tb}" --xattrs --exclude="dev/*" || tar --recursive-unlink -Uxapf "${BINARY_ASSETS}/stage3/${stage3tb}" --xattrs --exclude="dev/*"
 
 popd

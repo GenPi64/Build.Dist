@@ -1,7 +1,4 @@
 [
-    {"name": "downloadstage3", "deps": [""], "parser": "downloadstage3", "args": [""]},
-    {"name": "stage3", "deps": ["downloadstage3"], "parser": "stage3", "args": [""]},
-    {"name": "qemu", "deps": ["stage3"], "parser": "qemu", "args": [""]},
     {"name": "config", "deps": ["qemu"], "parser": "config", "args": [""]},
     {"name": "overlays", "deps": ["config"], "parser": "overlays", "args": [""]},
     {"name": "git", "deps": ["overlays"], "parser": "git", "args": [""]},

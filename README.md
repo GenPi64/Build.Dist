@@ -7,6 +7,7 @@ Python3.9
 pychroot
 git
 python-lockfile
+qemu with xattrs enabled.
 ### Filesystem creation tools
 btrfs-progs (or change the filesystem type and mount options in `config/config.py`)
 sgdisk (for gpt based disk images)

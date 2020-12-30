@@ -180,7 +180,7 @@ GenPi64Desktop = GenPi64 | {
 
 
 GentooAMD64 = Base | {
-    "profile": "default:linux/amd64/17.1",
+    "profile": "default/linux/amd64/17.1",
     "kernel": [
         "sys-kernel/gentoo-kernel",
         "sys-kernel/linux-firmware"

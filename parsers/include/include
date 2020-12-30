@@ -1,6 +1,0 @@
-#! /bin/bash
-
-TARGET=$(basename -s manifest $1).json
-
-$SCRIPTS/convert/convert $1 "${TARGET}"
-execvp $SCRIPTS/include/includejson "${TARGET}"

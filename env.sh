@@ -13,7 +13,6 @@ if [[ -z "$BINARY_ASSETS" ]]; then
 	export BINARY_ASSETS="${PROJECT_DIR}/build-binary-assets"
 fi
 
-
 echo $PROJECT
 #This list of variables must also be included in the copyenv directive of parsers/include
 #export PROJECT_DIR="${BASEDIR}/build/${PROJECT}"

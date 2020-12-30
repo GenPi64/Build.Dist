@@ -30,6 +30,4 @@
     {"name": "workaround1", "deps": ["emergeworld"], "parser": "emerge", "args": ["--update --newuse --deep --with-bdeps=y @world"]},
     {"name": "depclean", "deps": ["workaround1"], "parser": "emerge", "args": ["-v --depclean"]},
     {"name": "rcupdate", "deps": ["depclean"], "parser": "rcupdate", "args": [""]}
-    
-    
 ]

@@ -16,6 +16,9 @@ sfdisk (for mbr based disk images)
 ### If running from not aarch64
 qemu user static for aarch64 and arm
 
+### USE flags when running on Gentoo
+- qemu needs to be emerged with USE="static-user".
+
 ### Extra requirements if not running on gentoo
 wget
 

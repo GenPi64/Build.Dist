@@ -34,6 +34,8 @@ def writecompleted(JobName):
 
 PROJECT_DIR=os.environ['PROJECT_DIR']
 
+NO_PARALLEL = os.environ.get("NO_PARALLEL", False)
+
 MANIFEST=open(sys.argv[1],"r").readlines()
 completed=["",]
 print( "loading manifest")
@@ -78,7 +80,7 @@ def execute(manifest):
   print("manifest=",manifest)
   jobs=[]
   for item in manifest:
-    print("executing ",item['name'],"deps",item['deps'])
+    print("checking ",item['name'],"deps",item['deps'])
     if not item['deps']:
       print("all deps satisfied for",item['name'])
 
@@ -94,9 +96,11 @@ def execute(manifest):
       env |= item.get('env', {})
 
       env['TERM'] = config.get('TERM', 'dumb')
-      
+      print("executing ",item['name'],"deps",item['deps'])
       jobs.append( (subprocess.Popen([os.path.join(os.environ['PARSERS'],item['parser'],item['parser'])]+item['args'],env=env),item['name']) )
       manifest.remove(item)
+      if NO_PARALLEL:
+        return jobs
   return( jobs)
 
 def checkjob(jobs):

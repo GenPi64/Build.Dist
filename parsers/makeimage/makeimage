@@ -26,7 +26,7 @@ for idx,partition in enumerate(image['partitions']):
     start = end
 
 if image['format'] == 'gpt':
-    prted = '/sbin/sgdisk'
+    prted = '/usr/sbin/sgdisk'
 elif image['format'] == 'msdos':
     prted = '/sbin/fdisk'
 

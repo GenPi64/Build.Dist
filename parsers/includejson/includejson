@@ -36,6 +36,8 @@ PROJECT_DIR=os.environ['PROJECT_DIR']
 
 NO_PARALLEL = os.environ.get("NO_PARALLEL", False)
 
+BREAK_AT = os.environ.get("BREAK_AT", False)
+
 MANIFEST=open(sys.argv[1],"r").readlines()
 completed=["",]
 print( "loading manifest")
@@ -92,7 +94,7 @@ def execute(manifest):
           if v is not None:
             env[var]=v
       
-      copyenv( ('PROJECT','PARSERS','BINARY_ASSETS','SCRIPTS','CALLBACKS','BASEDIR','PROJECT_DIR','CHROOT_DIR', 'CONFIG_DIR', "DISTCC_HOSTS") )
+      copyenv( ('PROJECT','PARSERS','BINARY_ASSETS','SCRIPTS','CALLBACKS','BASEDIR','PROJECT_DIR','CHROOT_DIR', 'CONFIG_DIR', "DISTCC_HOSTS", "BREAK_AT") )
       env |= item.get('env', {})
 
       env['TERM'] = config.get('TERM', 'dumb')
@@ -126,10 +128,21 @@ def checkjob(jobs):
           exit(1)
     time.sleep(1)
 
+exitcode = 0
+    
 jobs=[]
 emptyloops=0
 while manifest:
+  if BREAK_AT:
+    stop_job = [i for i in manifest if i['name'] == BREAK_AT]
+    if stop_job:
+      stop_idx = manifest.index(stop_job[0])
+      manifest = manifest[:stop_idx+1]
+      exitcode = 1
+
   checkdeps(manifest)
+  
+  
   jobs1=jobs+execute(manifest)
   jobs=jobs1
   if len(jobs) == 0:
@@ -156,3 +169,4 @@ while jobs:
 
   
 
+exit(exitcode)

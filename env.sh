@@ -1,4 +1,7 @@
 #!/bin/bash
+export BASEDIR=${PWD}
+
+
 
 if [[ -z "$PROJECT" ]]; then
 	export PROJECT="GenPi64"

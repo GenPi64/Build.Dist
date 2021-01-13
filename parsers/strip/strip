@@ -9,4 +9,5 @@ rm -r image/usr/portage/packages/*
 sed -i -E 's_distcc__' image/etc/portage/make.conf
 echo "127.0.0.1" > image/etc/distcc/hosts
 
-rm image/wget*.log
+rm image/wget-log*
+exit 0

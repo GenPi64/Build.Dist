@@ -1,7 +1,7 @@
 [
     {"name": "gentoo-arm-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-aarch64.json"]},
     {"name": "gentoo-base", "deps": ["gentoo-arm-base"], "parser": "includejson", "args": ["subtargets/gentoo-base.json"]},
-    {"name": "kernel", "deps": ["gentoo-arm-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ')", "-checkboot"]},
+    {"name": "kernel", "deps": ["gentoo-arm-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ')"]},
     {"name": "packstage4", "deps": ["kernel"], "parser": "packstage4", "args": [""]},
     {"name": "packgenpi", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/pack-genpi.json"]},
     {"name": "done", "deps": ["packgenpi"], "parser": "echo", "args": ["Done!"]}

@@ -124,7 +124,7 @@ GenPi64 = Base | {
     },
     "etc": Base["etc"] | {
         "kernel/": {
-            "config.d/" {
+            "config.d/": {
                 "btrfs.config": "btrfs.config"
             }
         }

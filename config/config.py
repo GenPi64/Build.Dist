@@ -22,13 +22,15 @@ Base = {
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
             INPUT_DEVICES="evdev synaptics",
-            ACCEPT_LICENSE="* -@EULA",
-            LINGUAS="en",
-            L10N="en",
         ),
         "patches/": {
             "app-editors/": "patches/app-editors",
             "sys-apps/": "patches/sys-apps"
+        },
+        "savedconfig/": {
+            "sys-kernel/": {
+                "linux-firmware": "linux-firmware"
+            }
         }
     },
     "etc": {
@@ -82,8 +84,9 @@ Base = {
 GenPi64 = Base | {
     "cmdline": 'dwc_otg.lpm_enable=0 root=PARTUUID=%(UUID)s rootfstype=%(fstype)s elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
     "kernel": [
-        "sys-kernel/bcm2711-kernel-bis-bin",
-        "sys-boot/rpi3-64bit-firmware"
+        "sys-firmware/raspberrypi-wifi-ucode",
+        "sys-kernel/linux-firmware",
+        "sys-kernel/raspberrypi-kernel"
     ],
     "overlays": Base['overlays'] + [
         {
@@ -95,7 +98,7 @@ GenPi64 = Base | {
             'auto-sync': 'yes',
             'clone-depth': '1',
             'sync-depth': '1',
-            'sync-git-clone-extra-opts': '--single-branch --branch alpha4'
+            'sync-git-clone-extra-opts': '--single-branch --branch alpha5'
         },
         {
             'name': 'genpi-tools',
@@ -111,7 +114,7 @@ GenPi64 = Base | {
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
             "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe",
-            "PORTAGE_BINHOST": "https://genpi64.com/",
+            "PORTAGE_BINHOST": "https://packages.genpi64.com/",
             "FEATURES": Base["portage"]["make.conf"]["FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"]
         },
@@ -121,7 +124,7 @@ GenPi64 = Base | {
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
     "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
-    "profile": "genpi64:default/linux/arm64/17.0/desktop/genpi64",
+    "profile": "genpi64:default/linux/arm64/17.0/genpi64",
     'users': [
         dict(name="demouser",
              password="raspberrypi64",
@@ -171,7 +174,7 @@ GenPi64 = Base | {
 }
 
 GenPi64Desktop = GenPi64 | {
-    "profile": "genpi64:default/linux/arm64/17.0/desktop/genpi64",
+    "profile": "genpi64:default/linux/arm64/17.0/genpi64/desktop",
     'sets': GenPi64['sets'] + ['pi4desktop'],
     'image': GenPi64['image'] | {
         'name': 'GenPi64Desktop.img'

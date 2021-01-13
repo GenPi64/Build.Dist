@@ -86,7 +86,8 @@ GenPi64 = Base | {
     "kernel": [
         "sys-firmware/raspberrypi-wifi-ucode",
         "sys-kernel/linux-firmware",
-        "sys-kernel/raspberrypi-kernel"
+        "sys-kernel/raspberrypi-kernel",
+        "sys-boot/raspberrypi-firmware"
     ],
     "overlays": Base['overlays'] + [
         {
@@ -120,6 +121,13 @@ GenPi64 = Base | {
         },
         "binrepos.conf": "binrepo_genpi64.conf",
         "package.mask": "package.mask"
+    },
+    "etc": Base["etc"] | {
+        "kernel/": {
+            "config.d/" {
+                "btrfs.config": "btrfs.config"
+            }
+        }
     },
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
     "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64.txt",

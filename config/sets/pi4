@@ -1,13 +1,9 @@
 net-wireless/rpi3-bluetooth
 sys-apps/rpi3-init-scripts
 sys-apps/rpi3-ondemand-cpufreq
-sys-firmware/b43-firmware
-sys-firmware/bcm4340a1-firmware
-sys-firmware/bluez-firmware
-sys-firmware/brcm43430-firmware
 app-portage/genup
 app-portage/showem
-dev-embedded/rpi4-eeprom-updater
+dev-embedded/rpi-eeprom
 media-libs/raspberrypi-userland
 net-wireless/rpi3-wifi-regdom
 sys-apps/rpi-gpio
@@ -18,4 +14,5 @@ sys-apps/rpi-spi
 sys-apps/rpi-video
 sys-apps/rpi3-expand-swap
 sys-boot/rpi3-boot-config
-sys-apps/i2c-tools     
+sys-apps/i2c-tools
+sys-boot/raspberrypi-firmware

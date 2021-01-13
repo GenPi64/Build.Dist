@@ -37,7 +37,7 @@ def copydir(conf, dest):
     for node, content in conf.items():
         if node.endswith('/'):
             d = os.path.join(dest, node)
-            system('mkdir -p {repr(d)}')
+            system(f'mkdir -p {repr(d)}')
             copydir(content, d)
         else:
             copyconf(content, os.path.join(dest, node))

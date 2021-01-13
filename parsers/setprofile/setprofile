@@ -6,6 +6,6 @@ PROFILE=$(${PARSERS}/config/getconfig profile)
 
 
 
-pychroot $PROJECT_DIR/chroot /usr/bin/env -i bash -c "eselect profile set ${PROFILE}"
+pychroot $PROJECT_DIR/chroot /usr/bin/env -i bash -c "eselect profile set --force ${PROFILE}"
 
 popd

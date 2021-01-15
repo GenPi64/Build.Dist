@@ -2,7 +2,7 @@
     {"name": "gentoo-amd64-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-amd64.json"]},
     {"name": "gentoo-base", "deps": ["gentoo-amd64-base"], "parser": "includejson", "args": ["subtargets/gentoo-base.json"]},
     {"name": "copy-btrfs-config", "deps": ["gentoo-base"], "parser": "rawcommand", "args": ["mkdir -p /etc/kernel/config.d/ && cp $CONFIG_DIR/btrfs.config /etc/kernel/config.d/btrfs.config"]},
-    {"name": "kernel", "deps": ["gentoo-arm-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ')", "-checkboot"]},
+    {"name": "kernel", "deps": ["copy-btrfs-config"], "parser": "emerge", "args": ["$(/em-config kernel '* ')", "-checkboot"]},
     {"name": "packstage4", "deps": ["kernel"], "parser": "packstage4", "args": [""]},
     {"name": "packgenpi", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/pack-genpi.json"]},
     {"name": "done", "deps": ["packgenpi"], "parser": "echo", "args": ["Done!"]}

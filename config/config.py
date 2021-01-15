@@ -203,7 +203,11 @@ GentooAMD64 = Base | {
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
             'CHOST': 'x86_64-unknown-linux-gnu'
-        }
+        },
+        "package.license": [
+           "# required by sys-kernel/linux-firmware (argument)",
+           "=sys-kernel/linux-firmware-20201218 linux-fw-redistributable no-source-code"
+        ]
     },
     'image': GenPi64['image'] | {
         'name': 'GentooAMD64Server.img',

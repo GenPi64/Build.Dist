@@ -12,6 +12,5 @@ sys-apps/rpi-onetime-startup
 sys-apps/rpi-serial
 sys-apps/rpi-spi
 sys-apps/rpi-video
-sys-boot/rpi3-boot-config
 sys-apps/i2c-tools
 sys-boot/raspberrypi-firmware

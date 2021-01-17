@@ -7,10 +7,13 @@ import config
 config = getattr(config, os.environ['PROJECT'])
 
 t = config
-    
+
 for i in sys.argv[1:]:
     if i[0] == '*':
         print(str.join(i[1:], t))
+        break
+    if i.endswith('?'):
+        print(t.get(i[:-1], ""))
         break
     if i.isdigit():
         i = int(i)
@@ -21,6 +24,7 @@ for i in sys.argv[1:]:
     if i == '#':
         print(len(t))
         break
+
     t = t[i]
 else:
     print(t)

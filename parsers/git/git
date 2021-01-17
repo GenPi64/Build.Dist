@@ -1,9 +1,13 @@
 #!/bin/bash
 
-if [ $(${PARSERS}/config/getconfig overlays 0 sync-type) == "git" ]; then
-    git clone --depth $(${PARSERS}/config/getconfig overlays 0 sync-depth) \
-	$(${PARSERS}/config/getconfig overlays 0 sync-uri) \
-	${CHROOT_DIR}/$(${PARSERS}/config/getconfig overlays 0 location)
-	
-fi
+repocount=$(${PARSERS}/config/getconfig overlays '#' )
+for ((ridx=0; ridx<$repocount; ridx++)); do
+    # shellcheck disable=SC2046
+    if [ $(${PARSERS}/config/getconfig overlays $ridx sync-type) == "git" ]; then
+        git clone --depth $(${PARSERS}/config/getconfig overlays $ridx sync-depth) \
+        $(${PARSERS}/config/getconfig overlays $ridx sync-git-clone-extra-opts? ) \
+        $(${PARSERS}/config/getconfig overlays $ridx sync-uri) \
+        ${CHROOT_DIR}/$(${PARSERS}/config/getconfig overlays $ridx location)
 
+    fi
+done

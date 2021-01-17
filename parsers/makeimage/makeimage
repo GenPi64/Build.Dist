@@ -16,17 +16,9 @@ image = config['image']
 os.system(f"truncate -s {image['size']} {image['name']}") and exit(1)
 
 os.system(f"parted {image['name']} mklabel {image['format']}") and exit(1)
-start = '1MiB'
-for idx,partition in enumerate(image['partitions']):
-    end = partition['end']
-    os.system(f"parted {image['name']} mkpart primary {start} {end}") and exit(1)
-    if flags := partition.get('flags'):
-        for f,v in flags.items():
-            os.system(f"parted {image['name']} set {idx+1} {f} {v}") and exit(1)
-    start = end
 
 if image['format'] == 'gpt':
-    prted = '/usr/sbin/sgdisk'
+    prted = '/usr/sbin/gdisk'
 elif image['format'] == 'msdos':
     prted = '/sbin/fdisk'
 
@@ -36,6 +28,19 @@ p.stdin.write(f"x\ni\n0x{image['uuid']}\nr\nw\n".encode('charmap'))
 p.stdin.close()
 p.wait()
 p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), exit(1))
+
+
+
+
+start = '1MiB'
+for idx,partition in enumerate(image['partitions']):
+    end = partition['end']
+    os.system(f"parted {image['name']} mkpart primary {start} {end}") and exit(1)
+    if flags := partition.get('flags'):
+        for f,v in flags.items():
+            os.system(f"parted {image['name']} set {idx+1} {f} {v}") and exit(1)
+    start = end
+
 
 
 os.system(f"losetup -P -f {image['name']}") and exit(1)

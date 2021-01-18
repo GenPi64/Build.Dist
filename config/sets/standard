@@ -23,5 +23,4 @@ sys-process/lsof
 app-admin/sudo
 app-portage/gentoolkit
 app-misc/screen
-sys-devel/distcc
 sys-process/cronie

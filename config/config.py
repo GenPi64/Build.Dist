@@ -73,7 +73,8 @@ Base = {
         "cronie": "default",
         "sshd": "default",
         "elogind": "default",
-        "ntp-client": "default"
+        "rsyslog": "default",
+        "chronyd": "default"
     },
     'sets': [
         "standard"

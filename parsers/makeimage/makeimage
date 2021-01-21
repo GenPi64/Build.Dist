@@ -39,7 +39,20 @@ for idx,partition in enumerate(image['partitions']):
             os.system(f"parted {image['name']} set {idx+1} {f} {v}") and exit(1)
     start = end
 
-
+if image['format'] == 'gpt':
+    prted = '/usr/sbin/gdisk'
+    for idx, partition in enumerate(image['partitions']):
+        if len(image['partitions']) > 1:
+            pn = f'{idx+1}\n'
+        else:
+            pn=''
+        if 'uuid' in partition:
+            p = subprocess.Popen([prted, image['name']], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+            print("setting uuid to", partition['uuid'])
+            p.stdin.write(f"x\nc\n{pn}{partition['uuid']}\nm\nw\nY\n".encode('charmap'))
+            p.stdin.close()
+            p.wait()
+            p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), exit(1))
 
 os.system(f"losetup -P -f {image['name']}") and exit(1)
 p = subprocess.Popen(["/sbin/losetup", "-l", "-J", "-j", image['name']], stdout=subprocess.PIPE)

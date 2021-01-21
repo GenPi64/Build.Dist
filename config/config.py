@@ -74,7 +74,8 @@ Base = {
         "sshd": "default",
         "elogind": "default",
         "rsyslog": "default",
-        "chronyd": "default"
+        "chronyd": "default",
+        "rngd": "boot"
     },
     'sets': [
         "standard"

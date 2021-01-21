@@ -25,3 +25,4 @@ app-portage/gentoolkit
 app-misc/screen
 sys-devel/distcc
 sys-process/cronie
+sys-apps/rng-tools

@@ -17,17 +17,15 @@ os.system(f"truncate -s {image['size']} {image['name']}") and exit(1)
 
 os.system(f"parted {image['name']} mklabel {image['format']}") and exit(1)
 
-if image['format'] == 'gpt':
-    prted = '/usr/sbin/gdisk'
-elif image['format'] == 'msdos':
-    prted = '/sbin/fdisk'
 
-    
-p = subprocess.Popen([prted, image['name']], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-p.stdin.write(f"x\ni\n0x{image['uuid']}\nr\nw\n".encode('charmap'))
-p.stdin.close()
-p.wait()
-p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), exit(1))
+
+if image['format'] == 'msdos':
+    prted = '/sbin/fdisk'
+    p = subprocess.Popen([prted, image['name']], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.stdin.write(f"x\ni\n0x{image['uuid']}\nr\nw\n".encode('charmap'))
+    p.stdin.close()
+    p.wait()
+    p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), exit(1))
 
 
 

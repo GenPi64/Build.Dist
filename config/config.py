@@ -126,7 +126,7 @@ GenPi64 = Base | {
     "etc": Base["etc"] | {
         "kernel/": {
             "config.d/": {
-                "btrfs.config": "btrfs.config"
+                i: "kernel-config/"+i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
             }
         }
     },

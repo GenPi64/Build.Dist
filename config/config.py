@@ -5,7 +5,7 @@ if os.path.exists(p:=os.path.join(os.environ['PROJECT_DIR'], 'uuid')):
     with open(p) as f:
         UUID = f.read()
 else:
-    UUID=str(uuid.uuid4())[:8]
+    UUID=str(uuid.uuid4())
     with open(p, 'w') as f:
         f.write(UUID)
 
@@ -160,7 +160,7 @@ GenPi64 = Base | {
         'size': '8G',
         'format': 'msdos',
         'mount-order': [1,0],
-        'uuid': UUID,
+        'uuid': UUID[:8],
         'partitions': [
             {
                 'end': '256MiB',
@@ -219,7 +219,9 @@ GentooAMD64 = Base | {
                     'boot': 'on'
                 }
             },
-            GenPi64['image']['partitions'][1]
+            GenPi64['image']['partitions'][1] | {
+                'uuid': UUID
+            }
         ]
     }
 }

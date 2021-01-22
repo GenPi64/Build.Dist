@@ -9,6 +9,10 @@ else:
     with open(p, 'w') as f:
         f.write(UUID)
 
+def readlines(p):
+    with open(p) as f:
+        return (i.split('#', 1)[0].strip() for i in f.read().split('\n'))
+        
 Base = {
     'portage': {
         "make.conf": dict(
@@ -18,7 +22,7 @@ Base = {
             FFLAGS="${CFLAGS}",
             CHOST="aarch64-unknown-linux-gnu",
             USE="bindist -systemd elogind".split(),
-            FEATURES="parallel-fetch distcc parallel-install buildpkg binpkg-multi-instance getbinpkg ".split(),
+            FEATURES="parallel-fetch parallel-install buildpkg binpkg-multi-instance getbinpkg ".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
             INPUT_DEVICES="evdev synaptics",
@@ -31,6 +35,12 @@ Base = {
             "sys-kernel/": {
                 "linux-firmware": "linux-firmware"
             }
+        },
+        "env/": {
+            "enable-distcc": ['FEATURES="${FEATURES} distcc']
+        },
+        "package.env/": {
+            "distcc": [[pn, " enable-distcc"] for pn in readlines(os.path.join(os.environ.get('CONFIG_DIR'), 'distcc-pkgs')) if pn]
         }
     },
     "etc": {

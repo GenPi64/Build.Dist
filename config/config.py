@@ -37,7 +37,7 @@ Base = {
             }
         },
         "env/": {
-            "enable-distcc": ['FEATURES="${FEATURES} distcc']
+            "enable-distcc": ['FEATURES="${FEATURES} distcc"']
         },
         "package.env/": {
             "distcc": [[pn, " enable-distcc"] for pn in readlines(os.path.join(os.environ.get('CONFIG_DIR'), 'distcc-pkgs')) if pn]
@@ -85,7 +85,8 @@ Base = {
         "elogind": "default",
         "rsyslog": "default",
         "chronyd": "default",
-        "rngd": "boot"
+        "rngd": "boot",
+        "rpi3-ondemand": "default"
     },
     'sets': [
         "standard"

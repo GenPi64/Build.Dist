@@ -15,9 +15,7 @@ image = config['image']
 
 os.system(f"truncate -s {image['size']} {image['name']}") and exit(1)
 
-os.system(f"parted {image['name']} mklabel {image['format']}") and exit(1)
-
-
+os.system(f"parted --script {image['name']} mklabel {image['format']}") and exit(1)
 
 if image['format'] == 'msdos':
     prted = '/sbin/fdisk'
@@ -27,16 +25,13 @@ if image['format'] == 'msdos':
     p.wait()
     p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), exit(1))
 
-
-
-
 start = '1MiB'
 for idx,partition in enumerate(image['partitions']):
     end = partition['end']
-    os.system(f"parted {image['name']} mkpart primary {start} {end}") and exit(1)
+    os.system(f"parted --script {image['name']} mkpart primary {start} {end}") and exit(1)
     if flags := partition.get('flags'):
         for f,v in flags.items():
-            os.system(f"parted {image['name']} set {idx+1} {f} {v}") and exit(1)
+            os.system(f"parted --script {image['name']} set {idx+1} {f} {v}") and exit(1)
     start = end
 
 if image['format'] == 'gpt':

@@ -6,6 +6,6 @@ mount --bind $PROJECT_DIR/packages $PROJECT_DIR/chroot/var/cache/binpkgs
 
 
 
-tar -f $PROJECT_DIR/latest-$PROJECT.tar --create --preserve-permissions --numeric-owner --xattrs --acls --directory "$PROJECT_DIR/chroot" .
+tar --zstd -f $PROJECT_DIR/latest-$PROJECT.tar.zst --create --preserve-permissions --numeric-owner --xattrs --acls --directory "$PROJECT_DIR/chroot" .
 
 umount $PROJECT_DIR/chroot/var/cache/binpkgs

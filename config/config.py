@@ -23,7 +23,7 @@ Base = {
             FCFLAGS="${CFLAGS}",
             FFLAGS="${CFLAGS}",
             CHOST="aarch64-unknown-linux-gnu",
-            USE="bindist -systemd elogind".split(),
+            USE="bindist",
             FEATURES="parallel-fetch parallel-install buildpkg binpkg-multi-instance getbinpkg ".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
@@ -86,18 +86,7 @@ Base = {
 
         }
     ],
-    "services": {
-        "cronie": "default",
-        "sshd": "default",
-        "elogind": "default",
-        "rsyslog": "default",
-        "chronyd": "default",
-        "rngd": "boot",
-        "rpi3-ondemand": "default"
-    },
-    'sets': [
-        
-    ],
+    'sets': [],
     'packages': []
 }
 
@@ -209,6 +198,21 @@ GenPi64 = Base | {
 }
 
 GenPi64OpenRC = GenPi64 | {
+    "initsystem": "openrc",
+    "portage": GenPi64['portage'] | {
+        "make.conf": GenPi64['portage']['make.conf'] | {
+            "USE": GenPi64["portage"]["make.conf"]["USE"] + ["-systemd", "elogind"]
+        }
+    },
+    "services": {
+        "cronie": "default",
+        "sshd": "default",
+        "elogind": "default",
+        "rsyslog": "default",
+        "chronyd": "default",
+        "rngd": "boot",
+        "rpi3-ondemand": "default"
+    },
 }
 
 GenPi64OpenRCDesktop = GenPi64OpenRC | {
@@ -222,8 +226,8 @@ GenPi32OpenRC = GenPi64OpenRC | {
     "stage3": "stage3-armv6j_hardfp.tar.xz",
     "stage3url": "http://distfiles.gentoo.org/releases/arm/autobuilds/latest-stage3-armv6j_hardfp.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/arm/autobuilds/",
-    "portage": GenPi64['portage'] | {
-        "make.conf": GenPi64['portage']['make.conf'] | {
+    "portage": GenPi64OpenRC['portage'] | {
+        "make.conf": GenPi64OpenRC['portage']['make.conf'] | {
             "CFLAGS": "-O2 -pipe -march=armv6j -mfpu=vfp -mfloat-abi=hard -fomit-frame-pointer -fno-stack-protector",
             "CHOST": "armv6j-unknown-linux-gnueabihf"
         }
@@ -231,7 +235,25 @@ GenPi32OpenRC = GenPi64OpenRC | {
     "profile": "default/linux/arm/17.0"
 }
 
+GenPi64Systemd = GenPi64 | {
+    "initsystem": "systemd",
+    "stage3": os.environ.get("STAGE3", "stage3-arm64-systemd.tar.xz"),
+    "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt",
+    "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
+    "profile": "genpi64:default/linux/arm64/17.0/genpi64-systemd",
+    "portage": GenPi64["portage"] | {
+        "make.conf": GenPi64["portage"]["make.conf"] | {
+            "USE": GenPi64["portage"]["make.conf"]["USE"] + ["systemd", "-elogind"]
+        }
+    },
+    "services": {
+        "sshd": "default",
+        "rngd": "boot"
+    },
+}
+
 GentooAMD64 = Base | {
+    "initsystem": "openrc",
     "stage3": "stage3-amd64.tar.xz",
     "stage3url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/",
@@ -240,8 +262,8 @@ GentooAMD64 = Base | {
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
             'CHOST': 'x86_64-unknown-linux-gnu',
-            'USE': 'bindist -systemd openssl'.split(),
-            'GRUB_PLATFORMS': "pc",
+            "USE": Base["portage"]["make.conf"]["USE"] + ["-systemd", "elogind", "openssl"]
+            'GRUB_PLATFORMS': "efi-64",
         },
         "package.license": [
             "# required by sys-kernel/linux-firmware (argument)",

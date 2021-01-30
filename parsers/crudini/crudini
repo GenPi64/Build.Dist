@@ -2,4 +2,4 @@
 
 pushd ${CHROOT_DIR}
 
-${SCRIPTS}/crudini $1
+${SCRIPTS}/crudini $@

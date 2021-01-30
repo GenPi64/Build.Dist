@@ -187,7 +187,7 @@ GenPi64 = Base | {
                 'end': '100%',
                 'format': 'btrfs',
                 'mount-point': '/',
-                'mount-options': 'compress=zstd:15,ssd,discard',
+                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
                 'args': f'--force'
             }
         ]

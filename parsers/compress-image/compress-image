@@ -1,3 +1,3 @@
 #!/bin/bash
 pushd ${PROJECT_DIR}
-zstd --ultra -vv -T12 --maxdict=$((1024*1024*512)) -22 --memory=1024MB $($PARSERS/config/getconfig image name) -o $($PARSERS/config/getconfig image name).zst
+zstd --ultra -vv -f -T12 --maxdict=$((1024*1024*512)) -22 --memory=1024MB "$($PARSERS/config/getconfig image name)" -o "$($PARSERS/config/getconfig image name).zst"

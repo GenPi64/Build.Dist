@@ -2,7 +2,9 @@
     {"name": "gentoo-arm-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-aarch64.json"]},
     {"name": "gentoo-base", "deps": ["gentoo-arm-base"], "parser": "includejson", "args": ["subtargets/gentoo-base.json"]},
     {"name": "kernel", "deps": ["gentoo-arm-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ')"]},
-    {"name": "packstage4", "deps": ["kernel"], "parser": "packstage4", "args": [""]},
+    {"name": "fixboot3", "deps": ["kernel"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "$CHROOT_DIR/boot/config.txt", "''", "kernel", "kernel8.img"]},
+    {"name": "fixboot4", "deps": ["fixboot3"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "$CHROOT_DIR/boot/config.txt", "'pi4'", "kernel", "kernel8-pi4.img"]},
+    {"name": "packstage4", "deps": ["fixboot4"], "parser": "packstage4", "args": [""]},
     {"name": "packgenpi", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/pack-genpi.json"]},
     {"name": "done", "deps": ["packgenpi"], "parser": "echo", "args": ["Done!"]}
 ]

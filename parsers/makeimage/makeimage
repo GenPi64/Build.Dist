@@ -3,7 +3,10 @@ import os
 import sys
 import json
 import subprocess
-from sys import exit
+
+def system(cmd):
+    print(cmd)
+    return os.system(cmd) and sys.exit(1)
 
 os.chdir(os.environ['PROJECT_DIR'])
 sys.path.insert(0, os.environ['CONFIG_DIR'])
@@ -13,9 +16,11 @@ config = getattr(config, os.environ['PROJECT'])
 
 image = config['image']
 
-os.system(f"truncate -s {image['size']} {image['name']}") and exit(1)
+system(f"rm -f {image['name']}")
 
-os.system(f"parted --script {image['name']} mklabel {image['format']}") and exit(1)
+system(f"truncate -s {image['size']} {image['name']}")
+
+system(f"parted --script {image['name']} mklabel {image['format']}")
 
 if image['format'] == 'msdos':
     prted = '/sbin/fdisk'
@@ -23,16 +28,16 @@ if image['format'] == 'msdos':
     p.stdin.write(f"x\ni\n0x{image['uuid']}\nr\nw\n".encode('charmap'))
     p.stdin.close()
     p.wait()
-    p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), exit(1))
+    p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), sys.exit(1))
 
 start = '1MiB'
 for idx,partition in enumerate(image['partitions']):
     end = partition['end']
-    os.system(f"parted --script {image['name']} mkpart primary {start} {end}") and exit(1)
-    if flags := partition.get('flags'):
-        for f,v in flags.items():
-            os.system(f"parted --script {image['name']} set {idx+1} {f} {v}") and exit(1)
+    system(f"parted --script {image['name']} mkpart primary {start} {end}")
     start = end
+
+system(f"parted --script {image['name']} print")
+system(f"sync")
 
 if image['format'] == 'gpt':
     prted = '/usr/sbin/gdisk'
@@ -47,14 +52,20 @@ if image['format'] == 'gpt':
             p.stdin.write(f"x\nc\n{pn}{partition['uuid']}\nm\nw\nY\n".encode('charmap'))
             p.stdin.close()
             p.wait()
-            p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), exit(1))
+            p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), sys.exit(1))
 
-os.system(f"losetup -P -f {image['name']}") and exit(1)
+system(f"losetup -P -f {image['name']}")
 p = subprocess.Popen(["/sbin/losetup", "-l", "-J", "-j", image['name']], stdout=subprocess.PIPE)
 p.wait()
-p.poll() and exit(1)
+p.poll() and sys.exit(1)
 LOOP = json.load(p.stdout)['loopdevices'][0]['name']
 
 for idx,partition in enumerate(image['partitions']):
-    os.system(f"mkfs.{partition['format']} {LOOP}p{idx+1} {partition.get('args', '')}") and exit(1)
+    system(f"mkfs.{partition['format']} {LOOP}p{idx+1} {partition.get('args', '')}")
+    if flags := partition.get('flags'):
+        for f,v in flags.items():
+            system(f"parted --script {image['name']} set {idx+1} {f} {v}")
 
+system(f"sync")
+system(f"sleep 1")
+system(f"parted --script {image['name']} print")

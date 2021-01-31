@@ -1,0 +1,28 @@
+#! /bin/bash -e
+
+source "$BASEDIR/scripts/functions.sh"
+
+systemd-nspawn --setenv=NO_PARALLEL=yes --directory="${PROJECT_DIR}/chroot" /usr/bin/emerge dracut
+
+systemd-nspawn --setenv=NO_PARALLEL=yes --directory="${PROJECT_DIR}/chroot"	\
+	/usr/bin/dracut				\
+		--force				\
+		--modules base			\
+		--modules bash			\
+		--modules btrfs			\
+		--modules systemd		\
+		--modules systemd-initrd	\
+		--modules dracut-systemd	\
+		--modules udev-rules		\
+		--modules fs-lib		\
+		--modules shutdown		\
+		--filesystems btrfs		\
+		--hardlink			\
+		--strip				\
+		--early-microcode		\
+		--xz				\
+		--no-kernel			\
+		--reproducible			\
+		--kver 0			\
+		/boot/initramfs.cpio.xz
+

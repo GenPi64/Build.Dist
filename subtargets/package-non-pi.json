@@ -3,8 +3,7 @@
     {"name": "mountimage", "deps": ["makeimage"], "parser": "mountimage", "args": [""]},
     {"name": "unpackstage4", "deps": ["mountimage"], "parser": "unpackstage4", "args": [""]},
     {"name": "fstab", "deps": ["unpackstage4"], "parser": "fstab", "args": [""]},
-    {"name": "firstboot", "deps": ["fstab"], "parser": "firstboot", "args": [""]},
-    {"name": "strip", "deps": ["firstboot"], "parser": "strip", "args": [""]},
+    {"name": "strip", "deps": ["fstab"], "parser": "strip", "args": [""]},
     {"name": "unmount-image", "deps": ["strip"], "parser": "unmount", "args": [""]},
     {"name": "compress-image", "deps": ["unmount-image"], "parser": "compress-image", "args": [""]}
 ]

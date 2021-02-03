@@ -16,6 +16,7 @@ echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
 echo SHELL="/bin/bash" >> "${PROJECT_DIR}/chroot/em-$$"
 echo TERM="linux" >> "${PROJECT_DIR}/chroot/em-$$"
 echo "$USE" >> "${PROJECT_DIR}/chroot/em-$$"
+echo "${EXTRA_EMERGE_ENV}" >> "${PROJECT_DIR}/chroot/em-$$"
 echo -n '$(which eatmydata) ' >> "${PROJECT_DIR}/chroot/em-$$" ; echo "emerge --autounmask-backtrack=y $1" >> "${PROJECT_DIR}/chroot/em-$$"
 pychroot -B "${PROJECT_DIR}/packages":"/var/cache/binpkgs" "${PROJECT_DIR}/chroot" /usr/bin/env -i bash --login /em-$$
 

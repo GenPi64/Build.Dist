@@ -128,11 +128,18 @@ GenPi64 = Base | {
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
             "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe",
-            "PORTAGE_BINHOST": "https://packages.genpi64.com/",
             "FEATURES": Base["portage"]["make.conf"]["FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"]
         },
-        "binrepos.conf": "binrepo_genpi64.conf",
+        "binrepos.conf": [
+            "[genpi64-binhost]",
+            "priority = 9999",
+            "sync-uri = https://packages.genpi64.com/",
+            "",
+            "[genpi64-european-binhost]",
+            "priority = 9998",
+            "sync-uri = https://fi.packages.genpi64.com/"
+        ],
         "package.mask": "package.mask"
     },
     "etc": Base["etc"] | {

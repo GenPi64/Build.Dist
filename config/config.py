@@ -1,17 +1,19 @@
 import os
 import uuid
 
-if os.path.exists(p:=os.path.join(os.environ['PROJECT_DIR'], 'uuid')):
+if os.path.exists(p := os.path.join(os.environ['PROJECT_DIR'], 'uuid')):
     with open(p) as f:
         UUID = f.read()
 else:
-    UUID=str(uuid.uuid4())
+    UUID = str(uuid.uuid4())
     with open(p, 'w') as f:
         f.write(UUID)
+
 
 def readlines(p):
     with open(p) as f:
         return (i.split('#', 1)[0].strip() for i in f.read().split('\n'))
+
 
 Base = {
     'portage': {
@@ -40,7 +42,8 @@ Base = {
             "enable-distcc": ['FEATURES="${FEATURES} distcc"']
         },
         "package.env/": {
-            "distcc": [[pn, " enable-distcc"] for pn in readlines(os.path.join(os.environ.get('CONFIG_DIR'), 'distcc-pkgs')) if pn]
+            "distcc": [[pn, " enable-distcc"] for pn in
+                       readlines(os.path.join(os.environ.get('CONFIG_DIR'), 'distcc-pkgs')) if pn]
         }
     },
     "etc": {
@@ -64,7 +67,7 @@ Base = {
              groups="users,wheel,video,audio,adm,disk,lp,cdrom,usb,portage,cron".split(','),
              shell="/bin/bash",
              uid="1000"
-        )
+             )
     ],
     "locale": "en_US.utf8",
     "overlays": [
@@ -128,7 +131,8 @@ GenPi64 = Base | {
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
             "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe",
-            "FEATURES": Base["portage"]["make.conf"]["FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
+            "FEATURES": Base["portage"]["make.conf"][
+                            "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"]
         },
         "binrepos.conf": [
@@ -145,7 +149,7 @@ GenPi64 = Base | {
     "etc": Base["etc"] | {
         "kernel/": {
             "config.d/": {
-                i: "kernel-config/"+i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
+                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
             }
         }
     },
@@ -161,7 +165,7 @@ GenPi64 = Base | {
              groups="users,wheel,video,audio,adm,disk,lp,cdrom,usb,portage,cron,plugdev,gpio,i2c,spi".split(','),
              shell="/bin/bash",
              uid="1000"
-        )
+             )
     ],
 
     'groups': [
@@ -178,7 +182,7 @@ GenPi64 = Base | {
         'name': 'GenPi64.img',
         'size': '8G',
         'format': 'msdos',
-        'mount-order': [1,0],
+        'mount-order': [1, 0],
         'uuid': UUID[:8],
         'partitions': [
             {
@@ -209,25 +213,62 @@ GenPi64Desktop = GenPi64 | {
     }
 }
 
+GenPi32 = GenPi64 | {
+    "stage3": "stage3-armv6j_hardfp.tar.xz",
+    "stage3url": "http://distfiles.gentoo.org/releases/arm/autobuilds/latest-stage3-armv6j_hardfp.txt",
+    "stage3mirror": "http://distfiles.gentoo.org/releases/arm/autobuilds/",
+    "portage": GenPi64['portage'] | {
+        "make.conf": GenPi64['portage']['make.conf'] | {
+            "CFLAGS": "-O2 -pipe -march=armv6j -mfpu=vfp -mfloat-abi=hard -fomit-frame-pointer -fno-stack-protector",
+            "CHOST": "armv6j-unknown-linux-gnueabihf"
+        }
+    },
+    "profile": "default/linux/arm/17.0"
+}
 
 GentooAMD64 = Base | {
+    "stage3": "stage3-amd64.tar.xz",
+    "stage3url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt",
+    "stage3mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/",
     "profile": "default/linux/amd64/17.1",
+    'sets': Base['sets'] + ['amd64'],
+    'portage': Base['portage'] | {
+        "make.conf": Base['portage']['make.conf'] | {
+            'CHOST': 'x86_64-unknown-linux-gnu',
+            'USE': Base['portage']['make.conf']['USE'] + 'openssl'.split(),
+            'GRUB_PLATFORMS': "efi-64",
+        },
+        "package.license": [
+            "# required by sys-kernel/linux-firmware (argument)",
+            "=sys-kernel/linux-firmware-20201218 linux-fw-redistributable no-source-code"
+        ],
+        "env/": {},
+        "package.env/": {},
+        "package.use/": {
+            "elogind": [
+                "# Required so it does not pull in spidermonkey",
+                "sys-auth/elogind -policykit"
+            ],
+        },
+    },
     "kernel": [
         "sys-kernel/gentoo-kernel",
         "sys-kernel/linux-firmware"
     ],
-    'sets': Base['sets'] + ['amd64'],
-    "stage3": "stage3-amd64.tar.xz",
-    "stage3url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt",
-    "stage3mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/",
-    'portage': Base['portage'] | {
-        "make.conf": Base['portage']['make.conf'] | {
-            'CHOST': 'x86_64-unknown-linux-gnu'
-        },
-        "package.license": [
-           "# required by sys-kernel/linux-firmware (argument)",
-           "=sys-kernel/linux-firmware-20201218 linux-fw-redistributable no-source-code"
-        ]
+    "etc": Base["etc"] | {
+        "kernel/": {
+            "config.d/": {
+                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
+            }
+        }
+    },
+    "services": {
+        "cronie": "default",
+        "sshd": "default",
+        "elogind": "default",
+        "rsyslog": "default",
+        "chronyd": "default",
+        "rngd": "boot"
     },
     'image': GenPi64['image'] | {
         'name': 'GentooAMD64Server.img',
@@ -243,17 +284,4 @@ GentooAMD64 = Base | {
             }
         ]
     }
-}
-
-GenPi32 = GenPi64 | {
-    "stage3": "stage3-armv6j_hardfp.tar.xz",
-    "stage3url": "http://distfiles.gentoo.org/releases/arm/autobuilds/latest-stage3-armv6j_hardfp.txt",
-    "stage3mirror": "http://distfiles.gentoo.org/releases/arm/autobuilds/",
-    "portage": GenPi64['portage'] | {
-        "make.conf": GenPi64['portage']['make.conf'] | {
-            "CFLAGS": "-O2 -pipe -march=armv6j -mfpu=vfp -mfloat-abi=hard -fomit-frame-pointer -fno-stack-protector",
-            "CHOST":"armv6j-unknown-linux-gnueabihf"
-        }
-    },
-    "profile": "default/linux/arm/17.0"
 }

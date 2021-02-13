@@ -261,7 +261,7 @@ class PrintLines(Print):
         if value == 'crudini_no_arg':
             value = ''
         if value:
-            line += ' = %s' % value.replace('\n', '\\n')
+            line += '=%s' % value.replace('\n', '\\n')
         print(line)
 
 

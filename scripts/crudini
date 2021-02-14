@@ -22,6 +22,12 @@ import shutil
 import string
 import tempfile
 
+from iniparse import ini
+orig_ol_init = ini.OptionLine.__init__
+ini.OptionLine.__init__ = lambda self, name, value, separator='=', comment=None, comment_separator=None, comment_offset=-1, line=None: \
+    orig_ol_init(self, name, value, separator, comment, comment_separator, comment_offset, line)
+
+
 if sys.version_info[0] >= 3:
     from io import StringIO
     import configparser

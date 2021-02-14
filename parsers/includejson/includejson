@@ -7,13 +7,18 @@ import os
 import lockfile
 import json
 
+if len(sys.argv) > 2:
+  completed_name = "completed-"+sys.argv[2]
+else:
+  completed_name = "completed"
+
 sys.path.insert(0, os.environ['CONFIG_DIR'])
 
 import config
 config = getattr(config, os.environ['PROJECT'])
 
 def writecompleted(JobName):
-  lock=lockfile.LockFile(os.path.join(PROJECT_DIR,"completed"))
+  lock=lockfile.LockFile(os.path.join(PROJECT_DIR, completed_name))
   while not lock.is_locked():
     try:
       lock.acquire()
@@ -29,8 +34,6 @@ def writecompleted(JobName):
   f.close()
   lock.release()
 
-#Manifest format
-#name+|+dependency,dependency+|+parser[+|+ arguments ]...
 
 PROJECT_DIR=os.environ['PROJECT_DIR']
 
@@ -54,9 +57,18 @@ print("load complete")
 
 print("Loading status")
 try:
-  with open(os.path.join(os.environ['PROJECT_DIR'],"completed"),"r") as f:
+  with open(os.path.join(os.environ['PROJECT_DIR'], completed_name),"r") as f:
     for entry in f.readlines():
-      completed.append(entry.strip('\n'))
+      entry = entry.strip('\n')
+      for m in manifest:
+        if m['name'] == entry:
+          if m['parser'] == 'includejson':
+            break
+          break
+          completed.append(entry)
+      else:
+        print("Got completed entry name but no known step by that name, adding anyway")
+        completed.append(entry)
   print(completed)
   dump=[]
   for item in manifest:
@@ -73,7 +85,7 @@ print(manifest)
 def checkdeps(manifest):
   for item in manifest:
     print("checking ",item['name'])
-    for dep in item['deps']:  #Yes, I know this will skip things because removing the items collapses the list and foreach doesn't catch that.  It just makes it take multiple passes, which it will be doing anyway.
+    for dep in reversed(item['deps']):
       if dep in completed: item['deps'].remove(dep)
 
 
@@ -99,7 +111,11 @@ def execute(manifest):
 
       env['TERM'] = config.get('TERM', 'dumb')
       print("executing ",item['name'],"deps",item['deps'])
-      jobs.append( (subprocess.Popen([os.path.join(os.environ['PARSERS'],item['parser'],item['parser'])]+item['args'],env=env),item['name']) )
+      args = item['args'][:]
+      if item['parser'] == "includejson":
+        args.append(item['name'])
+      
+      jobs.append( (subprocess.Popen([os.path.join(os.environ['PARSERS'],item['parser'],item['parser']), *args], env=env), item['name']) )
       manifest.remove(item)
       if NO_PARALLEL:
         return jobs

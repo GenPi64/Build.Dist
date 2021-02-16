@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pushd ${CHROOT_DIR}
+
+${SCRIPTS}/crudini $@

@@ -1,5 +1,5 @@
 #!/bin/bash
 pushd ${PROJECT_DIR}/image
 
-tar -P -xaf ../latest-${PROJECT}.tar
+tar --zstd -P -xaf ../latest-${PROJECT}.tar.zst
 

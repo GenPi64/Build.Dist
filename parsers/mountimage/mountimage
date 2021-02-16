@@ -7,6 +7,8 @@ from sys import exit
 
 os.chdir(os.environ['PROJECT_DIR'])
 sys.path.insert(0, os.environ['CONFIG_DIR'])
+loopdevice_file = os.environ['PROJECT_DIR'] + "/loopdevice.txt"
+
 
 import config
 config = getattr(config, os.environ['PROJECT'])
@@ -14,14 +16,13 @@ config = getattr(config, os.environ['PROJECT'])
 image = config['image']
 
 
-
 subprocess.Popen(['/sbin/losetup', '-P', '-f', image['name']]).wait()
 p = subprocess.Popen(["/sbin/losetup", "-l", "-J", "-j", image['name']], stdout=subprocess.PIPE)
 p.wait()
 p.poll() and exit(1)
 LOOP = json.loads(p.stdout.read())['loopdevices'][0]['name']
-
-
+with open(f"{loopdevice_file}", 'w') as f:
+    f.write(f"{LOOP}")
 
 for p in image['mount-order']:
     target = "image"+image['partitions'][p]['mount-point']

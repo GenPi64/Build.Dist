@@ -1,5 +1,10 @@
-#!/bin/bash
+#!/usr/bin/python3
 
-pushd ${CHROOT_DIR}
+import os
+import sys
 
-${SCRIPTS}/crudini $@
+os.chdir(os.environ['CHROOT_DIR'])
+
+p = subprocess.Popen([f'{os.environ["SCRIPTS"]}/crudini', *sys.argv[1:]])
+p.wait()
+sys.exit(p.poll())

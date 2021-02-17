@@ -1,0 +1,44 @@
+#!/usr/bin/python3
+import os
+import sys
+import subprocess
+
+os.chdir(os.environ['PROJECT_DIR'])
+
+def check(p):
+    p.wait()
+    p.poll() and sys.exit(1)
+
+p = subprocess.Popen(['btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
+check(p)
+
+p.stdout.readline()
+filesystemsize = int(p.stdout.readline().decode('utf-8').split(':',1)[1])
+for i in range(4):
+    p.stdout.readline()
+unused = int(p.stdout.readline().decode('utf-8').split(':',1)[1])
+
+#p = subprocess.Popen(['btrfs', 'filesystem', 'resize', f'-{unused // 1024 - 1024}KiB}', 'image'])
+#check(p)
+
+p = subprocess.Popen(['btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
+check(p)
+
+p.stdout.readline()
+filesystemsize = int(p.stdout.readline().decode('utf-8').split(':',1)[1])
+slack = int(p.stdout.readline().decode('utf-8').split(':',1)[1])
+
+
+with open('loopdevice.txt') as f:
+    loopdevice = f.read().strip()
+
+
+p = subprocess.Popen(['lsblk', '-b', loopdevice], stdout=subprocess.PIPE)
+check(p)
+p.stdout.readline()
+disksize = int(p.stdout.readline().decode('utf-8').split()[3])
+bootsize = int(p.stdout.readline().decode('utf-8').split()[3])
+
+p = subprocess.Popen(['parted', loopdevice, 'resizepart', '2', f'{(bootsize+filesystemsize-slack+1024*1024) // 1024 + 1}KiB'])
+check(p)
+

@@ -18,4 +18,5 @@ with open("image/etc/fstab", "w") as fstab:
         target = image['partitions'][p]['mount-point']
         fstype = image['partitions'][p]['format']
         options = image['partitions'][p]['mount-options']
+        options = options.replace("zstd:15", "zstd")
         fstab.write(f'PARTUUID="{uuid}"\t{target}\t{fstype}\t{options}\t0\t0\n')

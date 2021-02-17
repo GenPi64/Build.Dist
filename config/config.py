@@ -201,7 +201,10 @@ GenPi64 = Base | {
     }
 }
 
-GenPi64Desktop = GenPi64 | {
+GenPi64OpenRC = Base | {
+}
+
+GenPi64Desktop = GenPi64OpenRC | {
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/desktop",
     'sets': GenPi64['sets'] + ['pi4desktop'],
     'image': GenPi64['image'] | {
@@ -209,7 +212,7 @@ GenPi64Desktop = GenPi64 | {
     }
 }
 
-GenPi32 = GenPi64 | {
+GenPi32OpenRC = GenPi64OpenRC | {
     "stage3": "stage3-armv6j_hardfp.tar.xz",
     "stage3url": "http://distfiles.gentoo.org/releases/arm/autobuilds/latest-stage3-armv6j_hardfp.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/arm/autobuilds/",

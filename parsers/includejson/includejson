@@ -8,6 +8,7 @@ import lockfile
 import json
 
 if len(sys.argv) > 2:
+  print("Using sub-completed file")
   completed_name = "completed-"+sys.argv[2]
 else:
   completed_name = "completed"
@@ -18,22 +19,41 @@ import config
 config = getattr(config, os.environ['PROJECT'])
 
 def writecompleted(JobName):
-  lock=lockfile.LockFile(os.path.join(PROJECT_DIR, completed_name))
-  while not lock.is_locked():
-    try:
-      lock.acquire()
-    except AlreadyLocked:
-      pass
-    except LockFailed:
-      print( "ABORT: FILE LOCKING NOT SUPPORTED.")
-      exit(1)
-    time.sleep(1)
-  f=open(os.path.join(PROJECT_DIR,"completed"),"a")
-  f.write(JobName)
-  f.write("\n")
-  f.close()
-  lock.release()
+  try:
+    lock=lockfile.LockFile(os.path.join(PROJECT_DIR, completed_name))
+    while not lock.is_locked():
+      try:
+        lock.acquire()
+      except AlreadyLocked:
+        pass
+      except LockFailed:
+        print( "ABORT: FILE LOCKING NOT SUPPORTED.")
+        exit(1)
+      time.sleep(1)
+    f=open(os.path.join(PROJECT_DIR,completed_name),"a")
+    f.write(JobName)
+    f.write("\n")
+    f.close()
+  finally:
+    lock.release()
 
+def takeSnapshot(step):
+  if step is None:
+    return
+  print("Taking snapshot:", step)
+  cwd = os.getcwd()
+  try:
+    
+    os.chdir(PROJECT_DIR)
+    os.chdir('..')
+    if os.path.exists(os.path.join(os.environ["BTRFS_SNAPSHOTS"], step)):
+      return
+    p = subprocess.Popen(["/sbin/btrfs", "subvolume", "snapshot", PROJECT_DIR, os.path.join(os.environ["BTRFS_SNAPSHOTS"], step)])
+    p.wait()
+    p.poll() and sys.exit(p.poll())
+  finally:
+    os.chdir(cwd)
+    
 
 PROJECT_DIR=os.environ['PROJECT_DIR']
 
@@ -64,12 +84,12 @@ try:
         if m['name'] == entry:
           if m['parser'] == 'includejson':
             break
-          break
           completed.append(entry)
+          break
       else:
         print("Got completed entry name but no known step by that name, adding anyway")
         completed.append(entry)
-  print(completed)
+  print(f"steps for {completed_name}", completed)
   dump=[]
   for item in manifest:
     if item['name'] in completed:
@@ -106,7 +126,7 @@ def execute(manifest):
           if v is not None:
             env[var]=v
       
-      copyenv( ('PROJECT','PARSERS','BINARY_ASSETS','SCRIPTS','CALLBACKS','BASEDIR','PROJECT_DIR','CHROOT_DIR', 'CONFIG_DIR', "DISTCC_HOSTS", "BREAK_AT", "NO_PARALLEL") )
+      copyenv( ('PROJECT','PARSERS','BINARY_ASSETS','SCRIPTS','CALLBACKS','BASEDIR','PROJECT_DIR','CHROOT_DIR', 'CONFIG_DIR', "DISTCC_HOSTS", "BREAK_AT", "NO_PARALLEL", "BTRFS_SNAPSHOTS") )
       env |= item.get('env', {})
 
       env['TERM'] = config.get('TERM', 'dumb')
@@ -124,6 +144,7 @@ def execute(manifest):
 def checkjob(jobs):
   print("running jobs",jobs)
   onefinished=False
+  name = None
   while not onefinished and jobs:
     for job in jobs:
       job[0].poll()
@@ -134,6 +155,7 @@ def checkjob(jobs):
           completed.append(job[1])
           writecompleted(job[1])
           jobs.remove(job)
+          name = job[1]
         else:
           print("FATAL: JOBFAILED ",job[1])
           jobs.remove(job)
@@ -143,6 +165,8 @@ def checkjob(jobs):
             time.sleep(10)
           exit(1)
     time.sleep(1)
+  if os.environ.get('BTRFS_SNAPSHOTS', False):
+    takeSnapshot(name)
 
 exitcode = 0
     

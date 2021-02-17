@@ -158,14 +158,10 @@ GenPi64 = Base | {
     "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
     "profile": "genpi64:default/linux/arm64/17.0/genpi64",
     'users': [
-        dict(name="demouser",
-             password="raspberrypi64",
-             format="SHA512",
-             group="100",
-             groups="users,wheel,video,audio,adm,disk,lp,cdrom,usb,portage,cron,plugdev,gpio,i2c,spi".split(','),
-             shell="/bin/bash",
-             uid="1000"
-             )
+        Base['users'][0] | dict(
+            password="raspberrypi64",
+            groups=Base['users'][0]['groups'] + ['plugdev', 'gpio', 'i2c', 'spi']
+        )
     ],
 
     'groups': [

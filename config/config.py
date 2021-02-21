@@ -93,7 +93,7 @@ Base = {
         "rpi3-ondemand": "default"
     },
     'sets': [
-        "standard"
+        
     ],
     'packages': []
 }

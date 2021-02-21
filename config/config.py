@@ -80,7 +80,10 @@ Base = {
             'sync-depth': '1',
             'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
             'auto-sync': 'yes',
-            'sync-git-verify-commit-signature': 'true'
+            'sync-git-verify-commit-signature': 'true',
+            "#commit-hash": "aa4a73cd0e4a39f4032a1b50dcbf1c00cb2d4c54",
+            "#clone-date": "2021-02-13",
+
         }
     ],
     "services": {
@@ -106,7 +109,6 @@ GenPi64 = Base | {
         "sys-kernel/raspberrypi-kernel",
         "sys-boot/raspberrypi-firmware"
     ],
-    "gentoo-commit-hash": "aa4a73cd0e4a39f4032a1b50dcbf1c00cb2d4c54",
     "overlays": Base['overlays'] + [
         {
             'name': 'genpi64',
@@ -117,7 +119,9 @@ GenPi64 = Base | {
             'auto-sync': 'yes',
             'clone-depth': '1',
             'sync-depth': '1',
-            'sync-git-clone-extra-opts': '--single-branch --branch alpha7'
+            'sync-git-clone-extra-opts': '--single-branch --branch alpha7',
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-02-13"
         },
         {
             'name': 'genpi-tools',
@@ -128,6 +132,8 @@ GenPi64 = Base | {
             'auto-sync': 'yes',
             'clone-depth': '1',
             'sync-depth': '1',
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-01-01"
         }
     ],
     "portage": Base["portage"] | {

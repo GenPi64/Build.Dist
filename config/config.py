@@ -199,6 +199,7 @@ GenPi64 = Base | {
 
 GenPi64OpenRC = GenPi64 | {
     "initsystem": "openrc",
+    "service-manager": "rcupdate_add",
     "portage": GenPi64['portage'] | {
         "make.conf": GenPi64['portage']['make.conf'] | {
             "USE": GenPi64["portage"]["make.conf"]["USE"] + ["-systemd", "elogind"]
@@ -237,6 +238,7 @@ GenPi32OpenRC = GenPi64OpenRC | {
 
 GenPi64Systemd = GenPi64 | {
     "initsystem": "systemd",
+    "service-manager": "systemctl_enable",
     "stage3": os.environ.get("STAGE3", "stage3-arm64-systemd.tar.xz"),
     "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
@@ -262,7 +264,7 @@ GentooAMD64 = Base | {
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
             'CHOST': 'x86_64-unknown-linux-gnu',
-            "USE": Base["portage"]["make.conf"]["USE"] + ["-systemd", "elogind", "openssl"]
+            "USE": Base["portage"]["make.conf"]["USE"] + ["-systemd", "elogind", "openssl"],
             'GRUB_PLATFORMS': "efi-64",
         },
         "package.license": [

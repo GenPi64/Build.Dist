@@ -1,25 +1,17 @@
 #! /bin/bash -e
-source "$BASEDIR/scripts/functions.sh"
+source "${SCRIPTS}/functions.sh"
 
 echo "Running $@"
 
 echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
 service_count=$($PARSERS/config/getconfig services "#")
+service_manager=$($PARSERS/config/getconfig service-manager)
+for((i=0;$i<$service_count;i++)); do
+    service=$($PARSERS/config/getconfig services $i)
+    runlevel=$($PARSERS/config/getconfig services $service)
+    ${service_manager} ${service} ${runlevel}  >>  "${PROJECT_DIR}/chroot/em-$$"
+done
 
-if [ "$($PARSERS/config/getconfig initsystem)" = "openrc" ]
-then
-    for((i=0;$i<$service_count;i++)); do
-        service=$($PARSERS/config/getconfig services $i)
-        runlevel=$($PARSERS/config/getconfig services $service)
-        echo rc-update add "$service" "$runlevel"  >>  "${PROJECT_DIR}/chroot/em-$$"
-    done
-else
-    for((i=0;$i<$service_count;i++)); do
-        service=$($PARSERS/config/getconfig services $i)
-        echo systemctl enable "$service" >>  "${PROJECT_DIR}/chroot/em-$$"
-    done
-fi
+#pychroot "${PROJECT_DIR}/chroot" /usr/bin/env -i bash --login /em-$$
 
-pychroot "${PROJECT_DIR}/chroot" /usr/bin/env -i bash --login /em-$$
-
-rm "${PROJECT_DIR}/chroot/em-$$"
+#rm "${PROJECT_DIR}/chroot/em-$$"

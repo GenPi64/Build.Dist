@@ -1,5 +1,14 @@
 
 
+systemctl_enable () {
+    echo "systemctl enable $1"
+}
+
+rcupdate_add () {
+    echo "rc-update add $1 $2"
+}
+
+
 ckmkdir () {
 
 if [[ ! -d "$1" ]]; then

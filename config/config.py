@@ -106,6 +106,7 @@ GenPi64 = Base | {
         "sys-kernel/raspberrypi-kernel",
         "sys-boot/raspberrypi-firmware"
     ],
+    "gentoo-commit-hash": "aa4a73cd0e4a39f4032a1b50dcbf1c00cb2d4c54",
     "overlays": Base['overlays'] + [
         {
             'name': 'genpi64',

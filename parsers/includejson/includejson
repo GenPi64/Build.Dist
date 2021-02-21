@@ -10,8 +10,10 @@ import json
 if len(sys.argv) > 2:
   print("Using sub-completed file")
   completed_name = "completed-"+sys.argv[2]
+  snapshot_name = sys.argv[2]+"-"
 else:
   completed_name = "completed"
+  snapshot_name = ""
 
 sys.path.insert(0, os.environ['CONFIG_DIR'])
 
@@ -40,6 +42,7 @@ def writecompleted(JobName):
 def takeSnapshot(step):
   if step is None:
     return
+  step = snapshot_name + step
   print("Taking snapshot:", step)
   cwd = os.getcwd()
   try:

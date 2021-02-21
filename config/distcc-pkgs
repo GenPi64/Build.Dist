@@ -97,7 +97,6 @@ dev-util/ninja
 dev-util/pkgconf
 dev-util/re2c
 dev-vcs/git
-media-libs/alsa-lib
 media-libs/freetype
 media-libs/fontconfig
 media-libs/lcms

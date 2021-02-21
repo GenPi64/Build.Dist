@@ -4,7 +4,7 @@ export BASEDIR=${PWD}
 
 
 if [[ -z "$PROJECT" ]]; then
-	export PROJECT="GenPi64"
+	export PROJECT="GenPi64OpenRC"
 fi
 
 if [[ -z "$PROJECT_DIR" ]]; then

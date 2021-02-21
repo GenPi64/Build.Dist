@@ -28,6 +28,7 @@ Base = {
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
             INPUT_DEVICES="evdev synaptics",
+            EMERGE_DEFAULT_OPTS="--buildpkg"
         ),
         "patches/": {
             "app-editors/": "patches/app-editors",

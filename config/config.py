@@ -175,7 +175,6 @@ GenPi64 = Base | {
         dict(name="plugdev", gid=245),
     ],
 
-    'sets': Base['sets'] + ['pi4'],
     'image': {
         'name': 'GenPi64.img',
         'size': '8G',
@@ -203,12 +202,11 @@ GenPi64 = Base | {
     }
 }
 
-GenPi64OpenRC = Base | {
+GenPi64OpenRC = GenPi64 | {
 }
 
-GenPi64Desktop = GenPi64OpenRC | {
+GenPi64OpenRCDesktop = GenPi64OpenRC | {
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/desktop",
-    'sets': GenPi64['sets'] + ['pi4desktop'],
     'image': GenPi64['image'] | {
         'name': 'GenPi64Desktop.img'
     }
@@ -232,7 +230,7 @@ GentooAMD64 = Base | {
     "stage3url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/",
     "profile": "default/linux/amd64/17.1",
-    'sets': Base['sets'] + ['amd64'],
+    'sets': ['standard', 'amd64'],
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
             'CHOST': 'x86_64-unknown-linux-gnu',

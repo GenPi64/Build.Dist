@@ -1,7 +1,14 @@
 
 
 systemctl_enable () {
-    echo "systemctl enable $1"
+    action="$2"
+    if [[ ${action} = "boot" ]]; then
+       action="enable"
+    fi
+    if [[ ${action} = "default" ]]; then
+       action="enable"
+    fi
+    echo "systemctl ${action} $1"
 }
 
 rcupdate_add () {

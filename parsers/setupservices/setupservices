@@ -7,9 +7,9 @@ echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
 service_count=$($PARSERS/config/getconfig services "#")
 service_manager=$($PARSERS/config/getconfig service-manager)
 for((i=0;$i<$service_count;i++)); do
-    service=$($PARSERS/config/getconfig services $i)
-    runlevel=$($PARSERS/config/getconfig services $service)
-    ${service_manager} ${service} ${runlevel}  >>  "${PROJECT_DIR}/chroot/em-$$"
+    key=$($PARSERS/config/getconfig services $i)
+    value=$($PARSERS/config/getconfig services $service)
+    ${service_manager} ${key} ${value}  >>  "${PROJECT_DIR}/chroot/em-$$"
 done
 
 #pychroot "${PROJECT_DIR}/chroot" /usr/bin/env -i bash --login /em-$$

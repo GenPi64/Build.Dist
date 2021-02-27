@@ -1,2 +1,4 @@
-net-misc/dhcp
+net-misc/dhcpcd
 sys-boot/grub:2
+app-emulation/qemu-guest-agent
+

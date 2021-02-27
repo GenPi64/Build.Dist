@@ -242,7 +242,7 @@ GenPi64Systemd = GenPi64 | {
     "stage3": os.environ.get("STAGE3", "stage3-arm64-systemd.tar.xz"),
     "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
-    "profile": "genpi64:default/linux/arm64/17.0/genpi64-systemd",
+    "profile": "genpi64:default/linux/arm64/17.0/genpi64/systemd",
     "portage": GenPi64["portage"] | {
         "make.conf": GenPi64["portage"]["make.conf"] | {
             "USE": GenPi64["portage"]["make.conf"]["USE"] + ["systemd", "-elogind"]
@@ -265,7 +265,7 @@ GentooAMD64 = Base | {
         "make.conf": Base['portage']['make.conf'] | {
             'CHOST': 'x86_64-unknown-linux-gnu',
             "USE": Base["portage"]["make.conf"]["USE"] + ["-systemd", "elogind", "openssl"],
-            'GRUB_PLATFORMS': "efi-64",
+            'GRUB_PLATFORMS': "pc",
         },
         "package.license": [
             "# required by sys-kernel/linux-firmware (argument)",

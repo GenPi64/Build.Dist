@@ -234,8 +234,8 @@ GentooAMD64 = Base | {
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
             'CHOST': 'x86_64-unknown-linux-gnu',
-            'USE': Base['portage']['make.conf']['USE'] + 'openssl'.split(),
-            'GRUB_PLATFORMS': "efi-64",
+            'USE': 'bindist -systemd openssl'.split(),
+            'GRUB_PLATFORMS': "pc",
         },
         "package.license": [
             "# required by sys-kernel/linux-firmware (argument)",
@@ -244,10 +244,10 @@ GentooAMD64 = Base | {
         "env/": {},
         "package.env/": {},
         "package.use/": {
-            "elogind": [
-                "# Required so it does not pull in spidermonkey",
-                "sys-auth/elogind -policykit"
-            ],
+          #  "elogind": [
+          #      "# Required so it does not pull in spidermonkey",
+          #      "sys-auth/elogind -policykit"
+          #  ],
         },
     },
     "kernel": [
@@ -264,14 +264,16 @@ GentooAMD64 = Base | {
     "services": {
         "cronie": "default",
         "sshd": "default",
+        "dhcpcd": "default",
         "elogind": "default",
         "rsyslog": "default",
         "chronyd": "default",
+        "qemu-guest-agent": "default",
         "rngd": "boot"
     },
     'image': GenPi64['image'] | {
         'name': 'GentooAMD64Server.img',
-        'format': 'gpt',
+        'format': 'msdos',
         'partitions': [
             GenPi64['image']['partitions'][0] | {
                 'flags': {

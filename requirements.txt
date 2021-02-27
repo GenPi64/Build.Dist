@@ -1,0 +1,2 @@
+lockfile==0.12.2
+pychroot==0.10.4

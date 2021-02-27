@@ -5,8 +5,8 @@ source "$BASEDIR/scripts/functions.sh"
 echo "Running grub tasks"
 
 echo "source /etc/profile" > "${PROJECT_DIR}/image/em-$$"
+echo "grub-install $(cat $PROJECT_DIR/loopdevice.txt) --target=i386-pc" >> "${PROJECT_DIR}/image/em-$$"
 echo "grub-mkconfig -o /boot/grub/grub.cfg" >> "${PROJECT_DIR}/image/em-$$"
-echo "grub-install $(cat $PROJECT_DIR/loopdevice.txt)" >> "${PROJECT_DIR}/image/em-$$"
 pychroot "${PROJECT_DIR}/image" /usr/bin/env -i bash --login /em-$$
 
 rm "${PROJECT_DIR}/chroot/em-$$"

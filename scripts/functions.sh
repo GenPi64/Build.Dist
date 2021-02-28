@@ -1,5 +1,21 @@
 
 
+systemctl_enable () {
+    action="$2"
+    if [[ ${action} = "boot" ]]; then
+       action="enable"
+    fi
+    if [[ ${action} = "default" ]]; then
+       action="enable"
+    fi
+    echo "systemctl ${action} $1"
+}
+
+rcupdate_add () {
+    echo "rc-update add $1 $2"
+}
+
+
 ckmkdir () {
 
 if [[ ! -d "$1" ]]; then

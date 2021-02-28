@@ -1,0 +1,17 @@
+#! /bin/bash -e
+source "${SCRIPTS}/functions.sh"
+
+echo "Running $@"
+
+echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
+service_count=$($PARSERS/config/getconfig services "#")
+service_manager=$($PARSERS/config/getconfig service-manager)
+for((i=0;$i<$service_count;i++)); do
+    key=$($PARSERS/config/getconfig services $i)
+    value=$($PARSERS/config/getconfig services $service)
+    ${service_manager} ${key} ${value}  >>  "${PROJECT_DIR}/chroot/em-$$"
+done
+
+#pychroot "${PROJECT_DIR}/chroot" /usr/bin/env -i bash --login /em-$$
+
+#rm "${PROJECT_DIR}/chroot/em-$$"

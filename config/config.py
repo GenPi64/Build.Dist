@@ -264,7 +264,7 @@ GentooAMD64 = Base | {
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
             'CHOST': 'x86_64-unknown-linux-gnu',
-            "USE": Base["portage"]["make.conf"]["USE"] + ["-systemd", "elogind", "openssl"],
+            "USE": 'bindist -systemd openssl'.split(),
             'GRUB_PLATFORMS': "pc",
         },
         "package.license": [
@@ -298,8 +298,7 @@ GentooAMD64 = Base | {
         "elogind": "default",
         "rsyslog": "default",
         "chronyd": "default",
-        "qemu-guest-agent": "default",
-        "rngd": "boot"
+        "qemu-guest-agent": "default"
     },
     'image': GenPi64['image'] | {
         'name': 'GentooAMD64Server.img',

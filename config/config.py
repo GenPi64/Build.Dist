@@ -274,10 +274,6 @@ GentooAMD64 = Base | {
         "env/": {},
         "package.env/": {},
         "package.use/": {
-          #  "elogind": [
-          #      "# Required so it does not pull in spidermonkey",
-          #      "sys-auth/elogind -policykit"
-          #  ],
         },
     },
     "kernel": [

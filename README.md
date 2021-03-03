@@ -6,7 +6,8 @@ Linux system (gcc, chroot, et cetera)
 Python3.9
 pychroot
 git
-python-lockfile
+dev-python/python-lockfile
+dev-python/iniparse
 qemu with xattrs enabled.
 ### Filesystem creation tools
 btrfs-progs (or change the filesystem type and mount options in `config/config.py`)

@@ -8,7 +8,7 @@ service_count=$($PARSERS/config/getconfig services "#")
 service_manager=$($PARSERS/config/getconfig service-manager)
 for((i=0;$i<$service_count;i++)); do
     key=$($PARSERS/config/getconfig services $i)
-    value=$($PARSERS/config/getconfig services $service)
+    value=$($PARSERS/config/getconfig services $key)
     ${service_manager} ${key} ${value}  >>  "${PROJECT_DIR}/chroot/em-$$"
 done
 

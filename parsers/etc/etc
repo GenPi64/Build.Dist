@@ -12,6 +12,7 @@ PROJECT_DIR = os.environ['PROJECT_DIR']
 PROJECT = os.environ['PROJECT']
 CHROOT_DIR = os.environ['CHROOT_DIR']
 PARSERS = os.environ['PARSERS']
+SCRIPTS = os.environ['SCRIPTS']
 
 print(f"Copying etc config files for {PROJECT}")
 
@@ -51,6 +52,6 @@ copydir(config['etc'], f"{CHROOT_DIR}/etc")
 system(f"chmod 700 {CHROOT_DIR}/etc/shadow")
 system(f"chmod 755 {CHROOT_DIR}/etc/profile")
 
-system(f"pychroot {CHROOT_DIR} /usr/sbin/locale-gen")
-system(f"pychroot {CHROOT_DIR} /usr/sbin/env-update")
+system(f"{SCRIPTS}/chroot.py  /usr/sbin/locale-gen")
+system(f"{SCRIPTS}/chroot.py  /usr/sbin/env-update")
 

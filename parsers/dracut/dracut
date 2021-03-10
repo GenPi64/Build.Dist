@@ -2,9 +2,9 @@
 
 source "$BASEDIR/scripts/functions.sh"
 
-pychroot "${PROJECT_DIR}/chroot" /usr/bin/emerge dracut
+"${SCRIPTS}/chroot.py" /usr/bin/emerge dracut
 
-pychroot "${PROJECT_DIR}/chroot"		\
+"${SCRIPTS}/chroot.py" \
 	/usr/bin/dracut				\
 		--force				\
 		--modules base			\

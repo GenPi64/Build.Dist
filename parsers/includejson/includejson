@@ -81,8 +81,7 @@ with open(sys.argv[1], 'r') as f:
       for thing in manifest[:idx-1]:
         item['deps'].append(thing['name'])
 
-
-for patch in sys.argv[2:-1]:
+for patch in sys.argv[2:]:
   print("loading patch", patch)
   with open(patch, 'r') as p:
     p_manifest = json.load(p)
@@ -91,10 +90,10 @@ for patch in sys.argv[2:-1]:
         for idx, item in enumerate(manifest):
           if item['name'] == b4:
             item['deps'].append(p_item['name'])
-            manifest.insert(idx, p_item)
             if idx > 0:
               p_item['deps'].append(manifest[idx-1]['name'])
-              break
+            manifest.insert(idx, p_item)
+            break
         else:
           print(f"WARNING: patch-step {p_item['name']} should run before {b4}, but I can't find {b4}")
           manifest.append(p_item)
@@ -160,6 +159,7 @@ def execute(manifest):
       print("executing ",item['name'],"deps",item['deps'])
       args = item['args'][:]
       if item['parser'] == "includejson":
+        args.append('--name')
         args.append(item['name'])
       
       jobs.append( (subprocess.Popen([os.path.join(os.environ['PARSERS'],item['parser'],item['parser']), *args], env=env), item['name']) )

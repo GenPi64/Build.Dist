@@ -1,5 +1,3 @@
 [
-    {"name": "downloadstage3", "deps": [""], "parser": "downloadstage3", "args": [""]},
-    {"name": "stage3", "deps": ["downloadstage3"], "parser": "stage3", "args": [""]},
-    {"name": "qemu", "before": "config", "deps": ["stage3"], "parser": "qemu", "args": [""]}
+    {"name": "qemu", "before": "config", "deps": [""], "parser": "qemu", "args": [""]}
 ]

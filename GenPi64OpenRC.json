@@ -1,5 +1,5 @@
 [
-    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-openrc.json", "patchtargets/gentoo-aarch64.json"]},
+    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-aarch64.json", "patchtargets/gentoo-openrc.json"]},
     {"name": "kernel", "deps": ["gentoo-arm-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ')"]},
     {"name": "fixboot3", "deps": ["kernel"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "", "kernel", "kernel8.img"]},
     {"name": "fixboot4", "deps": ["fixboot3"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "pi4", "kernel", "kernel8-pi4.img"]},

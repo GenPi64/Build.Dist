@@ -76,9 +76,9 @@ with open(sys.argv[1], 'r') as f:
       for thing in manifest[:idx-1]:
         item['deps'].append(thing['name'])
 
-print("loading patches")
 
-for patch in sys.argv[2:]:
+for patch in sys.argv[2:-1]:
+  print("loading patch", patch)
   with open(patch, 'r') as p:
     p_manifest = json.load(p)
     for p_idx, p_item in enumerate(p_manifest):

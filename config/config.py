@@ -130,7 +130,8 @@ GenPi64 = Base | {
             "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe",
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
-            "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"]
+            "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"],
+            "VIDEO_CARDS": ["vc4"]
         },
         "binrepos.conf": [
             "[genpi64-binhost]",

@@ -7,10 +7,15 @@ import os
 import lockfile
 import json
 
-if len(sys.argv) > 2:
+from lockfile import AlreadyLocked, LockFailed
+
+if '--name' in sys.argv:
+  idx = sys.argv.index('--name')
   print("Using sub-completed file")
-  completed_name = "completed-"+sys.argv[2]
-  snapshot_name = sys.argv[2]+"-"
+  completed_name = "completed-"+sys.argv[idx+1]
+  snapshot_name = sys.argv[idx+1]+"-"
+  sys.argv.pop(idx+1)
+  sys.argv.pop(idx)
 else:
   completed_name = "completed"
   snapshot_name = ""

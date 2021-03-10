@@ -1,6 +1,5 @@
 [
-    {"name": "gentoo-arm-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-aarch64.json"]},
-    {"name": "gentoo-systemd-base", "deps": ["gentoo-arm-base"], "parser": "includejson", "args": ["subtargets/gentoo-systemd-base.json"]},
+    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-aarch64.json"]},
     {"name": "dracut", "deps": ["gentoo-systemd-base"], "parser": "dracut", "args": [""]},
     {"name": "kernel", "deps": ["dracut"], "parser": "emerge", "args": ["$(/em-config kernel '* ')"]},
     {"name": "fixboot3", "deps": ["kernel"], "parser": "crudini", "args": ["--set --inplace --existing=file boot/config.txt DEFAULT kernel kernel8.img"]},

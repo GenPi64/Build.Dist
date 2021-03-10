@@ -11,7 +11,6 @@
     {"name": "screen", "deps": ["distcchost", "certifi"], "parser": "emerge", "args": ["-v1g app-misc/screen", "", ""]},
     {"name": "update_portage", "deps": ["screen"], "parser": "emerge", "args": ["-v1bgj portage"]},
     {"name": "locale", "deps": ["update_portage"], "parser": "rawcommand", "args": ["eselect locale set en_US.utf8"]},
-    {"name": "updateudev", "deps": ["locale"], "parser": "emerge", "args": ["--update eudev"]},
     {"name": "users", "deps": ["config", "update_portage"], "parser": "users", "args": [""]},
     {"name": "eix", "deps": ["update_portage"], "parser": "emerge", "args": ["eix"]},
     {"name": "eixupdate", "deps": ["eix"], "parser": "rawcommand", "args": ["eix-update"]},

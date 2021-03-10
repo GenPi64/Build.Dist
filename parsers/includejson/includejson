@@ -68,14 +68,33 @@ MANIFEST=open(sys.argv[1],"r").readlines()
 completed=["",]
 print( "loading manifest")
 with open(sys.argv[1], 'r') as f:
-  manifest = json.load(f)
+  manifest: list = json.load(f)
 
-for idx, item in enumerate(manifest):
-  if "--allprev--" in item['deps']:
-    item['deps'].remove("--allprev--")
-    for thing in manifest[:idx-2]:
-      item['deps'].append(thing['name'])
-  
+  for idx, item in enumerate(manifest):
+    if "--allprev--" in item['deps']:
+      item['deps'].remove("--allprev--")
+      for thing in manifest[:idx-1]:
+        item['deps'].append(thing['name'])
+
+print("loading patches")
+
+for patch in sys.argv[2:]:
+  with open(patch, 'r') as p:
+    p_manifest = json.load(p)
+    for p_idx, p_item in enumerate(p_manifest):
+      if b4 := p_item.get('before'):
+        for idx, item in enumerate(manifest):
+          if item['name'] == b4:
+            item['deps'].append(p_item['name'])
+            manifest.insert(idx, p_item)
+            if idx > 0:
+              p_item['deps'].append(manifest[idx-1]['name'])
+              break
+        else:
+          print(f"WARNING: patch-step {p_item['name']} should run before {b4}, but I can't find {b4}")
+          manifest.append(p_item)
+      else:
+        manifest.append(p_item)
 print("load complete")
 
 print("Loading status")

@@ -152,7 +152,20 @@ def execute(manifest):
           if v is not None:
             env[var]=v
       
-      copyenv( ('PROJECT','PARSERS','BINARY_ASSETS','SCRIPTS','CALLBACKS','BASEDIR','PROJECT_DIR','CHROOT_DIR', 'CONFIG_DIR', "DISTCC_HOSTS", "BREAK_AT", "NO_PARALLEL", "BTRFS_SNAPSHOTS") )
+      copyenv( ('PROJECT',
+                'PARSERS',
+                'BINARY_ASSETS',
+                'SCRIPTS',
+                'CALLBACKS',
+                'BASEDIR',
+                'PROJECT_DIR',
+                'CHROOT_DIR',
+                'CONFIG_DIR',
+                'DISTCC_HOSTS',
+                'BREAK_AT',
+                'NO_PARALLEL',
+                'BTRFS_SNAPSHOTS',
+                'CHROOT_CMD' ) )
       env |= item.get('env', {})
 
       env['TERM'] = config.get('TERM', 'dumb')

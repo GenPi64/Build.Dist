@@ -1,9 +1,9 @@
 [
     {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-aarch64.json"]},
-    {"name": "dracut", "deps": ["gentoo-systemd-base"], "parser": "dracut", "args": [""]},
-    {"name": "kernel", "deps": ["dracut"], "parser": "emerge", "args": ["$(/em-config kernel '* ')"]},
-    {"name": "fixboot3", "deps": ["kernel"], "parser": "crudini", "args": ["--set --inplace --existing=file boot/config.txt DEFAULT kernel kernel8.img"]},
-    {"name": "fixboot4", "deps": ["fixboot3"], "parser": "crudini", "args": ["--set --inplace --existing=file boot/config.txt pi4 kernel kernel8-pi4.img"]},
+    {"name": "kernel", "deps": ["gentoo-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ')"]},
+    {"name": "dracut", "deps": ["kernel"], "parser": "dracut", "args": [""]},
+    {"name": "fixboot3", "deps": ["dracut"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "", "kernel", "kernel8.img"]},
+    {"name": "fixboot4", "deps": ["fixboot3"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "pi4", "kernel", "kernel8-p4.img"]},
     {"name": "packstage4", "deps": ["fixboot4"], "parser": "packstage4", "args": [""]},
     {"name": "packgenpi", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/pack-genpi.json"]},
     {"name": "done", "deps": ["packgenpi"], "parser": "echo", "args": ["Done!"]}

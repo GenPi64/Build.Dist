@@ -1,7 +1,6 @@
 sys-apps/rng-tools
 app-arch/zstd
 app-editors/nano
-app-admin/rsyslog
 app-admin/sudo
 app-arch/bzip2
 app-arch/gzip
@@ -41,7 +40,6 @@ dev-lang/python
 dev-lang/python-exec
 dev-lang/swig
 dev-lang/tcl
-dev-libs/gmp
 dev-libs/gobject-introspection
 dev-libs/gobject-introspection-common
 dev-libs/icu
@@ -72,7 +70,6 @@ dev-libs/libxslt
 dev-libs/libyaml
 dev-libs/lzo
 dev-libs/mpfr
-dev-libs/nss
 dev-libs/nspr
 dev-libs/npth
 dev-libs/popt
@@ -86,7 +83,6 @@ dev-python/cython
 dev-python/lxml
 dev-python/pygobject
 dev-python/pyopenssl
-dev-util/cmake
 dev-util/desktop-file-utils
 dev-util/glib-utils
 dev-util/gperf
@@ -122,7 +118,6 @@ net-misc/networkmanager
 net-misc/rsync
 net-misc/telnet-bsd
 net-misc/wget
-net-wireless/bluez
 net-wireless/crda
 net-wireless/iw
 net-wireless/wpa_supplicant

@@ -244,6 +244,7 @@ GenPi32OpenRC = GenPi64OpenRC | {
 }
 
 GenPi64Systemd = GenPi64 | {
+    "kernel": GenPi64["kernel"] + ["sys-kernel/dracut"],
     "initsystem": "systemd",
     "service-manager": "systemctl_enable",
     "stage3": os.environ.get("STAGE3", "stage3-arm64-systemd.tar.xz"),

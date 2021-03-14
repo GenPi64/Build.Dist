@@ -81,8 +81,8 @@ Base = {
             'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true',
-            "#commit-hash": "ea0a45eb95a9b6eccb5f29e4695efa5aa2bdf6f8",
-            "#clone-date": "2021-03-10",
+            "#commit-hash": "83f51aa0f9c2f5df36d5dff05c9e1b90bee7dbbd",
+            "#clone-date": "2021-03-01",
 
         }
     ],

@@ -94,7 +94,6 @@ GenPi64 = Base | {
     "cmdline": 'console=serial0,115200 console=tty1 dwc_otg.lpm_enable=0 root=PARTUUID=%(UUID)s rootfstype=%(fstype)s elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
     "kernel": [
         "sys-firmware/raspberrypi-wifi-ucode",
-        "sys-kernel/linux-firmware",
         "sys-kernel/raspberrypi-kernel",
         "sys-boot/raspberrypi-firmware"
     ],

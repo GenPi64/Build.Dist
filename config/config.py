@@ -220,8 +220,15 @@ GenPi64OpenRCDesktop = GenPi64OpenRC | {
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/desktop",
     'image': GenPi64['image'] | {
         'name': 'GenPi64Desktop.img'
+    },
+    'etc': GenPi64OpenRC['etc'] | {
+        'env.d/': {
+            '90xsession': ['XSESSION="Xfce4"']
+        }
     }
 }
+    
+
 
 GenPi32OpenRC = GenPi64OpenRC | {
     "stage3": "stage3-armv6j_hardfp.tar.xz",

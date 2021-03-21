@@ -65,7 +65,6 @@ dev-libs/libunistring
 dev-libs/libusb
 dev-libs/libusb-compat
 dev-libs/libuv
-dev-libs/libxml2
 dev-libs/libxslt
 dev-libs/libyaml
 dev-libs/lzo
@@ -101,7 +100,6 @@ net-dialup/ppp
 net-dns/libidn2
 net-fs/sshfs
 net-firewall/iptables
-net-libs/gnutls
 net-libs/libmbim
 net-libs/libndp
 net-libs/libmnl
@@ -109,12 +107,10 @@ net-libs/libnsl
 net-libs/libqmi
 net-libs/libtirpc
 net-libs/nghttp2
-net-mail/mailutils
 net-misc/chrony
 net-misc/curl
 net-misc/iputils
 net-misc/openssh
-net-misc/networkmanager
 net-misc/rsync
 net-misc/telnet-bsd
 net-misc/wget

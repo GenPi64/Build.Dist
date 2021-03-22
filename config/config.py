@@ -227,8 +227,6 @@ GenPi64OpenRCDesktop = GenPi64OpenRC | {
         }
     }
 }
-    
-
 
 GenPi32OpenRC = GenPi64OpenRC | {
     "stage3": "stage3-armv6j_hardfp.tar.xz",
@@ -245,6 +243,7 @@ GenPi32OpenRC = GenPi64OpenRC | {
 
 GenPi64Systemd = GenPi64 | {
     "kernel": GenPi64["kernel"] + ["sys-kernel/dracut"],
+    "initramfs": "dracut",
     "initsystem": "systemd",
     "service-manager": "systemctl_enable",
     "stage3": os.environ.get("STAGE3", "stage3-arm64-systemd.tar.xz"),

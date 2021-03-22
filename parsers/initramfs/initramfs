@@ -1,0 +1,27 @@
+#! /bin/bash -e
+
+source "$BASEDIR/scripts/functions.sh"
+
+INIRAMFSTYPE=$($PARSERS/config/getconfig initramfs)
+
+if [ "$INITRAMFSTYPE" = "dracut" ]
+then
+	"${SCRIPTS}/chroot.py" \
+		/usr/bin/dracut				\
+			--force				\
+			--modules base			\
+			--modules bash			\
+			--modules btrfs			\
+			--modules udev-rules		\
+			--modules fs-lib		\
+			--modules shutdown		\
+			--filesystems btrfs		\
+			--hardlink			\
+			--strip				\
+			--early-microcode		\
+			--xz				\
+			--no-kernel			\
+			--reproducible			\
+			--kver 0			\
+			/boot/initramfs.cpio.xz
+fi

@@ -199,6 +199,7 @@ GenPi64 = Base | {
 
 GenPi64OpenRC = GenPi64 | {
     "initsystem": "openrc",
+    "initramfs": "none",
     "service-manager": "rcupdate_add",
     "portage": GenPi64['portage'] | {
         "make.conf": GenPi64['portage']['make.conf'] | {

@@ -256,9 +256,24 @@ GenPi64Systemd = GenPi64 | {
             "USE": GenPi64["portage"]["make.conf"]["USE"] + ["systemd", "-elogind"]
         }
     },
+    "etc": GenPi64["etc"] | {
+        "systemd/": {
+            "network/": {
+                i: "systemd/network/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'systemd/network'))
+            }
+        }
+    },
     "services": {
-        "sshd": "default",
-        "rngd": "boot"
+        "tmp.mount": "mask",
+        "sshd.socket": "enable",
+        "gpm.service": "enable",
+        "rngd.service": "enable",
+        "zram_tmp.service": "enable",
+        "zram_swap.service": "enable",
+        "zram_var_tmp.service": "enable",
+        "systemd-networkd.service": "enable",
+        "systemd-resolved.service": "enable",
+        "systemd-timesyncd.service": "enable"
     },
 }
 

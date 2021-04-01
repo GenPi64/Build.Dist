@@ -2,6 +2,7 @@
     {"name": "downloadstage3", "deps": [""], "parser": "downloadstage3", "args": [""]},
     {"name": "stage3", "deps": ["downloadstage3"], "parser": "stage3", "args": [""]},
     {"name": "config", "deps": ["stage3"], "parser": "config", "args": [""]},
+    {"name": "set_root_password","deps": ["config"], "parser": "password", "args": [""]},
     {"name": "overlays", "deps": ["config"], "parser": "overlays", "args": [""]},
     {"name": "git", "deps": ["overlays"], "parser": "git", "args": [""]},
     {"name": "portage", "deps": ["git"], "parser": "portage", "args": [""]},

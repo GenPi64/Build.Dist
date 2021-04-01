@@ -279,6 +279,8 @@ GenPi64Systemd = GenPi64 | {
 
 GentooAMD64 = Base | {
     "initsystem": "openrc",
+    "initramfs": "none",
+    "service-manager": "rcupdate_add",
     "stage3": "stage3-amd64.tar.xz",
     "stage3url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/",
@@ -290,15 +292,51 @@ GentooAMD64 = Base | {
             "USE": 'bindist -systemd openssl'.split(),
             'GRUB_PLATFORMS': "pc",
         },
-        "package.license": [
-            "# required by sys-kernel/linux-firmware (argument)",
-            "=sys-kernel/linux-firmware-20201218 linux-fw-redistributable no-source-code"
-        ],
+        "package.license/": {
+          "linux-firmware": [ "sys-kernel/linux-firmware linux-fw-redistributable no-source-code" ],
+        },
         "env/": {},
         "package.env/": {},
-        "package.use/": {
-        },
+        "package.use/": {},
     },
+    "overlays": [
+        {
+            'name': 'gentoo',
+            'location': '/var/db/repos/gentoo',
+            'sync-type': 'git',
+            'clone-depth': '1',
+            'sync-depth': '1',
+            'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
+            'auto-sync': 'yes',
+            'sync-git-verify-commit-signature': 'true',
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-03-31",
+        },
+        {
+            'name': 'genpi64',
+            'location': '/var/db/repos/genpi64',
+            'sync-type': 'git',
+            'sync-uri': 'https://github.com/GenPi64/genpi64-overlay.git',
+            'priority': '100',
+            'auto-sync': 'yes',
+            'clone-depth': '1',
+            'sync-depth': '1',
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-03-31",
+        },
+        {
+            'name': 'genpi-tools',
+            'location': '/var/db/repos/genpi-tools',
+            'sync-type': 'git',
+            'sync-uri': 'https://github.com/GenPi64/genpi-tools.git',
+            'priority': '50',
+            'auto-sync': 'yes',
+            'clone-depth': '1',
+            'sync-depth': '1',
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-03-31",
+        }
+    ],
     "kernel": [
         "sys-kernel/gentoo-kernel",
         "sys-kernel/linux-firmware"

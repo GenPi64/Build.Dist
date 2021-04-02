@@ -9,4 +9,4 @@ echo "grub-install $(cat $PROJECT_DIR/loopdevice.txt) --target=i386-pc" >> "${PR
 echo "grub-mkconfig -o /boot/grub/grub.cfg" >> "${PROJECT_DIR}/image/em-$$"
 CHROOT_DIR="${PROJECT_DIR}/image" "${SCRIPTS}/chroot.py" /usr/bin/env -i bash --login /em-$$
 
-rm -r "${PROJECT_DIR}/chroot/em-$$"
+rm --force "${PROJECT_DIR}/image/em-$$"

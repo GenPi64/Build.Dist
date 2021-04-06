@@ -10,13 +10,12 @@ import config
 config = getattr(config, os.environ['PROJECT'])
 
 image = config['image']
-UUID = image['uuid']
 
 with open("image/etc/fstab", "w") as fstab:
     for p in image['mount-order']:
-        uuid = UUID+'-%02i'%(p+1)
+        partuuid = image['partitions'[p]['partuuid']
         target = image['partitions'][p]['mount-point']
         fstype = image['partitions'][p]['format']
         options = image['partitions'][p]['mount-options']
         options = options.replace("zstd:15", "zstd")
-        fstab.write(f'PARTUUID="{uuid}"\t{target}\t{fstype}\t{options}\t0\t0\n')
+        fstab.write(f'PARTUUID="{partuuid}"\t{target}\t{fstype}\t{options}\t0\t0\n')

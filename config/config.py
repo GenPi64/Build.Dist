@@ -156,7 +156,7 @@ GenPi64Generic = Base | {
 }
 
 GenPi64 = Base | {
-    "cmdline": 'console=serial0,115200 console=tty1 dwc_otg.lpm_enable=0 root=PARTUUID=%(UUID)s rootfstype=%(fstype)s fsck.repair=no usbhid.mousepoll=0 rootwait=10 init=/sbin/init',
+    "cmdline": 'console=serial0,115200 console=tty1 dwc_otg.lpm_enable=0 root=PARTUUID=%(PARTUUID)s rootfstype=%(fstype)s fsck.repair=no usbhid.mousepoll=0 rootwait=10 init=/sbin/init',
     "kernel": [
         "sys-firmware/raspberrypi-wifi-ucode",
         "sys-kernel/raspberrypi-kernel",
@@ -248,6 +248,9 @@ GenPi64 = Base | {
         'uuid': UUID[:8],
         'partitions': [
             {
+                'name': 'bootfs',
+                'partuuid': UUID[:8]+'-01',
+                'start': '1MiB',
                 'end': '256MiB',
                 'format': 'vfat',
                 'mount-point': '/boot',
@@ -257,6 +260,9 @@ GenPi64 = Base | {
                 }
             },
             {
+                'name': 'rootfs',
+                'partuuid': UUID[:8]+'-02',
+                'start': '256MiB',
                 'end': '100%',
                 'format': 'btrfs',
                 'mount-point': '/',

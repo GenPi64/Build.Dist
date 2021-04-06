@@ -18,10 +18,9 @@ then
 			--filesystems btrfs		\
 			--hardlink			\
 			--strip				\
-			--early-microcode		\
-			--xz				\
+			--zstd				\
 			--no-kernel			\
 			--reproducible			\
 			--kver 0			\
-			/boot/initramfs.cpio.xz
+			/boot/initramfs.cpio.zstd
 fi

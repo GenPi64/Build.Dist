@@ -19,17 +19,16 @@ p.wait()
 LOOP = p.stdout.read().decode("charmap").split(": ", 1)[0]
 
 os.system(f"parted {LOOP} mklabel {image['format']}") and exit(1)
-start = '1MiB'
 for idx,partition in enumerate(image['partitions']):
+    start = partition['start']
     end = partition['end']
     os.system(f"parted {LOOP} mkpart primary {start} {end}") and exit(1)
     if flags := partition.get('flags'):
         for f,v in flags.items():
             os.system(f"parted {LOOP} set {idx+1} {f} {v}") and exit(1)
-    start = end
 
     os.system(f"partprobe {LOOP}") and exit(1)
-    
+
     os.system(f"mkfs.{partition['format']} {LOOP}p{idx+1} {partition.get('args', '')}") and exit(1)
 
 os.system('mkdir -p image')
@@ -50,10 +49,8 @@ with open("etc/sudoers", "r") as f:
     sudoers = f.read()
 with open("etc/sudoers", "w") as f:
     f.write(sudoers.replace("# %wheel ALL=(ALL) NOPASSWD: ALL", "%wheel ALL=(ALL) NOPASSWD: ALL"))
-    
+
 os.chdir('..')
-
-
 
 os.system("umount --recursive image") and exit(1)
 os.system(f"losetup -d {LOOP}") and exit(1)

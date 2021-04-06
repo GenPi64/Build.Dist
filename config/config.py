@@ -209,6 +209,7 @@ GenPi64OpenRC = GenPi64 | {
     "services": {
         "cronie": "default",
         "sshd": "default",
+        "swclock": "shutdown",
         "elogind": "default",
         "rsyslog": "default",
         "chronyd": "default",

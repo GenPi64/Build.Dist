@@ -30,11 +30,10 @@ if image['format'] == 'msdos':
     p.wait()
     p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), sys.exit(1))
 
-start = '1MiB'
 for idx,partition in enumerate(image['partitions']):
+    start = partition['start']
     end = partition['end']
     system(f"parted --script {image['name']} mkpart primary {start} {end}")
-    start = end
 
 system(f"parted --script {image['name']} print")
 system(f"sync")

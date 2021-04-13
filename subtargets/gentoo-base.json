@@ -27,5 +27,7 @@
     {"name": "emergeworld", "deps": ["workaround2"], "parser": "emerge", "args": ["-v1bg --deep --update --newuse --with-bdeps=y --keep-going --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"], "env":{"SUPPRESS_BASHRC_MAKEOPTS": "1"}},
     {"name": "workaround1", "deps": ["emergeworld"], "parser": "emerge", "args": ["--update --newuse --deep --with-bdeps=y @world"]},
     {"name": "depclean", "deps": ["workaround1"], "parser": "emerge", "args": ["-v --depclean"]},
-    {"name": "setupservices", "deps": ["depclean"], "parser": "setupservices", "args": [""]}
+    {"name": "setupservices", "deps": ["depclean"], "parser": "setupservices", "args": [""]},
+    {"name": "news", "deps": ["setupservices"], "parser": "rawcommand", "args": ["eselect news read &>/dev/null"]},
+    {"name": "set_root_password","deps": ["news"], "parser": "password", "args": [""]}
 ]

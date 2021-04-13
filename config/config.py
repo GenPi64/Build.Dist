@@ -91,7 +91,7 @@ Base = {
 }
 
 GenPi64 = Base | {
-    "cmdline": 'console=serial0,115200 console=tty1 dwc_otg.lpm_enable=0 root=PARTUUID=%(UUID)s rootfstype=%(fstype)s elevator=deadline fsck.repair=no usbhid.mousepoll=0 rootwait',
+    "cmdline": 'console=serial0,115200 console=tty1 dwc_otg.lpm_enable=0 root=PARTUUID=%(UUID)s rootfstype=%(fstype)s fsck.repair=no usbhid.mousepoll=0 rootwait',
     "kernel": [
         "sys-firmware/raspberrypi-wifi-ucode",
         "sys-kernel/raspberrypi-kernel",
@@ -131,7 +131,7 @@ GenPi64 = Base | {
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"],
-            "VIDEO_CARDS": ["vc4"]
+            "VIDEO_CARDS": ["vc4"] + ["v3d"]
         },
         "binrepos.conf": [
             "[genpi64-binhost]",
@@ -200,6 +200,7 @@ GenPi64 = Base | {
 
 GenPi64OpenRC = GenPi64 | {
     "initsystem": "openrc",
+    "initramfs": "none",
     "service-manager": "rcupdate_add",
     "portage": GenPi64['portage'] | {
         "make.conf": GenPi64['portage']['make.conf'] | {
@@ -209,6 +210,7 @@ GenPi64OpenRC = GenPi64 | {
     "services": {
         "cronie": "default",
         "sshd": "default",
+        "swclock": "shutdown",
         "elogind": "default",
         "rsyslog": "default",
         "chronyd": "default",
@@ -256,14 +258,31 @@ GenPi64Systemd = GenPi64 | {
             "USE": GenPi64["portage"]["make.conf"]["USE"] + ["systemd", "-elogind"]
         }
     },
+    "etc": GenPi64["etc"] | {
+        "systemd/": {
+            "network/": {
+                i: "systemd/network/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'systemd/network'))
+            }
+        }
+    },
     "services": {
-        "sshd": "default",
-        "rngd": "boot"
+        "tmp.mount": "mask",
+        "sshd.socket": "enable",
+        "gpm.service": "enable",
+        "rngd.service": "enable",
+        "zram_tmp.service": "enable",
+        "zram_swap.service": "enable",
+        "zram_var_tmp.service": "enable",
+        "systemd-networkd.service": "enable",
+        "systemd-resolved.service": "enable",
+        "systemd-timesyncd.service": "enable"
     },
 }
 
 GentooAMD64 = Base | {
     "initsystem": "openrc",
+    "initramfs": "none",
+    "service-manager": "rcupdate_add",
     "stage3": "stage3-amd64.tar.xz",
     "stage3url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/",
@@ -275,15 +294,51 @@ GentooAMD64 = Base | {
             "USE": 'bindist -systemd openssl'.split(),
             'GRUB_PLATFORMS': "pc",
         },
-        "package.license": [
-            "# required by sys-kernel/linux-firmware (argument)",
-            "=sys-kernel/linux-firmware-20201218 linux-fw-redistributable no-source-code"
-        ],
+        "package.license/": {
+          "linux-firmware": [ "sys-kernel/linux-firmware linux-fw-redistributable no-source-code" ],
+        },
         "env/": {},
         "package.env/": {},
-        "package.use/": {
-        },
+        "package.use/": {},
     },
+    "overlays": [
+        {
+            'name': 'gentoo',
+            'location': '/var/db/repos/gentoo',
+            'sync-type': 'git',
+            'clone-depth': '1',
+            'sync-depth': '1',
+            'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
+            'auto-sync': 'yes',
+            'sync-git-verify-commit-signature': 'true',
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-03-31",
+        },
+        {
+            'name': 'genpi64',
+            'location': '/var/db/repos/genpi64',
+            'sync-type': 'git',
+            'sync-uri': 'https://github.com/GenPi64/genpi64-overlay.git',
+            'priority': '100',
+            'auto-sync': 'yes',
+            'clone-depth': '1',
+            'sync-depth': '1',
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-03-31",
+        },
+        {
+            'name': 'genpi-tools',
+            'location': '/var/db/repos/genpi-tools',
+            'sync-type': 'git',
+            'sync-uri': 'https://github.com/GenPi64/genpi-tools.git',
+            'priority': '50',
+            'auto-sync': 'yes',
+            'clone-depth': '1',
+            'sync-depth': '1',
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-03-31",
+        }
+    ],
     "kernel": [
         "sys-kernel/gentoo-kernel",
         "sys-kernel/linux-firmware"

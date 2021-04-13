@@ -81,8 +81,8 @@ Base = {
             'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true',
-            "#commit-hash": "83f51aa0f9c2f5df36d5dff05c9e1b90bee7dbbd",
-            "#clone-date": "2021-03-01",
+            "#commit-hash": "35c0c279daace8053ac9cc0e58ecb96bfb777e17",
+            "#clone-date": "2021-04-12",
 
         }
     ],
@@ -95,7 +95,8 @@ GenPi64 = Base | {
     "kernel": [
         "sys-firmware/raspberrypi-wifi-ucode",
         "sys-kernel/raspberrypi-kernel",
-        "sys-boot/raspberrypi-firmware"
+        "sys-boot/raspberrypi-firmware",
+        "sys-kernel/raspberrypi-initramfs"
     ],
     "overlays": Base['overlays'] + [
         {

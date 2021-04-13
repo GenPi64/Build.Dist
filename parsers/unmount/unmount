@@ -3,3 +3,4 @@ pushd ${PROJECT_DIR}
 
 umount --recursive image
 
+losetup -d $(cat "${PROJECT_DIR}"/loopdevice.txt)

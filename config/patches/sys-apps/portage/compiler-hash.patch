@@ -43,12 +43,12 @@ index 2bf0440..778c6d6 100644
 +from portage.checksum import getCompilerFingerprint
 +
 +COMPILER_FPRINT = getCompilerFingerprint()
-+COMPILER_FPRINT = repr((COMPILER_FPRINT+"\n").encode("utf-8"))
++COMPILER_FPRINT = repr((COMPILER_FPRINT+"\n").encode("utf-8")).strip("\n\\nb'\"")
 +
  # Exposes a depgraph interface to dep_check.
  _dep_check_graph_interface = collections.namedtuple('_dep_check_graph_interface',(
  	# Checks if parent package will replace child.
-@@ -7147,10 +7152,11 @@ class depgraph:
+@@ -7147,10 +7152,15 @@ class depgraph:
  				tree_type].dbapi._aux_cache_keys)
  
  			try:
@@ -57,7 +57,11 @@ index 2bf0440..778c6d6 100644
  			except KeyError:
  				raise portage.exception.PackageNotFound(cpv)
 -
-+			if (dict(metadata).get("COMPILER_FPRINT") or COMPILER_FPRINT) != COMPILER_FPRINT:
++			pkg_fprint = metadata.get("COMPILER_FPRINT")
++			if pkg_fprint:
++				pkg_fprint = pkg_fprint.strip("\n\\nb'\"")
++			if (pkg_fprint or COMPILER_FPRINT) != COMPILER_FPRINT:
++				print(f"pkg_fprint: {pkg_fprint}\ncmp_fprint: {COMPILER_FPRINT}")
 +				raise portage.exception.PackageNotFound(cpv)
  			# Ensure that this cpv is linked to the correct db, since the
  			# caller might have passed in a cpv from a different db, in

@@ -1,0 +1,406 @@
+diff --git a/lib/_emerge/Package.py b/lib/_emerge.patched/Package.py
+index 0ee25b9..dc88950 100644
+--- a/lib/_emerge/Package.py
++++ b/lib/_emerge.patched/Package.py
+@@ -31,7 +31,7 @@ class Package(Task):
+ 
+ 	metadata_keys = [
+ 		"BDEPEND",
+-		"BUILD_ID", "BUILD_TIME", "CHOST", "COUNTER", "DEFINED_PHASES",
++		"BUILD_ID", "BUILD_TIME", "CHOST", "COUNTER", "DEFINED_PHASES", "COMPILER_FPRINT",
+ 		"DEPEND", "EAPI", "INHERITED", "IUSE", "KEYWORDS",
+ 		"LICENSE", "MD5", "PDEPEND", "PROVIDES",
+ 		"RDEPEND", "repository", "REQUIRED_USE",
+diff --git a/lib/_emerge/actions.py b/lib/_emerge.patched/actions.py
+index 239bf6f..fc7d85c 100644
+--- a/lib/_emerge/actions.py
++++ b/lib/_emerge.patched/actions.py
+@@ -1612,7 +1612,7 @@ def action_info(settings, trees, myopts, myfiles):
+ 				if pkg_type == "binary":
+ 					if db.bintree.isremote(match):
+ 						continue
+-				auxkeys = ["EAPI", "DEFINED_PHASES"]
++				auxkeys = ["EAPI", "DEFINED_PHASES", "COMPILER_FPRINT"]
+ 				metadata = dict(zip(auxkeys, db.aux_get(match, auxkeys)))
+ 				if metadata["EAPI"] not in ("0", "1", "2", "3") and \
+ 					"info" in metadata["DEFINED_PHASES"].split():
+@@ -1940,6 +1940,7 @@ def action_info(settings, trees, myopts, myfiles):
+ 		mydesiredvars = ['CHOST', 'CFLAGS', 'CXXFLAGS', 'FEATURES', 'LDFLAGS']
+ 		auxkeys = mydesiredvars + list(vardb._aux_cache_keys)
+ 		auxkeys.append('DEFINED_PHASES')
++		auxkeys.append("COMPILER_FPRINT")
+ 		pkgsettings = portage.config(clone=settings)
+ 
+ 		# Loop through each package
+diff --git a/lib/_emerge/depgraph.py b/lib/_emerge.patched/depgraph.py
+index 2bf0440..778c6d6 100644
+--- a/lib/_emerge/depgraph.py
++++ b/lib/_emerge.patched/depgraph.py
+@@ -83,6 +83,11 @@ from _emerge.resolver.slot_collision import slot_conflict_handler
+ from _emerge.resolver.circular_dependency import circular_dependency_handler
+ from _emerge.resolver.output import Display, format_unmatched_atom
+ 
++from portage.checksum import getCompilerFingerprint
++
++COMPILER_FPRINT = getCompilerFingerprint()
++COMPILER_FPRINT = repr((COMPILER_FPRINT+"\n").encode("utf-8"))
++
+ # Exposes a depgraph interface to dep_check.
+ _dep_check_graph_interface = collections.namedtuple('_dep_check_graph_interface',(
+ 	# Checks if parent package will replace child.
+@@ -7147,10 +7152,11 @@ class depgraph:
+ 				tree_type].dbapi._aux_cache_keys)
+ 
+ 			try:
+-				metadata = zip(db_keys, db.aux_get(cpv, db_keys, myrepo=myrepo))
++				metadata = dict(zip(db_keys, db.aux_get(cpv, db_keys, myrepo=myrepo)))
+ 			except KeyError:
+ 				raise portage.exception.PackageNotFound(cpv)
+-
++			if (dict(metadata).get("COMPILER_FPRINT") or COMPILER_FPRINT) != COMPILER_FPRINT:
++				raise portage.exception.PackageNotFound(cpv)
+ 			# Ensure that this cpv is linked to the correct db, since the
+ 			# caller might have passed in a cpv from a different db, in
+ 			# order get an instance from this db with the same cpv.
+@@ -10183,7 +10189,6 @@ def get_mask_info(root_config, cpv, pkgsettings,
+ 			db.aux_get(cpv, db_keys, myrepo=myrepo)))
+ 	except KeyError:
+ 		metadata = None
+-
+ 	if metadata is None:
+ 		mreasons = ["corruption"]
+ 	else:
+@@ -10203,6 +10208,7 @@ def get_mask_info(root_config, cpv, pkgsettings,
+ 	return metadata, mreasons
+ 
+ def show_masked_packages(masked_packages):
++
+ 	shown_licenses = set()
+ 	shown_comments = set()
+ 	# Maybe there is both an ebuild and a binary. Only
+@@ -10279,6 +10285,7 @@ def get_masking_status(pkg, pkgsettings, root_config, myrepo=None, use=None):
+ 		mreason in _get_masking_status(pkg, pkgsettings, root_config, myrepo=myrepo, use=use)]
+ 
+ def _get_masking_status(pkg, pkgsettings, root_config, myrepo=None, use=None):
++
+ 	mreasons = _getmaskingstatus(
+ 		pkg, settings=pkgsettings,
+ 		portdb=root_config.trees["porttree"].dbapi, myrepo=myrepo)
+diff --git a/lib/portage/__init__.py b/lib/portage.patched/__init__.py
+index adcf9bd..08037a0 100644
+--- a/lib/portage/__init__.py
++++ b/lib/portage.patched/__init__.py
+@@ -520,7 +520,7 @@ auxdbkeys = (
+ 	'KEYWORDS',  'INHERITED', 'IUSE', 'REQUIRED_USE',
+ 	'PDEPEND',   'BDEPEND', 'EAPI',
+ 	'PROPERTIES', 'DEFINED_PHASES', 'UNUSED_05', 'UNUSED_04',
+-	'UNUSED_03', 'UNUSED_02', 'UNUSED_01',
++	'UNUSED_03', 'UNUSED_02', 'UNUSED_01', "COMPILER_FPRINT"
+ )
+ auxdbkeylen = len(auxdbkeys)
+ 
+diff --git a/lib/portage/cache/metadata.py b/lib/portage.patched/cache/metadata.py
+index bd1b70f..dbbaa6b 100644
+--- a/lib/portage/cache/metadata.py
++++ b/lib/portage.patched/cache/metadata.py
+@@ -27,7 +27,7 @@ class database(flat_hash.database):
+ 		'RESTRICT',  'HOMEPAGE',  'LICENSE', 'DESCRIPTION',
+ 		'KEYWORDS',  'INHERITED', 'IUSE', 'REQUIRED_USE',
+ 		'PDEPEND',   'BDEPEND',   'EAPI', 'PROPERTIES',
+-		'DEFINED_PHASES')
++		'DEFINED_PHASES', 'COMPILER_FPRINT')
+ 
+ 	autocommits = True
+ 	serialize_eclasses = False
+diff --git a/lib/portage/checksum.py b/lib/portage.patched/checksum.py
+index b5dae96..a507608 100644
+--- a/lib/portage/checksum.py
++++ b/lib/portage.patched/checksum.py
+@@ -17,6 +17,38 @@ from portage.const import HASHING_BLOCKSIZE, PRELINK_BINARY
+ from portage.localization import _
+ 
+ 
++def getCompilerFingerprint():
++
++		p = subprocess.Popen([os.environ.get('CC', 'gcc'), '--version', '--verbose'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++		p.wait()
++		compiler_out = p.stdout.read().strip()
++		compiler_err = bytes.join(b'', [line for line in p.stderr.readlines() if b'/tmp' not in line])
++		cflags = os.environ.get('CFLAGS', "").strip().encode('utf-8')
++		cxxflags = os.environ.get('CXXFLAGS', "").strip().encode('utf-8')
++		ldflags = os.environ.get('LDFLAGS', "").strip().encode('utf-8')
++		p = subprocess.Popen([os.environ.get('CC', 'gcc'), '-x', 'c', '-static', '-o', '/dev/stdout', '-pipe', '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++		p.stdin.write(b"#include <stdio.h>\n")
++		p.stdin.write(b'int main(){printf("fingerprint\n");return 0;}\n')
++		p.stdin.close()
++		gcc_out = p.stdout.read()
++		gcc_err = p.stderr.read()
++		while p.poll() is None:
++			gcc_out += p.stdout.read()
++			gcc_err += p.stderr.read()
++		fingerprint = bytes.join(b'\n', [compiler_out, compiler_err, cflags, cxxflags, ldflags, gcc_out, gcc_err])
++		return hashlib.sha512(fingerprint).hexdigest()
++
++
++class  readCompilerFPrint(object):
++	def checksum_file(self, path):
++		xp = portage.xpak.tbz2(path)
++		data = xp.get_data()
++		if b'COMPILER_FPRINT' in list(data):
++			r = repr(data[b'COMPILER_FPRINT'])
++		else:
++			r = getCompilerFingerprint()
++		return r, len(r)
++
+ # Summary of all available hashes and their implementations,
+ # most preferred first. Please keep this in sync with logic below.
+ # ================================================================
+@@ -32,7 +64,6 @@ from portage.localization import _
+ # SHA3_256: hashlib (3.6+), pysha3, pycrypto
+ # SHA3_512: hashlib (3.6+), pysha3, pycrypto
+ 
+-
+ # Dict of all available hash functions
+ hashfunc_map = {}
+ hashorigin_map = {}
+@@ -104,7 +135,11 @@ class _generate_hash_function:
+ _generate_hash_function("MD5", hashlib.md5, origin="hashlib")
+ _generate_hash_function("SHA1", hashlib.sha1, origin="hashlib")
+ _generate_hash_function("SHA256", hashlib.sha256, origin="hashlib")
++hashfunc_map["COMPILER_FPRINT"] = readCompilerFPrint()
++hashorigin_map['COMPILER_FPRINT'] = 'genpi64'
++
+ _generate_hash_function("SHA512", hashlib.sha512, origin="hashlib")
++
+ for local_name, hash_name in (
+ 		("RMD160", "ripemd160"),
+ 		("WHIRLPOOL", "whirlpool"),
+@@ -581,3 +616,5 @@ def checksum_str(data, hashname="MD5"):
+ 		raise portage.exception.DigestException(hashname + \
+ 			" hash function not available (needs dev-python/pycrypto)")
+ 	return hashfunc_map[hashname].checksum_str(data)
++
++
+diff --git a/lib/portage/dbapi/bintree.py b/lib/portage.patched/dbapi/bintree.py
+index 429c8e6..55b3aab 100644
+--- a/lib/portage/dbapi/bintree.py
++++ b/lib/portage.patched/dbapi/bintree.py
+@@ -46,6 +46,8 @@ import errno
+ import io
+ import stat
+ import subprocess
++import json
++import hashlib
+ import tempfile
+ import textwrap
+ import time
+@@ -63,8 +65,8 @@ class UseCachedCopyOfRemoteIndex(Exception):
+ 
+ class bindbapi(fakedbapi):
+ 	_known_keys = frozenset(list(fakedbapi._known_keys) + \
+-		["CHOST", "repository", "USE"])
+-	_pkg_str_aux_keys = fakedbapi._pkg_str_aux_keys + ("BUILD_ID", "BUILD_TIME", "_mtime_")
++		["CHOST", "repository", "USE", "COMPILER_FPRINT"])
++	_pkg_str_aux_keys = fakedbapi._pkg_str_aux_keys + ("BUILD_ID", "BUILD_TIME", "_mtime_", "COMPILER_FPRINT")
+ 
+ 	def __init__(self, mybintree=None, **kwargs):
+ 		# Always enable multi_instance mode for bindbapi indexing. This
+@@ -82,7 +84,7 @@ class bindbapi(fakedbapi):
+ 		self.move_ent = mybintree.move_ent
+ 		# Selectively cache metadata in order to optimize dep matching.
+ 		self._aux_cache_keys = set(
+-			["BDEPEND", "BUILD_ID", "BUILD_TIME", "CHOST", "DEFINED_PHASES",
++			["BDEPEND", "BUILD_ID", "BUILD_TIME", "CHOST", "COMPILER_FPRINT", "DEFINED_PHASES",
+ 			"DEPEND", "EAPI", "IUSE", "KEYWORDS",
+ 			"LICENSE", "MD5", "PDEPEND", "PROPERTIES",
+ 			"PROVIDES", "RDEPEND", "repository", "REQUIRES", "RESTRICT",
+@@ -135,7 +137,8 @@ class bindbapi(fakedbapi):
+ 			wants).difference(self._aux_cache_keys):
+ 			aux_cache = self.cpvdict[instance_key]
+ 			if aux_cache is not None:
+-				return [aux_cache.get(x, "") for x in wants]
++				r = [aux_cache.get(x, "") for x in wants]
++				return r
+ 		mysplit = mycpv.split("/")
+ 		mylist = []
+ 		add_pkg = self.bintree._additional_pkgs.get(instance_key)
+@@ -377,12 +380,12 @@ class binarytree:
+ 			self._all_directory = os.path.isdir(
+ 				os.path.join(self.pkgdir, "All"))
+ 			self._pkgindex_version = 0
+-			self._pkgindex_hashes = ["MD5","SHA1"]
++			self._pkgindex_hashes = ["MD5","SHA1","COMPILER_FPRINT"]
+ 			self._pkgindex_file = os.path.join(self.pkgdir, "Packages")
+ 			self._pkgindex_keys = self.dbapi._aux_cache_keys.copy()
+ 			self._pkgindex_keys.update(["CPV", "SIZE"])
+ 			self._pkgindex_aux_keys = \
+-				["BASE_URI", "BDEPEND", "BUILD_ID", "BUILD_TIME", "CHOST",
++				["BASE_URI", "BDEPEND", "BUILD_ID", "BUILD_TIME", "CHOST", "COMPILER_FPRINT",
+ 				"DEFINED_PHASES", "DEPEND", "DESCRIPTION", "EAPI", "FETCHCOMMAND",
+ 				"IUSE", "KEYWORDS", "LICENSE", "PDEPEND",
+ 				"PKGINDEX_URI", "PROPERTIES", "PROVIDES",
+@@ -419,13 +422,15 @@ class binarytree:
+ 				"RESTRICT": "",
+ 				"SLOT"    : "0",
+ 				"USE"     : "",
++                                "COMPILER_FPRINT": self.getCompilerFingerprint(),
+ 			}
+-			self._pkgindex_inherited_keys = ["CHOST", "repository"]
++			self._pkgindex_inherited_keys = ["CHOST", "repository", "COMPILER_FPRINT"]
+ 
+ 			# Populate the header with appropriate defaults.
+ 			self._pkgindex_default_header_data = {
+ 				"CHOST"        : self.settings.get("CHOST", ""),
+ 				"repository"   : "",
++				"COMPILER_FPRINT": self.getCompilerFingerprint(),
+ 			}
+ 
+ 			self._pkgindex_translated_keys = (
+@@ -973,7 +978,7 @@ class binarytree:
+ 				# urlparse.urljoin() only works correctly with recognized
+ 				# protocols and requires the base url to have a trailing
+ 				# slash, so join manually...
+-				url = base_url.rstrip("/") + "/Packages"
++				url = base_url.rstrip("/") + f"/Packages?compiler={self.getCompilerFingerprint()}"
+ 				f = None
+ 
+ 				if not getbinpkg_refresh and local_timestamp:
+@@ -1193,6 +1198,9 @@ class binarytree:
+ 				self._additional_pkgs[instance_key] = pkg
+ 				self.dbapi.cpv_inject(pkg)
+ 
++	def getCompilerFingerprint(self):
++		return portage.checksum.getCompilerFingerprint()
++
+ 	def inject(self, cpv, filename=None):
+ 		"""Add a freshly built package to the database.  This updates
+ 		$PKGDIR/Packages with the new package metadata (including MD5).
+diff --git a/lib/portage/dbapi/porttree.py b/lib/portage.patched/dbapi/porttree.py
+index 0c2a4e2..b1d585f 100644
+--- a/lib/portage/dbapi/porttree.py
++++ b/lib/portage.patched/dbapi/porttree.py
+@@ -312,7 +312,7 @@ class portdbapi(dbapi):
+ 			["BDEPEND", "DEPEND", "EAPI",
+ 			"INHERITED", "IUSE", "KEYWORDS", "LICENSE",
+ 			"PDEPEND", "PROPERTIES", "RDEPEND", "repository",
+-			"RESTRICT", "SLOT", "DEFINED_PHASES", "REQUIRED_USE"])
++			"RESTRICT", "SLOT", "DEFINED_PHASES", "REQUIRED_USE", "COMPILER_FPRINT"])
+ 
+ 		self._aux_cache = {}
+ 		self._better_cache = None
+diff --git a/lib/portage/dbapi/vartree.py b/lib/portage.patched/dbapi/vartree.py
+index 826083e..6b525d7 100644
+--- a/lib/portage/dbapi/vartree.py
++++ b/lib/portage.patched/dbapi/vartree.py
+@@ -116,7 +116,7 @@ class vardbapi(dbapi):
+ 
+ 	_aux_cache_keys_re = re.compile(r'^NEEDED\..*$')
+ 	_aux_multi_line_re = re.compile(r'^(CONTENTS|NEEDED\..*)$')
+-	_pkg_str_aux_keys = dbapi._pkg_str_aux_keys + ("BUILD_ID", "BUILD_TIME", "_mtime_")
++	_pkg_str_aux_keys = dbapi._pkg_str_aux_keys + ("BUILD_ID", "BUILD_TIME", "_mtime_", "COMPILER_FPRINT")
+ 
+ 	def __init__(self, _unused_param=DeprecationWarning,
+ 		categories=None, settings=None, vartree=None):
+@@ -170,7 +170,7 @@ class vardbapi(dbapi):
+ 			vartree = portage.db[settings['EROOT']]['vartree']
+ 		self.vartree = vartree
+ 		self._aux_cache_keys = set(
+-			["BDEPEND", "BUILD_TIME", "CHOST", "COUNTER", "DEPEND",
++			["BDEPEND", "BUILD_TIME", "CHOST", "COUNTER", "DEPEND", "COMPILER_FPRINT",
+ 			"DESCRIPTION", "EAPI", "HOMEPAGE",
+ 			"BUILD_ID", "IUSE", "KEYWORDS",
+ 			"LICENSE", "PDEPEND", "PROPERTIES", "RDEPEND",
+diff --git a/lib/portage/package/ebuild/config.py b/lib/portage.patched/package/ebuild/config.py
+index 690efde..d71f3cd 100644
+--- a/lib/portage/package/ebuild/config.py
++++ b/lib/portage.patched/package/ebuild/config.py
+@@ -152,7 +152,7 @@ class config:
+ 	_setcpv_aux_keys = ('BDEPEND', 'DEFINED_PHASES', 'DEPEND', 'EAPI',
+ 		'INHERITED', 'IUSE', 'REQUIRED_USE', 'KEYWORDS', 'LICENSE', 'PDEPEND',
+ 		'PROPERTIES', 'RDEPEND', 'SLOT',
+-		'repository', 'RESTRICT', 'LICENSE',)
++		'repository', 'RESTRICT', 'LICENSE',"COMPILER_FPRINT")
+ 
+ 	_module_aliases = {
+ 		"cache.metadata_overlay.database" : "portage.cache.flat_hash.mtime_md5_database",
+diff --git a/lib/portage/package/ebuild/doebuild.py b/lib/portage.patched/package/ebuild/doebuild.py
+index 476689d..386836d 100644
+--- a/lib/portage/package/ebuild/doebuild.py
++++ b/lib/portage.patched/package/ebuild/doebuild.py
+@@ -128,7 +128,7 @@ _phase_func_map = {
+ }
+ 
+ _vdb_use_conditional_keys = Package._dep_keys + \
+-	('LICENSE', 'PROPERTIES', 'RESTRICT',)
++	('LICENSE', 'PROPERTIES', 'RESTRICT', )
+ 
+ def _doebuild_spawn(phase, settings, actionmap=None, **kwargs):
+ 	"""
+@@ -1953,15 +1953,18 @@ def _post_src_install_write_metadata(settings):
+ 	setting. Also, revert IUSE in case it's corrupted
+ 	due to local environment settings like in bug #386829.
+ 	"""
+-
++	print(1956, settings)
+ 	eapi_attrs = _get_eapi_attrs(settings.configdict['pkg']['EAPI'])
+ 
+ 	build_info_dir = os.path.join(settings['PORTAGE_BUILDDIR'], 'build-info')
+ 
+-	metadata_keys = ['IUSE']
++	metadata_keys = ['IUSE', "COMPILER_FPRINT"]
+ 	if eapi_attrs.iuse_effective:
+ 		metadata_keys.append('IUSE_EFFECTIVE')
+ 
++	print(settings)
++	settings.configdict['pkg']['COMPILER_FPRINT'] = portage.checksum.getCompilerFingerprint()
++
+ 	for k in metadata_keys:
+ 		v = settings.configdict['pkg'].get(k)
+ 		if v is not None:
+diff --git a/lib/portage/util/_async/FileDigester.py b/lib/portage.patched/util/_async/FileDigester.py
+index bb99b9b..d0131f9 100644
+--- a/lib/portage/util/_async/FileDigester.py
++++ b/lib/portage.patched/util/_async/FileDigester.py
+@@ -33,7 +33,6 @@ class FileDigester(ForkProcess):
+ 	def _run(self):
+ 		digests = perform_multiple_checksums(self.file_path,
+ 			hashes=self.hash_names)
+-
+ 		buf = "".join("%s=%s\n" % item
+ 			for item in digests.items()).encode('utf_8')
+ 
+diff --git a/lib/portage/versions.py b/lib/portage/versions.py
+index 1dc9421..484644a 100644
+--- a/lib/portage/versions.py
++++ b/lib/portage/versions.py
+@@ -357,12 +357,12 @@ class _pkg_str(str):
+ 
+ 	def __new__(cls, cpv, metadata=None, settings=None, eapi=None,
+ 		repo=None, slot=None, build_time=None, build_id=None,
+-		file_size=None, mtime=None, db=None):
++		file_size=None, mtime=None, db=None, compiler_fprint=None):
+ 		return str.__new__(cls, cpv)
+ 
+ 	def __init__(self, cpv, metadata=None, settings=None, eapi=None,
+ 		repo=None, slot=None, build_time=None, build_id=None,
+-		file_size=None, mtime=None, db=None):
++		file_size=None, mtime=None, db=None, compiler_fprint=None):
+ 		if not isinstance(cpv, str):
+ 			# Avoid TypeError from str.__init__ with PyPy.
+ 			cpv = _unicode_decode(cpv)
+@@ -376,6 +376,7 @@ class _pkg_str(str):
+ 			file_size = metadata.get('SIZE', file_size)
+ 			build_id = metadata.get('BUILD_ID', build_id)
+ 			mtime = metadata.get('_mtime_', mtime)
++			compiler_fprint = metadata.get("COMPILER_FPRINT", "")
+ 		if settings is not None:
+ 			self.__dict__['_settings'] = settings
+ 		if db is not None:
+@@ -384,6 +385,7 @@ class _pkg_str(str):
+ 			self.__dict__['eapi'] = eapi
+ 
+ 		self.__dict__['build_time'] = self._long(build_time, 0)
++		self.__dict__['compiler_fprint'] = compiler_fprint
+ 		self.__dict__['file_size'] = self._long(file_size, None)
+ 		self.__dict__['build_id'] = self._long(build_id, None)
+ 		self.__dict__['mtime'] = self._long(mtime, None)

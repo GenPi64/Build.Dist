@@ -202,6 +202,53 @@ GenPi64OpenRC = GenPi64 | {
     "initsystem": "openrc",
     "initramfs": "none",
     "service-manager": "rcupdate_add",
+    "profile": "genpi64:default/linux/arm64/17.0/genpi64/exp",
+    "portage": GenPi64['portage'] | {
+        "make.conf": GenPi64['portage']['make.conf'] | {
+            "USE": GenPi64["portage"]["make.conf"]["USE"] + ["-systemd", "elogind"]
+        }
+    },
+    'image': {
+        'name': 'GenPi64Exp.img',
+        'size': '8G',
+        'format': 'msdos',
+        'mount-order': [1, 0],
+        'uuid': UUID[:8],
+        'partitions': [
+            {
+                'end': '256MiB',
+                'format': 'vfat',
+                'mount-point': '/boot',
+                'mount-options': 'noatime',
+                'flags': {
+                    'lba': 'on'
+                }
+            },
+            {
+                'end': '100%',
+                'format': 'btrfs',
+                'mount-point': '/',
+                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
+                'args': f'--force'
+            }
+        ]
+    },
+    "services": {
+        "cronie": "default",
+        "sshd": "default",
+        "swclock": "shutdown",
+        "elogind": "default",
+        "rsyslog": "default",
+        "chronyd": "default",
+        "rngd": "boot",
+        "rpi3-ondemand": "default"
+    },
+}
+
+GenPi64OpenRCExp = GenPi64 | {
+    "initsystem": "openrc",
+    "initramfs": "none",
+    "service-manager": "rcupdate_add",
     "portage": GenPi64['portage'] | {
         "make.conf": GenPi64['portage']['make.conf'] | {
             "USE": GenPi64["portage"]["make.conf"]["USE"] + ["-systemd", "elogind"]

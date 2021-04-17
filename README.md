@@ -2,41 +2,41 @@
 Build scripts for building GenPi64 images.
 
 ## Requirements
-Linux system (gcc, chroot, et cetera)
-Python3.9
-pychroot
-git
-dev-python/python-lockfile
-dev-python/iniparse
-qemu with xattrs enabled.
+Linux system (gcc, chroot, et cetera)  
+Python3.9  
+pychroot  
+git  
+dev-python/python-lockfile  
+dev-python/iniparse  
+qemu with xattrs enabled.  
 ### Filesystem creation tools
-btrfs-progs (or change the filesystem type and mount options in `config/config.py`)
-sgdisk (for gpt based disk images)
-sfdisk (for mbr based disk images)
+btrfs-progs (or change the filesystem type and mount options in `config/config.py`)  
+sgdisk (for gpt based disk images)  
+sfdisk (for mbr based disk images)  
 
 ### If running from not aarch64
-qemu user static for aarch64 and arm
+qemu user static for aarch64 and arm  
 
 ### USE flags when running on Gentoo
 - qemu needs to be emerged with USE="static-user".
 
 ### Extra requirements if not running on gentoo
-wget
+wget  
 
 
 
 ## Usage
 
-You need to download the stage 3 tarball you want to use, and put it in `build-binary-assets/stage3`.
-Edit `config/config.py` and update the path to the stage3 version you're using.
-
 Pick a target by running
 `export PROJECT=<projectname>` 
-default is `GenPi64`.  
+default is `GenPi64OpenRC`.  
 
 If you want to set where the build should happen, run
 `export PROJECT_DIR=</path/to/build/location>`
 default is `$PWD/build/$PROJECT`.
+
+If you want to use btrfs snapshots (requires btrfs), create a folder for the snapshots.   
+Example command with snapshots: `PROJECT="GenPi64OpenRC" BTRFS_SNAPSHOTS=/root/snapshots/openrc/ NO_PARALLEL=yes ./build.sh`
 
 Then run `sh build.sh`.  Wait (a *long* time).  At the end, you should have your output in `$PROJECT_DIR`.  
 Packages are in `$PROJECT_DIR/packages`, the image file is in `$PROJECT_DIR/`.  There's also a stage4 generated, 

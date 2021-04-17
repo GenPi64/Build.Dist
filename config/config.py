@@ -18,7 +18,7 @@ def readlines(p):
 Base = {
     'portage': {
         "make.conf": dict(
-           # CFLAGS="-march=native -O2 -pipe",
+            # CFLAGS="-march=native -O2 -pipe",
             CFLAGS="-mtune=generic -O2 -pipe",
             CXXFLAGS="${CFLAGS}",
             FCFLAGS="${CFLAGS}",
@@ -41,12 +41,6 @@ Base = {
             }
         },
         "env/": {},
-#            "enable-distcc": ['FEATURES="${FEATURES} distcc"']
-#        },
-        "package.env/": {
-            "distcc": [[pn, " enable-distcc"] for pn in
-                       readlines(os.path.join(os.environ.get('CONFIG_DIR'), 'distcc-pkgs')) if pn]
-        }
     },
     "etc": {
         "locale.gen": "locale.gen",
@@ -143,7 +137,14 @@ GenPi64 = Base | {
             "priority = 9998",
             "sync-uri = https://fi.packages.genpi64.com/"
         ],
-        "package.mask": "package.mask"
+        "package.mask": "package.mask",
+        "env/": {
+            "enable-distcc": ['FEATURES="${FEATURES} distcc"']
+        },
+        "package.env/": {
+            "distcc": [[pn, " enable-distcc"] for pn in
+                       readlines(os.path.join(os.environ.get('CONFIG_DIR'), 'distcc-pkgs')) if pn]
+        }
     },
     "etc": Base["etc"] | {
         "kernel/": {
@@ -309,7 +310,8 @@ GenPi64Systemd = GenPi64 | {
     "etc": GenPi64["etc"] | {
         "systemd/": {
             "network/": {
-                i: "systemd/network/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'systemd/network'))
+                i: "systemd/network/" + i for i in
+                os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'systemd/network'))
             }
         }
     },
@@ -344,7 +346,7 @@ GentooAMD64 = Base | {
             'GRUB_PLATFORMS': "pc",
         },
         "package.license/": {
-          "linux-firmware": [ "sys-kernel/linux-firmware linux-fw-redistributable no-source-code" ],
+            "linux-firmware": ["sys-kernel/linux-firmware linux-fw-redistributable no-source-code"],
         },
         "env/": {},
         "package.env/": {},

@@ -18,7 +18,8 @@ def readlines(p):
 Base = {
     'portage': {
         "make.conf": dict(
-            CFLAGS="-march=native -O2 -pipe",
+           # CFLAGS="-march=native -O2 -pipe",
+            CFLAGS="-mtune=generic -O2 -pipe",
             CXXFLAGS="${CFLAGS}",
             FCFLAGS="${CFLAGS}",
             FFLAGS="${CFLAGS}",
@@ -39,9 +40,9 @@ Base = {
                 "linux-firmware": "linux-firmware"
             }
         },
-        "env/": {
-            "enable-distcc": ['FEATURES="${FEATURES} distcc"']
-        },
+        "env/": {},
+#            "enable-distcc": ['FEATURES="${FEATURES} distcc"']
+#        },
         "package.env/": {
             "distcc": [[pn, " enable-distcc"] for pn in
                        readlines(os.path.join(os.environ.get('CONFIG_DIR'), 'distcc-pkgs')) if pn]
@@ -81,8 +82,8 @@ Base = {
             'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true',
-            "#commit-hash": "35c0c279daace8053ac9cc0e58ecb96bfb777e17",
-            "#clone-date": "2021-04-11",
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-04-13",
 
         }
     ],
@@ -108,9 +109,9 @@ GenPi64 = Base | {
             'auto-sync': 'yes',
             'clone-depth': '1',
             'sync-depth': '1',
-            'sync-git-clone-extra-opts': '--single-branch --branch alpha8',
+            'sync-git-clone-extra-opts': '--single-branch --branch alpha8.3',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-03-01"
+            "#clone-date": "2021-04-17"
         },
         {
             'name': 'genpi-tools',
@@ -122,7 +123,7 @@ GenPi64 = Base | {
             'clone-depth': '1',
             'sync-depth': '1',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-01-01"
+            "#clone-date": "2021-04-17"
         }
     ],
     "portage": Base["portage"] | {
@@ -337,6 +338,7 @@ GentooAMD64 = Base | {
     'sets': ['standard', 'amd64'],
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
+            'CFLAGS': '-mtune=generic -O2 -pipe',
             'CHOST': 'x86_64-unknown-linux-gnu',
             "USE": 'bindist -systemd openssl'.split(),
             'GRUB_PLATFORMS': "pc",
@@ -359,7 +361,7 @@ GentooAMD64 = Base | {
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-03-31",
+            "#clone-date": "2021-04-01",
         },
         {
             'name': 'genpi64',
@@ -371,7 +373,7 @@ GentooAMD64 = Base | {
             'clone-depth': '1',
             'sync-depth': '1',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-03-31",
+            "#clone-date": "2021-01-01",
         },
         {
             'name': 'genpi-tools',
@@ -383,7 +385,7 @@ GentooAMD64 = Base | {
             'clone-depth': '1',
             'sync-depth': '1',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-03-31",
+            "#clone-date": "2021-01-01",
         }
     ],
     "kernel": [

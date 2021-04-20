@@ -66,16 +66,7 @@ def copydir(conf, dest):
 
 portage = config['portage']
 
-binhost = portage.get('binrepos.conf', [])
-
-if len(binhost) > 3:
-    binhost = binhost[2].split('=',1)[1].strip()
-    os.environ['EXTRA_EMERGE_ENV'] = f'export PORTAGE_BINHOST="{binhost}"'
-
-
 copydir(portage, f"{CHROOT_DIR}/etc/portage")
 
 system(f"{PARSERS}/emerge/emerge '-bk dev-vcs/git'")
 
-
-# system(f"{PARSERS}/emerge/emerge --sync")

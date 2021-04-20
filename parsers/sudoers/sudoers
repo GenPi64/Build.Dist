@@ -1,0 +1,21 @@
+#!/usr/bin/python3.9
+import os
+import sys
+import subprocess
+from sys import exit
+
+os.chdir(os.environ['PROJECT_DIR'])
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+
+import config
+config = getattr(config, os.environ['PROJECT'])
+
+image = config['image']
+
+
+os.chdir("image")
+
+with open("etc/sudoers", "r") as f:
+    sudoers = f.read()
+with open("etc/sudoers", "w") as f:
+    f.write(sudoers.replace("# %wheel ALL=(ALL) NOPASSWD: ALL", "%wheel ALL=(ALL) NOPASSWD: ALL"))

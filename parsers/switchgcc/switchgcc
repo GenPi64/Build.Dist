@@ -1,0 +1,39 @@
+#!/usr/bin/python3.9
+import json
+import os
+import sys
+import shutil
+
+eselect_target, gcc, gpp = sys.argv[1:]
+
+
+
+CONFIG_DIR = os.environ['CONFIG_DIR']
+PROJECT_DIR = os.environ['PROJECT_DIR']
+PROJECT = os.environ['PROJECT']
+CHROOT_DIR = os.environ['CHROOT_DIR']
+PARSERS = os.environ['PARSERS']
+SCRIPTS = os.environ['SCRIPTS']
+
+def system(*args):
+    os.system(*args) and sys.exit(1)
+
+
+
+
+os.chdir(CHROOT_DIR)
+os.chdir("etc/portage")
+with open("make.conf") as f:
+    lines = f.readlines()
+
+
+with open("make.conf", "w") as f:
+    for line in lines:
+        if line.startswith("CC="):
+            line = f'CC="{gcc}"\n'
+        elif line.startswith("CXX="):
+            line = f'CXX="{gpp}"\n'
+        f.write(line)
+
+
+system(f"{SCRIPTS}/chroot.py eselect gcc set {eselect_target}")        

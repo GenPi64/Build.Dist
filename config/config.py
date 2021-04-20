@@ -22,13 +22,11 @@ Base = {
             CXXFLAGS="${CFLAGS}",
             FCFLAGS="${CFLAGS}",
             FFLAGS="${CFLAGS}",
-            CHOST="aarch64-unknown-linux-gnu",
             USE=["bindist"],
-            FEATURES="parallel-fetch parallel-install buildpkg binpkg-multi-instance getbinpkg ".split(),
+            FEATURES="parallel-fetch parallel-install ".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
-            INPUT_DEVICES="evdev synaptics",
-            EMERGE_DEFAULT_OPTS="--buildpkg"
+            INPUT_DEVICES="evdev synaptics"
         ),
         "patches/": {
             "app-editors/": "patches/app-editors",
@@ -128,6 +126,9 @@ GenPi64 = Base | {
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
             "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe",
+            'CC':"aarch64-unknown-linux-gnu-gcc-9.3.0",
+            'CXX':"aarch64-unknown-linux-gnu-g++-9.3.0",
+            'CHOST':"aarch64-unknown-linux-gnu",
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"],
@@ -142,7 +143,8 @@ GenPi64 = Base | {
             "priority = 9998",
             "sync-uri = https://fi.packages.genpi64.com/"
         ],
-        "package.mask": "package.mask"
+        "package.mask": "package.mask",
+        "package.accept_keywords": "package.accept_keywords"
     },
     "etc": Base["etc"] | {
         "kernel/": {

@@ -30,7 +30,8 @@ Base = {
         ),
         "patches/": {
             "app-editors/": "patches/app-editors",
-            "sys-apps/": "patches/sys-apps"
+            "sys-apps/": "patches/sys-apps",
+            "dev-lang/": "patches/dev-lang"
         },
         "savedconfig/": {
             "sys-kernel/": {

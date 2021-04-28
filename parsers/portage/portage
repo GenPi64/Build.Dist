@@ -68,5 +68,5 @@ portage = config['portage']
 
 copydir(portage, f"{CHROOT_DIR}/etc/portage")
 
-system(f"{PARSERS}/emerge/emerge '-bk dev-vcs/git'")
+system(f"{PARSERS}/emerge/emerge 'dev-vcs/git'")
 

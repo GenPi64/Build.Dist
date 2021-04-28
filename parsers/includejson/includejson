@@ -98,7 +98,13 @@ for patch in sys.argv[2:]:
           print(f"WARNING: patch-step {p_item['name']} should run before {b4}, but I can't find {b4}")
           manifest.append(p_item)
       else:
-        manifest.append(p_item)
+        for idx, item in enumerate(manifest):
+          if item['name'] == p_item['name']:
+            print(f"INFO: overwriting {item['name']} with patched version")
+            manifest[idx] = p_item
+            break
+        else:
+          manifest.append(p_item)
 print("load complete")
 
 print("Loading status")

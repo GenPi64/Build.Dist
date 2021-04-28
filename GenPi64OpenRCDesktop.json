@@ -1,7 +1,8 @@
 [
     {"name": "genpi64openrc-lite", "deps": [""], "parser": "includejson", "args": ["GenPi64OpenRC.json"], "env": {"PROJECT": "GenPi64OpenRC"}},
     {"name": "reconfig", "deps": ["genpi64openrc-lite"], "parser": "config", "args": [""]},
-    {"name": "resetprofile", "deps": ["reconfig"], "parser": "setprofile", "args": [""]},
+    {"name": "reetc", "deps": ["reconfig"], "parser": "etc", "args": [""]},
+    {"name": "resetprofile", "deps": ["reetc"], "parser": "setprofile", "args": [""]},
     {"name": "remerge-profile", "deps": ["resetprofile"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
     {"name": "desktopsets", "deps": ["remerge-profile"], "parser": "addsets", "args": [""]},
     {"name": "emergedesktop", "deps": ["desktopsets"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},

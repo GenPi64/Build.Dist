@@ -6,7 +6,7 @@
     {"name": "git", "deps": ["overlays"], "parser": "git", "args": [""]},
     {"name": "portage", "deps": ["git"], "parser": "portage", "args": [""]},
     {"name": "etc", "deps": ["portage"], "parser": "etc", "args": [""]},
-    {"name": "distcc", "deps": ["etc"], "parser": "emerge", "args": ["distcc -1bg", "-X"]},
+    {"name": "distcc", "deps": ["etc"], "parser": "emerge", "args": ["distcc -1", "-X"]},
     {"name": "distcchost", "deps": ["distcc"], "parser": "distcc", "args": [""]},
     {"name": "enabledistcc", "deps": ["distcchost"], "parser": "switchgcc", "args": ["aarch64-unknown-linux-gnu-9.3.0", "/usr/lib/distcc/bin/aarch64-unknown-linux-gnu-gcc-9.3.0", "/usr/lib/distcc/bin/aarch64-unknown-linux-gnu-g++-9.3.0"]},
     {"name": "updategcc", "deps": ["enabledistcc"], "parser": "emerge", "args": ["=sys-devel/gcc-10.3.0 -1", "-X"]},

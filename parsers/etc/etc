@@ -28,7 +28,7 @@ def copyconf(conf, file):
                 if isinstance(val, (list, tuple, set)):
                     val = str.join(" ", val)
                     val = json.dumps(val)
-                    print(f"{key}={val}", file=f)
+                print(f"{key}={val}", file=f)
     else:
         if not conf.startswith("/"):
             conf = f'{CONFIG_DIR}/{conf}'

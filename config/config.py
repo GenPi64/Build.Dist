@@ -258,7 +258,10 @@ GenPi64Systemd = GenPi64 | {
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/systemd",
     "portage": GenPi64["portage"] | {
         "make.conf": GenPi64["portage"]["make.conf"] | {
-            "USE": GenPi64["portage"]["make.conf"]["USE"] + ["systemd", "-elogind"]
+            "USE": GenPi64["portage"]["make.conf"]["USE"] + ["systemd", "-elogind"],
+            'CC':"aarch64-unknown-linux-gnu-gcc-10.2.0",
+            'CXX':"aarch64-unknown-linux-gnu-g++-10.2.0",
+
         }
     },
     "etc": GenPi64["etc"] | {

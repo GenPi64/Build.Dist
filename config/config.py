@@ -229,7 +229,7 @@ GenPi64OpenRCDesktop = GenPi64OpenRC | {
     },
     'etc': GenPi64OpenRC['etc'] | {
         'env.d/': {
-            '90xsession': ['XSESSION="Xfce4"']
+            '90xsession': {'XSESSION':"Xfce4"}
         }
     }
 }

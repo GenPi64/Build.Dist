@@ -1,0 +1,5 @@
+[
+    {"name": "enabledistcc", "deps": ["distcchost"], "parser": "echo", "args": ["Not enabling distcc"]},
+    {"name": "removeoldgcc", "deps": ["updatelibc"], "parser": "echo", "args": ["No old gcc version to remove"]},
+    {"name": "switchgcc", "deps": ["updategcc"], "parser": "echo", "args": ["No need to switch."]}
+]

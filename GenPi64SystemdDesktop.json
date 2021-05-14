@@ -1,0 +1,13 @@
+[
+    {"name": "genpi64systemd-lite", "deps": [""], "parser": "includejson", "args": ["GenPi64Systemd.json"], "env": {"PROJECT": "GenPi64Systemd"}},
+    {"name": "reconfig", "deps": ["genpi64systemd-lite"], "parser": "config", "args": [""]},
+    {"name": "reetc", "deps": ["reconfig"], "parser": "etc", "args": [""]},
+    {"name": "resetprofile", "deps": ["reetc"], "parser": "setprofile", "args": [""]},
+    {"name": "remerge-profile", "deps": ["resetprofile"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
+    {"name": "desktopsets", "deps": ["remerge-profile"], "parser": "addsets", "args": [""]},
+    {"name": "emergedesktop", "deps": ["desktopsets"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
+    {"name": "desktopdepclean", "deps": ["emergedesktop"], "parser": "emerge", "args": ["-v --depclean"]},
+    {"name": "repackstage4", "deps": ["desktopdepclean"], "parser": "packstage4", "args": [""]},
+    {"name": "packgenpidesktop", "deps": ["repackstage4"], "parser": "includejson", "args": ["subtargets/pack-genpi.json"]},
+    {"name": "echobanner", "deps": ["packgenpidesktop"], "parser": "printf", "args": ["############################\n# Build complete\n# To install your image on an SD card, run\n# dd if=/path/to/image of=/path/to/sdcard\n#############################\n"]}
+]

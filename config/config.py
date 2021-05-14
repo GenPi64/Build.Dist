@@ -282,6 +282,9 @@ GenPi64OpenRC = GenPi64 | {
             "USE": GenPi64["portage"]["make.conf"]["USE"] + ["-systemd", "elogind"]
         }
     },
+    'image': GenPi64['image'] | {
+        'name': 'GenPi64OpenRC.img'
+    },
     "services": {
         "cronie": "default",
         "sshd": "default",
@@ -296,8 +299,8 @@ GenPi64OpenRC = GenPi64 | {
 
 GenPi64OpenRCDesktop = GenPi64OpenRC | {
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/desktop",
-    'image': GenPi64['image'] | {
-        'name': 'GenPi64Desktop.img'
+    'image': GenPi64OpenRC['image'] | {
+        'name': 'GenPi64OpenRCDesktop.img'
     },
     'etc': GenPi64OpenRC['etc'] | {
         'env.d/': {
@@ -315,6 +318,9 @@ GenPi32OpenRC = GenPi64OpenRC | {
             "CFLAGS": "-O2 -pipe -march=armv6j -mfpu=vfp -mfloat-abi=hard -fomit-frame-pointer -fno-stack-protector",
             "CHOST": "armv6j-unknown-linux-gnueabihf"
         }
+    },
+    'image': GenPi64OpenRC['image'] | {
+        'name': 'GenPi32OpenRC.img'
     },
     "profile": "default/linux/arm/17.0"
 }
@@ -355,6 +361,16 @@ GenPi64Systemd = GenPi64 | {
         "systemd-resolved.service": "enable",
         "systemd-timesyncd.service": "enable"
     },
+    'image': GenPi64['image'] | {
+        'name': 'GenPi64Systemd.img'
+    }
+}
+
+GenPi64SystemdDesktop = GenPi64Systemd | {
+    "profile": "genpi64:default/linux/arm64/17.0/genpi64/desktop/systemd",
+    'image': GenPi64Systemd['image'] | {
+        'name': 'GenPi64SystemdDesktop.img'
+    }
 }
 
 GentooAMD64 = Base | {

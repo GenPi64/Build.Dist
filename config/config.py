@@ -80,13 +80,79 @@ Base = {
             'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true',
-            "#commit-hash": "35c0c279daace8053ac9cc0e58ecb96bfb777e17",
-            "#clone-date": "2021-04-11",
+            "#commit-hash": "f55aa0ddaa3f35701531dfd72d557799be18e2a0",
+            "#clone-date": "2021-06-10",
 
         }
     ],
     'sets': [],
     'packages': []
+}
+
+GenPi64Generic = Base | {
+    "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
+    "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64.txt",
+    "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
+    "profile": "default/linux/arm64/17.0",
+    "kernel": [
+        "sys-kernel/gentoo-kernel-bin"
+    ],
+    'portage': {
+        "make.conf": dict(
+            CFLAGS="-march=generic -O2 -pipe",
+            CXXFLAGS="${CFLAGS}",
+            FCFLAGS="${CFLAGS}",
+            FFLAGS="${CFLAGS}",
+            USE=["bindist"],
+            FEATURES="parallel-fetch parallel-install ".split(),
+            MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
+            VIDEO_CARDS=""
+        ),
+        "patches/": {},
+        "savedconfig/": {
+            "sys-kernel/": {
+                "linux-firmware": "linux-firmware"
+            }
+        },
+        "env/": {},
+        "package.env/": {}
+    },
+    'groups': [
+        dict(name="cron", gid=16),
+        dict(name="crontab", gid=248),
+        dict(name="plugdev", gid=245),
+    ],
+    'image': {
+        'name': 'GenPi64Generic.img',
+        'size': '8G',
+        'format': 'gpt',
+        'mount-order': [2, 1, 0],
+        'uuid': UUID[:8],
+        'partitions': [
+            {
+                'end': '100MiB',
+                'format': 'vfat',
+                'mount-point': '/boot/efi',
+                'mount-options': 'noatime',
+                'flags': {
+                    'boot': 'on'
+                }
+            },
+            {
+              'end': '500MiB',
+              'format': 'vfat',
+              'mount-point': '/boot',
+              'mount-options': 'noatime'
+            },
+            {
+                'end': '100%',
+                'format': 'btrfs',
+                'mount-point': '/',
+                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
+                'args': f'--force'
+            }
+        ]
+    }
 }
 
 GenPi64 = Base | {

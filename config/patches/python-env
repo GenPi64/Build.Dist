@@ -1,0 +1,5 @@
+# Force single job so that qemu build will work properly.
+# Bug 720050, https://bugs.gentoo.org/720050
+pre_src_prepare() {
+	sed -ie 's/-j0/-j1/' Makefile.pre.in
+}

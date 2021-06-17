@@ -40,6 +40,9 @@ Base = {
         },
         "env/": {
             "enable-distcc": ['FEATURES="${FEATURES} distcc"']
+            "dev-lang/": {
+             "python": "patches/python-env"
+            },
         },
         "package.env/": {
             "distcc": [[pn, " enable-distcc"] for pn in

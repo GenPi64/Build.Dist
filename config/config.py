@@ -39,7 +39,7 @@ Base = {
             }
         },
         "env/": {
-            "enable-distcc": ['FEATURES="${FEATURES} distcc"']
+            "enable-distcc": ['FEATURES="${FEATURES} distcc"'],
             "dev-lang/": {
              "python": "patches/python-env"
             },

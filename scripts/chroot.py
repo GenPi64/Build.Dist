@@ -12,7 +12,7 @@ if chroot_cmd == 'pychroot':
 elif chroot_cmd == 'systemd-nspawn':
     if not os.path.exists(os.path.join(os.environ['PROJECT_DIR'], 'packages')):
         os.mkdir(os.path.join(os.environ['PROJECT_DIR'], 'packages'))
-    os.execvpe('systemd-nspawn', [f'--machine={uuid.uuid4()}', f'--directory={os.environ["CHROOT_DIR"]}', '--bind', ('%s:/var/cache/binpkgs' % os.path.join(os.environ['PROJECT_DIR'], 'packages')), *sys.argv[1:]], os.environ)
+    os.execvpe('systemd-nspawn', ['systemd-nspawn', f'--machine={uuid.uuid4()}', f'--directory={os.environ["CHROOT_DIR"]}', '--bind', ('%s:/var/cache/binpkgs' % os.path.join(os.environ['PROJECT_DIR'], 'packages')), *sys.argv[1:]], os.environ)
 
 else:
     raise RuntimeError("Unknown chroot command: "+chroot_cmd)

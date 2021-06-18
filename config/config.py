@@ -40,9 +40,7 @@ Base = {
         },
         "env/": {
             "enable-distcc": ['FEATURES="${FEATURES} distcc"'],
-            "dev-lang/": {
-             "python": "patches/python-env"
-            },
+            "dev-lang/": { "python": "patches/python-env" }
         },
         "package.env/": {
             "distcc": [[pn, " enable-distcc"] for pn in
@@ -102,14 +100,15 @@ GenPi64Generic = Base | {
     ],
     'portage': {
         "make.conf": dict(
-            CFLAGS="-march=generic -O2 -pipe",
+            CFLAGS="-mtune=generic -O2 -pipe",
             CXXFLAGS="${CFLAGS}",
             FCFLAGS="${CFLAGS}",
             FFLAGS="${CFLAGS}",
             USE=["bindist"],
-            FEATURES="parallel-fetch parallel-install ".split(),
+            FEATURES="parallel-fetch parallel-install -userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS=""
+
         ),
         "patches/": {},
         "savedconfig/": {

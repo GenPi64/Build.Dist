@@ -25,7 +25,7 @@ elif os.path.exists('/sbin/openrc-run'):
     os.execvpe('pychroot',
                ['pychroot', '-B', '%s:/var/cache/binpkgs' % os.path.join(os.environ['PROJECT_DIR'], 'packages'),
                 os.environ['CHROOT_DIR'], *sys.argv[1:]], os.environ)
-elif os.path.exists('/run/systemd'):
+elif 'systemd' in os.readlink('/proc/1/exe'):
     os.execvpe('systemd-nspawn',
                ['systemd-nspawn', f'--machine={uuid.uuid4()}', f'--directory={os.environ["CHROOT_DIR"]}', '--bind',
                 ('%s:/var/cache/binpkgs' % os.path.join(os.environ['PROJECT_DIR'], 'packages')), *sys.argv[1:]],

@@ -1,4 +1,0 @@
-[
-    {"name": "enabledistcc", "deps": ["distcchost"], "parser": "switchgcc", "args": ["aarch64-unknown-linux-gnu-10.2.0", "/usr/lib/distcc/bin/aarch64-unknown-linux-gnu-gcc-10.2.0", "/usr/lib/distcc/bin/aarch64-unknown-linux-gnu-g++-10.2.0"]},
-    {"name": "removeoldgcc", "deps": ["updatelibc"], "parser": "echo", "args": ["No old gcc version to remove"]}
-]

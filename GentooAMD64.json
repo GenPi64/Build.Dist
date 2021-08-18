@@ -1,7 +1,0 @@
-[
-    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-openrc.json"]},
-    {"name": "kernel", "deps": ["gentoo-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ')", "-checkboot"]},
-    {"name": "packstage4", "deps": ["kernel"], "parser": "packstage4", "args": [""]},
-    {"name": "package", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/package-non-pi.json"]},
-    {"name": "done", "deps": ["package"], "parser": "echo", "args": ["Done!"]}
-]

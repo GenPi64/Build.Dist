@@ -1,3 +1,0 @@
-[
-    {"name": "qemu", "before": "config", "deps": [""], "parser": "qemu", "args": [""]}
-]

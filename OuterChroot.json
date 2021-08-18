@@ -1,0 +1,15 @@
+[
+    {"name": "downloadstage3", "deps": [""], "parser": "downloadstage3", "args": [""]},
+    {"name": "stage3", "deps": ["downloadstage3"], "parser": "stage3", "args": [""]},
+    {"name": "config", "deps": ["stage3"], "parser": "config", "args": [""]},
+    {"name": "overlays", "deps": ["config"], "parser": "overlays", "args": [""]},
+    {"name": "git", "deps": ["overlays"], "parser": "git", "args": [""]},
+    {"name": "portage", "deps": ["git"], "parser": "portage", "args": [""]},
+    {"name": "etc", "deps": ["portage"], "parser": "etc", "args": [""]},
+    {"name": "updatesystem", "deps": ["etc"], "parser": "emerge", "args": ["-bkg1v --update --deep --newuse --with-bdeps=y @system"]},
+    {"name": "updateworld", "deps": ["updatesystem"], "parser": "emerge", "args": ["-bkg1v --update --deep --newuse --with-bdeps=y @world"]},
+    {"name": "setprofile", "deps": ["updateworld"], "parser": "setprofile", "args": [""]},
+    {"name": "emergeprofile", "deps": ["setprofile"], "parser": "emerge", "args": ["-bkg1v --update --deep --newuse --with-bdeps=y @world"]},
+    {"name": "emergepackages", "deps": ["emergeprofile"], "parser": "emerge", "args": ["-bkgv --update --deep --newuse --with-bdeps=y $(/em-config packages '*')"]},
+    {"name": "checkouttarget", "deps": ["emergepackages"], "parser": "checkouttarget", "args": []}
+]

@@ -81,8 +81,8 @@ Base = {
             'sync-uri': 'https://github.com/gentoo-mirror/gentoo',
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true',
-            "#commit-hash": "f55aa0ddaa3f35701531dfd72d557799be18e2a0",
-            "#clone-date": "2021-06-10",
+            "#commit-hash": "HEAD",
+            "#clone-date": "2021-08-23",
 
         }
     ],
@@ -177,7 +177,7 @@ GenPi64 = Base | {
             'sync-depth': '1',
             'sync-git-clone-extra-opts': '--single-branch --branch alpha9',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-03-01"
+            "#clone-date": "2021-08-24"
         },
         {
             'name': 'genpi-tools',

@@ -28,7 +28,7 @@ if image['format'] == 'msdos':
     p.stdin.close()
     p.wait()
     p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), sys.exit(1))
-else
+else:
     os.system(f"sgdisk -Z {LOOP}")
     os.system(f"sgdisk --disk-guid={image['uuid']}")
     for idx,partition in enumerate(image['partitions']):
@@ -65,19 +65,19 @@ for idx,partition in enumerate(image['partitions']):
         for f,v in flags.items():
             if image['format'] == 'msdos':
                 system(f"parted --script {LOOP} set {idx+1} {f} {v}")
-            else
+            else:
                 if "on" == v:
                     action = "set"
-                else if "off" == v:
+                elif "off" == v:
                     action = "clear"
-                else
+                else:
                     continue
 
                 if "system" == f:
                     bit = 0
-                if "boot" == f:
+                elif "boot" == f:
                     bit = 2
-                else
+                else:
                     continue
 
                 os.system(f"sgdisk --attribute={idx}:{action}:{bit} {LOOP}")
@@ -95,10 +95,10 @@ if image['format'] == 'hybrid':
 system(f"sync")
 system(f"losetup --detach {LOOP}")
 
-if "msdos" == image['format']
+if "msdos" == image['format']:
     system(f"fdisk --type=mbr --list {image['name']}")
-else
+else:
     system(f"sgdisk -p {image['name']}")
 
-if "hybrid" == image['format']
+if "hybrid" == image['format']:
     system(f"fdisk --type=mbr --list {image['name']}")

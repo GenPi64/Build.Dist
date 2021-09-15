@@ -95,6 +95,9 @@ GenPi64Generic = Base | {
     "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64.txt",
     "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
     "profile": "default/linux/arm64/17.0",
+    "initsystem": "openrc",
+    "initramfs": "none",
+    "service-manager": "rcupdate_add",
     "kernel": [
         "sys-kernel/gentoo-kernel-bin"
     ],
@@ -107,8 +110,8 @@ GenPi64Generic = Base | {
             USE=["bindist"],
             FEATURES="parallel-fetch parallel-install -userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
-            VIDEO_CARDS=""
-
+            VIDEO_CARDS="",
+            GRUB_PLATFORMS="arm64-efi"
         ),
         "patches/": {},
         "savedconfig/": {
@@ -124,14 +127,18 @@ GenPi64Generic = Base | {
         dict(name="crontab", gid=248),
         dict(name="plugdev", gid=245),
     ],
+    "services": {
+            "sshd": "default"
+    },
     'image': {
         'name': 'GenPi64Generic.img',
         'size': '8G',
         'format': 'gpt',
         'mount-order': [2, 1, 0],
-        'uuid': UUID[:8],
+        'uuid': UUID,
         'partitions': [
             {
+                'start': '1MiB',
                 'end': '100MiB',
                 'format': 'vfat',
                 'mount-point': '/boot/efi',
@@ -141,13 +148,15 @@ GenPi64Generic = Base | {
                 }
             },
             {
+              'start': '101MiB',
               'end': '500MiB',
               'format': 'vfat',
               'mount-point': '/boot',
               'mount-options': 'noatime'
             },
             {
-                'end': '100%',
+                'start': '501MiB',
+                'end': '0',
                 'format': 'btrfs',
                 'mount-point': '/',
                 'mount-options': 'noatime,compress=zstd:15,ssd,discard',
@@ -223,8 +232,8 @@ GenPi64 = Base | {
         }
     },
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
-    "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64.txt",
-    "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
+    "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/latest-stage3-arm64.txt",
+    "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/",
     "profile": "genpi64:default/linux/arm64/17.0/genpi64",
     'users': [
         Base['users'][0] | dict(
@@ -313,8 +322,8 @@ GenPi64OpenRCDesktop = GenPi64OpenRC | {
 
 GenPi32OpenRC = GenPi64OpenRC | {
     "stage3": "stage3-armv6j_hardfp.tar.xz",
-    "stage3url": "http://distfiles.gentoo.org/releases/arm/autobuilds/latest-stage3-armv6j_hardfp.txt",
-    "stage3mirror": "http://distfiles.gentoo.org/releases/arm/autobuilds/",
+    "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/arm/autobuilds/latest-stage3-armv6j_hardfp.txt",
+    "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/arm/autobuilds/",
     "portage": GenPi64OpenRC['portage'] | {
         "make.conf": GenPi64OpenRC['portage']['make.conf'] | {
             "CFLAGS": "-O2 -pipe -march=armv6j -mfpu=vfp -mfloat-abi=hard -fomit-frame-pointer -fno-stack-protector",
@@ -333,8 +342,8 @@ GenPi64Systemd = GenPi64 | {
     "initsystem": "systemd",
     "service-manager": "systemctl_enable",
     "stage3": os.environ.get("STAGE3", "stage3-arm64-systemd.tar.xz"),
-    "stage3url": "http://distfiles.gentoo.org/releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt",
-    "stage3mirror": "http://distfiles.gentoo.org/releases/arm64/autobuilds/",
+    "stage3url": "http://bouncer.gentoo.org/fetch/root/all//releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt",
+    "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/",
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/systemd",
     "portage": GenPi64["portage"] | {
         "make.conf": GenPi64["portage"]["make.conf"] | {
@@ -377,8 +386,8 @@ GentooAMD64 = Base | {
     "initramfs": "none",
     "service-manager": "rcupdate_add",
     "stage3": "stage3-amd64.tar.xz",
-    "stage3url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64.txt",
-    "stage3mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/",
+    "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64.txt",
+    "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/",
     "profile": "default/linux/amd64/17.1",
     'sets': ['standard', 'amd64'],
     'portage': Base['portage'] | {

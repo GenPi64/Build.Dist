@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pushd ${CHROOT_DIR}
+${SCRIPTS}/chroot.py eselect repository create crossdev
+${SCRIPTS}/chroot.py crossdev --stable -t cross-aarch64-unknown-linux-gnu --ov-output crossdev

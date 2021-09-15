@@ -28,7 +28,9 @@ OuterChroot = {
             LLVM_TARGETS="AMDGPU BPF NVPTX (X86) AArch64 ARM",
             QEMU_USER_TARGETS="aarch64 arm"
         ),
-        "package.accept_keywords": "package.accept_keywords",
+        "package.accept_keywords/": {
+            "pychroot": "package.accept_keywords"
+        },
         "patches/": {
             "app-editors/": "patches/app-editors",
             "sys-apps/": "patches/sys-apps",

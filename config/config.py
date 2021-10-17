@@ -231,7 +231,7 @@ GenPi64 = Base | {
             }
         },
         "dhcpcd.conf": "dhcpcd.conf",
-        "hostname": "GenPi64"
+        "hostname": "hostname"
     },
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
     "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/latest-stage3-arm64.txt",

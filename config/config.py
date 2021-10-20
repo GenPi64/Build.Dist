@@ -388,7 +388,7 @@ GentooAMD64 = Base | {
     "initramfs": "none",
     "service-manager": "rcupdate_add",
     "stage3": "stage3-amd64.tar.xz",
-    "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64.txt",
+    "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-openrc.txt",
     "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/",
     "profile": "default/linux/amd64/17.1",
     'sets': ['standard', 'amd64'],

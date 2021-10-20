@@ -190,9 +190,9 @@ GenPi64 = Base | {
         },
         {
             'name': 'genpi-tools',
-            'location': '/var/db/repos/sakaki-tools',
+            'location': '/var/db/repos/genpi-tools',
             'sync-type': 'git',
-            'sync-uri': 'https://github.com/GenPi64/sakaki-tools.git',
+            'sync-uri': 'https://github.com/GenPi64/genpi-tools.git',
             'priority': '50',
             'auto-sync': 'yes',
             'clone-depth': '1',

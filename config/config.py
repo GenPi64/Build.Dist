@@ -26,7 +26,7 @@ Base = {
             FEATURES="parallel-fetch parallel-install ".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
-            INPUT_DEVICES="evdev synaptics"
+            INPUT_DEVICES="libinput"
         ),
         "patches/": {
             "app-editors/": "patches/app-editors",
@@ -394,7 +394,8 @@ GentooAMD64 = Base | {
     'sets': ['standard', 'amd64'],
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
-            'CHOST': 'x86_64-unknown-linux-gnu',
+            'CFLAGS': '-march=x86-64 -mtune=generic -pipe',
+            'CHOST': 'x86_64-pc-linux-gnu',
             "USE": 'bindist -systemd openssl'.split(),
             'GRUB_PLATFORMS': "pc",
         },

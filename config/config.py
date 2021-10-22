@@ -167,7 +167,7 @@ GenPi64Generic = Base | {
 }
 
 GenPi64 = Base | {
-    "cmdline": 'console=serial0,115200 console=tty1 dwc_otg.lpm_enable=0 root=PARTUUID=%(PARTUUID)s rootfstype=%(fstype)s fsck.repair=no usbhid.mousepoll=0 rootwait=10 init=/sbin/init',
+    "cmdline": 'console=serial0,115200 console=tty1 dwc_otg.lpm_enable=0 root=PARTUUID=%(PARTUUID)s rootfstype=%(fstype)s fsck.repair=no usbhid.mousepoll=0 rootdelay=10 init=/sbin/init',
     "kernel": [
         "sys-firmware/raspberrypi-wifi-ucode",
         "sys-kernel/raspberrypi-kernel",

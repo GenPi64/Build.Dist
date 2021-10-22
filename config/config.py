@@ -511,6 +511,6 @@ GentooAMD64OpenRCDesktop = GentooAMD64 | {
     },
     'image': GentooAMD64['image'] | {
         'name': 'GentooAMD64Desktop.img',
-        'size': '16G',
+        'size': '16G'
     }
 }

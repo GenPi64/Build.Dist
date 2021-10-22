@@ -10,8 +10,7 @@ sys.path.insert(0, os.environ['CONFIG_DIR'])
 loopdevice_file = os.environ['PROJECT_DIR'] + "/loopdevice.txt"
 
 
-import config
-config = getattr(config, os.environ['PROJECT'])
+from pyconfig import config
 
 image = config['image']
 

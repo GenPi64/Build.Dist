@@ -18,9 +18,7 @@ PARSERS = os.environ['PARSERS']
 print(f"Copying portage config files for {PROJECT}")
 
 sys.path.insert(0, CONFIG_DIR)
-import config
-
-config = getattr(config, PROJECT)
+from pyconfig import config
 
 
 def copyconf(conf, file):

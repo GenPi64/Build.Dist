@@ -13,9 +13,7 @@ def system(cmd):
 os.chdir(os.environ['PROJECT_DIR'])
 sys.path.insert(0, os.environ['CONFIG_DIR'])
 
-import config
-
-config = getattr(config, os.environ['PROJECT'])
+from pyconfig import config
 
 image = config['image']
 

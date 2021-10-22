@@ -6,8 +6,7 @@ import time
 
 sys.path.append(os.environ['CONFIG_DIR'])
 
-import config
-config = getattr(config, os.environ['PROJECT'])
+from pyconfig import config
 
 image = config['image']
 

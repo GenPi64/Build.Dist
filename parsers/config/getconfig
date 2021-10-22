@@ -3,8 +3,7 @@ import sys
 import os
 sys.path.insert(0, os.environ['CONFIG_DIR'])
 
-import config
-config = getattr(config, os.environ['PROJECT'])
+from pyconfig import config
 
 t = config
 

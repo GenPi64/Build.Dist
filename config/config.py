@@ -204,8 +204,8 @@ GenPi64 = Base | {
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
             "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe",
-            'CC':"aarch64-unknown-linux-gnu-gcc-10.3.0",
-            'CXX':"aarch64-unknown-linux-gnu-g++-10.3.0",
+            'CC':"aarch64-unknown-linux-gnu-gcc-11.2.0",
+            'CXX':"aarch64-unknown-linux-gnu-g++-11.2.0",
             'CHOST':"aarch64-unknown-linux-gnu",
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),

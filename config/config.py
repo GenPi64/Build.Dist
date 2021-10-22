@@ -464,18 +464,53 @@ GentooAMD64 = Base | {
         "chronyd": "default",
         "qemu-guest-agent": "default"
     },
-    'image': GenPi64['image'] | {
-        'name': 'GentooAMD64Server.img',
-        'format': 'msdos',
+    'image': {
+        'name': 'GentooAMD64Srv.img',
+        'size': '16G',
+        'format': 'gpt',
+        'mount-order': [2, 1, 0],
+        'uuid': UUID,
         'partitions': [
-            GenPi64['image']['partitions'][0] | {
+            {
+                'start': '1MiB',
+                'end': '100MiB',
+                'format': 'vfat',
+                'mount-point': '/boot/efi',
+                'mount-options': 'noatime',
                 'flags': {
                     'boot': 'on'
                 }
             },
-            GenPi64['image']['partitions'][1] | {
-                'uuid': UUID
+            {
+              'start': '101MiB',
+              'end': '500MiB',
+              'format': 'vfat',
+              'mount-point': '/boot',
+              'mount-options': 'noatime'
+            },
+            {
+                'start': '501MiB',
+                'end': '0',
+                'format': 'btrfs',
+                'mount-point': '/',
+                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
+                'args': f'--force'
             }
         ]
+    }
+}
+
+GentooAMD64OpenRCDesktop = GentooAMD64 | {
+    'profile': "default/linux/amd64/17.1/desktop/plasma",
+    'portage': GentooAMD64['portage'] | {
+        "make.conf": GentooAMD64['portage']['make.conf'] | {
+            "USE": 'elogind dbus openssl pulseaudio bluetooth ipv6 -systemd -cups pcsc-lite samba'.split(),
+            'GRUB_PLATFORMS': 'efi-64',
+            'VIDEO_CARDS': 'intel i965 iris',
+        },
+    },
+    'image': GentooAMD64['image'] | {
+        'name': 'GentooAMD64Desktop.img',
+        'size': '16G',
     }
 }

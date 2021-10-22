@@ -84,22 +84,23 @@ else:
         if name := partition.get('name'):
             system(f"sgdisk --change-name={idx + 1}:{name} {LOOP}")
 
-        # Raspberry pi refuses to boot from a /boot partition that doesn't
-        # have the LBA flag set.
-        for f, v in flags.items():
-            if "on" == v:
-                action = "set"
-            elif "off" == v:
-                action = "clear"
-            else:
-                continue
+        if flags := partition.get('flags'):
+            # Raspberry pi refuses to boot from a /boot partition that doesn't
+            # have the LBA flag set.
+            for f, v in flags.items():
+                if "on" == v:
+                    action = "set"
+                elif "off" == v:
+                    action = "clear"
+                else:
+                    continue
 
-            if "system" == f:
-                bit = 0
-            elif "boot" == f:
-                bit = 2
-            else:
-                continue
+                if "system" == f:
+                    bit = 0
+                elif "boot" == f:
+                    bit = 2
+                else:
+                    continue
 
             system(f"sgdisk --attribute={idx}:{action}:{bit} {LOOP}")
 

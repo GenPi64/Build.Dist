@@ -1,4 +1,4 @@
-from GenPi64OpenRCConfig import GenPi64OpenRC
+from .GenPi64OpenRCConfig import GenPi64OpenRC
 
 GenPi64OpenRCDesktop = GenPi64OpenRC | {
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/desktop",

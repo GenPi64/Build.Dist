@@ -1,4 +1,4 @@
-from GenPi64OpenRCConfig import GenPi64OpenRC
+from .GenPi64OpenRCConfig import GenPi64OpenRC
 
 GenPi32OpenRC = GenPi64OpenRC | {
     "stage3": "stage3-armv6j_hardfp.tar.xz",

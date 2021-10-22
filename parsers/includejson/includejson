@@ -22,9 +22,11 @@ else:
 
 sys.path.insert(0, os.environ['CONFIG_DIR'])
 
-import config
-config = getattr(config, os.environ['PROJECT'])
+from pyconfig import config
 
+
+print(config)
+exit(1)
 def writecompleted(JobName):
   try:
     lock=lockfile.LockFile(os.path.join(PROJECT_DIR, completed_name))

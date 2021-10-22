@@ -1,5 +1,5 @@
 import os
-from BaseConfig import Base, UUID
+from .BaseConfig import Base, UUID
 
 
 GenPi64 = Base | {
@@ -64,7 +64,7 @@ GenPi64 = Base | {
         "kernel/": {
             "config.d/": {
                 i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'),
-                                                                         '../kernel-config'))
+                                                                         'kernel-config'))
             }
         },
         "dhcpcd.conf": "dhcpcd.conf",

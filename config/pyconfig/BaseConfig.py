@@ -44,7 +44,7 @@ Base = {
         },
         "package.env/": {
             "distcc": [[pn, " enable-distcc"] for pn in
-                       readlines(os.path.join(os.environ.get('CONFIG_DIR'), '../distcc-pkgs')) if pn]
+                       readlines(os.path.join(os.environ.get('CONFIG_DIR'), 'distcc-pkgs')) if pn]
         }
     },
     "etc": {

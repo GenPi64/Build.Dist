@@ -1,4 +1,4 @@
-from GentooAMD64Config import GentooAMD64
+from .GentooAMD64Config import GentooAMD64
 
 GentooAMD64OpenRCDesktop = GentooAMD64 | {
     'profile': "default/linux/amd64/17.1/desktop/plasma",

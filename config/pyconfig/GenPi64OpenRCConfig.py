@@ -1,4 +1,4 @@
-from GenPi64Config import GenPi64
+from .GenPi64Config import GenPi64
 
 GenPi64OpenRC = GenPi64 | {
     "initsystem": "openrc",

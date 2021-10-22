@@ -1,5 +1,5 @@
 import os
-from BaseConfig import Base, UUID
+from .BaseConfig import Base, UUID
 
 GenPi64Generic = Base | {
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),

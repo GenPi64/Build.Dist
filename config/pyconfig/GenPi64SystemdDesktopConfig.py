@@ -1,4 +1,4 @@
-from GenPi64SystemdConfig import GenPi64Systemd
+from .GenPi64SystemdConfig import GenPi64Systemd
 
 GenPi64SystemdDesktop = GenPi64Systemd | {
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/desktop/systemd",

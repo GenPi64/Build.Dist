@@ -1,5 +1,5 @@
 import os
-from BaseConfig import Base, UUID
+from .BaseConfig import Base, UUID
 
 GentooAMD64 = Base | {
     "initsystem": "openrc",

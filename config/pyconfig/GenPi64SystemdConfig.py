@@ -1,5 +1,5 @@
 import os
-from GenPi64Config import GenPi64
+from .GenPi64Config import GenPi64
 
 GenPi64Systemd = GenPi64 | {
     "kernel": GenPi64["kernel"] + ["sys-kernel/dracut"],

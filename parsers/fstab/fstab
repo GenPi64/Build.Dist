@@ -13,7 +13,7 @@ image = config['image']
 
 with open("image/etc/fstab", "w") as fstab:
     for p in image['mount-order']:
-        partuuid = image['partitions'[p]['partuuid']
+        partuuid = image['partitions'][p]['partuuid']
         target = image['partitions'][p]['mount-point']
         fstype = image['partitions'][p]['format']
         options = image['partitions'][p]['mount-options']

@@ -1,0 +1,5 @@
+from .GenPi32OpenRCConfig import GenPi32OpenRC
+from .GenPi64OpenRCConfig import GenPi64OpenRC
+from .GenPi64OpenRCDesktopConfig import GenPi64OpenRCDesktop
+from .GentooAMD64Config import GentooAMD64
+from .GentooAMD64OpenRCDesktopConfig import GentooAMD64OpenRCDesktop

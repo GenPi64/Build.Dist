@@ -1,6 +1,19 @@
 import os
 from .BaseConfig import Base, UUID
 
+UUIDs=[UUID]
+
+for idx in range(1,4):
+
+    if os.path.exists(p := os.path.join(os.environ['PROJECT_DIR'], f'uuid-p{idx}')):
+        with open(p) as f:
+            UUIDs.append(f.read())
+    else:
+        UUIDs.append(str(uuid.uuid4()))
+        with open(p, 'w') as f:
+            f.write(UUIDs[-1])
+
+
 GentooAMD64 = Base | {
     "initsystem": "openrc",
     "initramfs": "none",
@@ -91,6 +104,7 @@ GentooAMD64 = Base | {
         'uuid': UUID,
         'partitions': [
             {
+                'uuid': UUIDs[1],
                 'start': '1MiB',
                 'end': '100MiB',
                 'format': 'vfat',
@@ -101,13 +115,15 @@ GentooAMD64 = Base | {
                 }
             },
             {
-              'start': '101MiB',
-              'end': '500MiB',
-              'format': 'vfat',
-              'mount-point': '/boot',
-              'mount-options': 'noatime'
+                'uuid': UUIDs[2],
+                'start': '101MiB',
+                'end': '500MiB',
+                'format': 'vfat',
+                'mount-point': '/boot',
+                'mount-options': 'noatime'
             },
             {
+                'uuid': UUIDs[3],
                 'start': '501MiB',
                 'end': '0',
                 'format': 'btrfs',

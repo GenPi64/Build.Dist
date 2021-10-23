@@ -95,19 +95,6 @@ GentooAMD64 = Base | {
         "chronyd": "default",
         "qemu-guest-agent": "default"
     },
-    'lvm': {
-        'name': 'lvm',
-        'partitions': [
-            {
-             'name': 'swap',
-             'size': '8G'
-            },
-            {
-             'name': 'root',
-             'size': '+100%FREE'
-            }
-        ]
-    },
     'image': {
         'name': 'GentooAMD64Srv.img',
         'size': '16G',
@@ -138,8 +125,10 @@ GentooAMD64 = Base | {
                 'partuuid': UUIDs[3],
                 'start': '501MiB',
                 'end': '0',
-                'format': 'luks',
-                'luks_pass': 'notaprivatepassword'
+                'format': 'btrfs',
+                'mount-point': '/',
+                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
+                'args': f'--force'
             }
         ]
     }

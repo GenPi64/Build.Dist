@@ -6,6 +6,5 @@
     {"name": "emergedesktop", "deps": ["desktopsets"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
     {"name": "desktopdepclean", "deps": ["emergedesktop"], "parser": "emerge", "args": ["-v --depclean"]},
     {"name": "repackstage4", "deps": ["desktopdepclean"], "parser": "packstage4", "args": [""]},
-    {"name": "package", "deps": ["repackstage4"], "parser": "includejson", "args": ["subtargets/package-non-pi.json"]},
-    {"name": "echobanner", "deps": ["packgenpidesktop"], "parser": "printf", "args": ["############################\n# Build complete\n# To install your image on an SD card, run\n# dd if=/path/to/image of=/path/to/sdcard\n#############################\n"]}
+    {"name": "package", "deps": ["repackstage4"], "parser": "includejson", "args": ["subtargets/package-non-pi.json"]}
 ]

@@ -118,7 +118,13 @@ system(f"partprobe {LOOP}")
 # Note that we can't do the partitioning / filesystem creation directly on an image file
 # mkfs.* doesn't work on image files, only loop devices. So we do everything with the loop device.
 for idx, partition in enumerate(image['partitions']):
-    system(f"mkfs.{partition['format']} {LOOP}p{idx + 1} {partition.get('args', '')}")
+    if partition['format'] == 'luks':
+        try:
+            system(f"echo '{partition['luks_pass']}' | cryptsetup -y --use-random luksFormat {LOOP}p{idx + 1} -")
+        except Exception as e:
+            raise exit(1)
+    else:
+        system(f"mkfs.{partition['format']} {LOOP}p{idx + 1} {partition.get('args', '')}")
 
 system(f"sync")
 system(f"losetup --detach {LOOP}")

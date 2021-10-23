@@ -1,10 +1,10 @@
 import os
+import uuid
 from .BaseConfig import Base, UUID
 
-UUIDs=[UUID]
+UUIDs = [UUID]
 
-for idx in range(1,4):
-
+for idx in range(1, 4):
     if os.path.exists(p := os.path.join(os.environ['PROJECT_DIR'], f'uuid-p{idx}')):
         with open(p) as f:
             UUIDs.append(f.read())
@@ -20,7 +20,7 @@ GentooAMD64 = Base | {
     "service-manager": "rcupdate_add",
     "stage3": "stage3-amd64.tar.xz",
     "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-openrc.txt",
-    "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/",
+    "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds",
     "profile": "default/linux/amd64/17.1",
     'sets': ['standard', 'amd64'],
     'portage': Base['portage'] | {
@@ -82,8 +82,7 @@ GentooAMD64 = Base | {
     "etc": Base["etc"] | {
         "kernel/": {
             "config.d/": {
-                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'),
-                                                                         '../kernel-config'))
+                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
             }
         }
     },
@@ -96,6 +95,19 @@ GentooAMD64 = Base | {
         "chronyd": "default",
         "qemu-guest-agent": "default"
     },
+    'lvm': {
+        'name': 'lvm',
+        'partitions': [
+            {
+             'name': 'swap',
+             'size': '8G'
+            },
+            {
+             'name': 'root',
+             'size': '+100%FREE'
+            }
+        ]
+    },
     'image': {
         'name': 'GentooAMD64Srv.img',
         'size': '16G',
@@ -104,7 +116,7 @@ GentooAMD64 = Base | {
         'uuid': UUID,
         'partitions': [
             {
-                'uuid': UUIDs[1],
+                'partuuid': UUIDs[1],
                 'start': '1MiB',
                 'end': '100MiB',
                 'format': 'vfat',
@@ -115,7 +127,7 @@ GentooAMD64 = Base | {
                 }
             },
             {
-                'uuid': UUIDs[2],
+                'partuuid': UUIDs[2],
                 'start': '101MiB',
                 'end': '500MiB',
                 'format': 'vfat',
@@ -123,13 +135,11 @@ GentooAMD64 = Base | {
                 'mount-options': 'noatime'
             },
             {
-                'uuid': UUIDs[3],
+                'partuuid': UUIDs[3],
                 'start': '501MiB',
                 'end': '0',
-                'format': 'btrfs',
-                'mount-point': '/',
-                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
-                'args': f'--force'
+                'format': 'luks',
+                'luks_pass': 'notaprivatepassword'
             }
         ]
     }

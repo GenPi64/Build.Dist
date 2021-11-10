@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#!/bin/bash -e
 source "${SCRIPTS}/functions.sh"
 
 echo "Running $@"

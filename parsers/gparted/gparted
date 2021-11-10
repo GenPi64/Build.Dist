@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#!/bin/bash -e
 
 echo "making gparted use gksudo instead of pkexec"
 

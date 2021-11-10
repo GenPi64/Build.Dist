@@ -22,7 +22,6 @@ GentooAMD64 = Base | {
     "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-openrc.txt",
     "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds",
     "profile": "default/linux/amd64/17.1",
-    'sets': ['standard', 'amd64'],
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
             'CFLAGS': '-march=x86-64 -mtune=generic -pipe',

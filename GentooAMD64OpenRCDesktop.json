@@ -1,5 +1,6 @@
 [
-    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-openrc.json"]},
+    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json"]},
+    {"name": "kernel", "deps": ["gentoo-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ') -bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree"]},
     {"name": "resetprofile", "deps": ["gentoo-base"], "parser": "setprofile", "args": [""]},
     {"name": "remerge-profile", "deps": ["resetprofile"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
     {"name": "desktopsets", "deps": ["remerge-profile"], "parser": "addsets", "args": [""]},

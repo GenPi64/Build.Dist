@@ -9,12 +9,11 @@ sys.path.insert(0, os.environ['CONFIG_DIR'])
 
 os.system('touch image/boot/autoexpand_root_partition')
 
-import config
-config = getattr(config, os.environ['PROJECT'])
+from pyconfig import config
 
 with open("image/etc/init.d/autoexpand-root") as f:
     aer = f.read()
-    
+
 aer = aer.replace('DEFAULTPW="raspberrypi64"', f'DEFAULTPW="{config["users"][0]["password"]}"')
 
 image = config['image']

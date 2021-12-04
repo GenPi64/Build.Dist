@@ -11,5 +11,6 @@ from pyconfig import config
 image = config['image']
 with open("image/boot/cmdline.txt", "w") as cmdline:
     p = image['mount-order'][0]
-    e = dict(PARTUUID=image['partitions'[p]['partuuid'], fstype=image['partitions'][p]['format'])
+    partition=image['partitions'][p]
+    e = dict(PARTUUID=partition['partuuid'], fstype=partition['format'])
     cmdline.write(config['cmdline'] % e)

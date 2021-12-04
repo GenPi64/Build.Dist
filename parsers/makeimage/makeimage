@@ -23,22 +23,10 @@ system(f"rm -f {image['name']}")
 system(f"truncate -s {image['size']} {image['name']}")
 system(f"sync")
 
-# Use losetup to treat the image file as a block device
-system(f"losetup --find {image['name']}")
-p = subprocess.Popen(["/sbin/losetup", "-l", "-J", "-j", image['name']], stdout=subprocess.PIPE)
-p.wait()
-p.poll() and sys.exit(1)
-
-# Save the path of the newly setup block device for use in scripts.
-LOOP = json.load(p.stdout)['loopdevices'][0]['name']
-
 if image['format'] == 'msdos':
-    system(f"parted --script {LOOP} mklabel msdos")
-    p = subprocess.Popen(["/sbin/fdisk", LOOP], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    p.stdin.write(f"x\ni\n0x{image['uuid']}\nr\nw\n".encode('charmap'))
-    p.stdin.close()
-    p.wait()
-    p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), sys.exit(1))
+    # TODO: How to make sfdisk create a new msdos label...?
+    system(f"parted --script {image['name']} mklabel msdos")
+    system(f"sfdisk --label dos --disk-id {image['name']} 0x{image['uuid']} ")
 
     for idx, partition in enumerate(image['partitions']):
         start = 0
@@ -48,17 +36,17 @@ if image['format'] == 'msdos':
         if endQuery := partition.get('end'):
             end = endQuery
 
-        system(f"parted --script {LOOP} mkpart primary {start} {end}")
+        system(f"parted --script {image['name']} mkpart primary {start} {end}")
 
         if flags := partition.get('flags'):
             for f, v in flags.items():
-                system(f"parted --script {LOOP} set {idx + 1} {f} {v}")
+                system(f"parted --script {image['name']} set {idx + 1} {f} {v}")
 
 else:
     # For either of GPT disks, or hybrid GPT+MBR disks, conduct these steps.
     # We create hybrids as GPT, with a "fixup" step after this loop.
-    system(f"sgdisk -Z {LOOP}")
-    system(f"sgdisk --disk-guid={image['uuid']} {LOOP}")
+    system(f"sgdisk -Z {image['name']}")
+    system(f"sgdisk --disk-guid={image['uuid']} {image['name']}")
     for idx, partition in enumerate(image['partitions']):
         start = 0
         end = 0
@@ -67,20 +55,20 @@ else:
         if endQuery := partition.get('end'):
             end = endQuery
 
-        system(f"sgdisk --new={idx + 1}:{start}:{end} {LOOP}")
+        system(f"sgdisk --new={idx + 1}:{start}:{end} {image['name']}")
 
         # GPT supports each partition having both a type code, and an identifier.
         # Identifier's supposed to be unique to the partition for scripted mounts
         # Typecode tells things like systemd's gpt auto-search whether this partition
         # is, e.g. root, boot, data, home, and so on.
         if partuuid := partition.get('partuuid'):
-            system(f"sgdisk --partition-guid={idx + 1}:{partuuid} {LOOP}")
+            system(f"sgdisk --partition-guid={idx + 1}:{partuuid} {image['name']}")
 
         if typeuuid := partition.get('typeuuid'):
-            system(f"sgdisk --typecode={idx + 1}:{typeuuid} {LOOP}")
+            system(f"sgdisk --typecode={idx + 1}:{typeuuid} {image['name']}")
 
         if name := partition.get('name'):
-            system(f"sgdisk --change-name={idx + 1}:{name} {LOOP}")
+            system(f"sgdisk --change-name={idx + 1}:{name} {image['name']}")
 
         if flags := partition.get('flags'):
             # Raspberry pi refuses to boot from a /boot partition that doesn't
@@ -100,16 +88,26 @@ else:
                 else:
                     continue
 
-            system(f"sgdisk --attribute={idx}:{action}:{bit} {LOOP}")
+            system(f"sgdisk --attribute={idx}:{action}:{bit} {image['name']}")
 
 if image['format'] == 'hybrid':
-    system(f"sgdisk --hybrid=1:EE {LOOP}")
-    p = subprocess.Popen(["/sbin/fdisk", '--type=mbr', LOOP], stdout=subprocess.PIPE, stdin=subprocess.PIPE,
+    system(f"sgdisk --hybrid=1:EE {image['name']}")
+    p = subprocess.Popen(["/sbin/fdisk", '--type=mbr', image['name']], stdout=subprocess.PIPE, stdin=subprocess.PIPE,
                          stderr=subprocess.PIPE)
     p.stdin.write(f"a\n1\nt\nc\nw\n".encode('charmap'))
     p.stdin.close()
     p.wait()
     p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), sys.exit(1))
+
+
+# Use losetup to treat the image file as a block device
+system(f"losetup --find {image['name']}")
+p = subprocess.Popen(["/sbin/losetup", "-l", "-J", "-j", image['name']], stdout=subprocess.PIPE)
+p.wait()
+p.poll() and sys.exit(1)
+
+# Save the path of the newly setup block device for use in scripts.
+LOOP = json.load(p.stdout)['loopdevices'][0]['name']
 
 system(f"sync")
 # Ensure the newly created partitions are visable for the filesystem creation commands below.
@@ -132,7 +130,7 @@ system(f"losetup --detach {LOOP}")
 # Print out the partition table that was created, so we can inspect the results.
 # Conduct this operation on the file itself to make sure nothing got lost.
 if "msdos" == image['format']:
-    system(f"fdisk --type=mbr --list {image['name']}")
+    system(f"sfdisk --label dos --list {image['name']}")
 else:
     system(f"sgdisk -p {image['name']}")
 

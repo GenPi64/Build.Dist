@@ -19,7 +19,7 @@ GenPi64Systemd = GenPi64 | {
         "systemd/": {
             "network/": {
                 i: "systemd/network/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'),
-                                                                           '../systemd/network'))
+                                                                           'systemd/network'))
             }
         }
     },

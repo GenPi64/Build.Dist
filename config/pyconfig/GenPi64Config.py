@@ -98,26 +98,30 @@ GenPi64 = Base | {
         'uuid': UUID[:8],
         'partitions': [
             {
-                'name': 'bootfs',
-                'partuuid': UUID[:8]+'-01',
-                'start': '1MiB',
-                'end': '256MiB',
-                'format': 'vfat',
-                'mount-point': '/boot',
-                'mount-options': 'noatime',
-                'flags': {
-                    'lba': 'on'
-                }
+              'name': 'bootfs',
+              'partuuid': UUID[:8]+'-01',
+              'typeuuid': 'c12a7328-f81f-11d2-ba4b-00a0c93ec93b',
+              'mbrtypeid': 'c',
+              'start': '1MiB',
+              'end': '256MiB',
+              'filesystem': 'vfat',
+              'mount-point': '/boot',
+              'mount-options': 'noatime',
+              'flags': {
+                'boot': 'on'
+              }
             },
             {
-                'name': 'rootfs',
-                'partuuid': UUID[:8]+'-02',
-                'start': '256MiB',
-                'end': '100%',
-                'format': 'btrfs',
-                'mount-point': '/',
-                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
-                'args': f'--force'
+              'name': 'rootfs',
+              'partuuid': UUID[:8]+'-02',
+              'typeuuid': 'b921b045-1df0-41c3-af44-4c6f280d3fae',
+              'mbrtypeid': '83',
+              'start': '256MiB',
+              'end': '100%',
+              'filesystem': 'btrfs',
+              'mount-point': '/',
+              'mount-options': 'noatime,compress=zstd:15,ssd,discard',
+              'args': '--force'
             }
         ]
     }

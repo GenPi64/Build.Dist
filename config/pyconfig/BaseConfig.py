@@ -83,7 +83,6 @@ Base = {
             'sync-git-verify-commit-signature': 'true',
             "#commit-hash": "HEAD",
             "#clone-date": "2021-08-23",
-
         }
     ],
     'sets': [],

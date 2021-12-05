@@ -102,32 +102,35 @@ GentooAMD64 = Base | {
         'uuid': UUID,
         'partitions': [
             {
-                'partuuid': UUIDs[1],
-                'start': '1MiB',
-                'end': '100MiB',
-                'format': 'vfat',
-                'mount-point': '/boot/efi',
-                'mount-options': 'noatime',
-                'flags': {
-                    'boot': 'on'
-                }
+              'partuuid': UUIDs[1],
+              'typeuuid': 'c12a7328-f81f-11d2-ba4b-00a0c93ec93b',
+              'start': '1MiB',
+              'end': '100MiB',
+              'filesystem': 'vfat',
+              'mount-point': '/boot/efi',
+              'mount-options': 'noatime',
+              'flags': {
+                'boot': 'on'
+              }
             },
             {
-                'partuuid': UUIDs[2],
-                'start': '101MiB',
-                'end': '500MiB',
-                'format': 'vfat',
-                'mount-point': '/boot',
-                'mount-options': 'noatime'
+              'partuuid': UUIDs[2],
+              'typeuuid': 'bc13c2ff-59e6-4262-a352-b275fd6f7172',
+              'start': '101MiB',
+              'end': '500MiB',
+              'filesystem': 'vfat',
+              'mount-point': '/boot',
+              'mount-options': 'noatime'
             },
             {
-                'partuuid': UUIDs[3],
-                'start': '501MiB',
-                'end': '0',
-                'format': 'btrfs',
-                'mount-point': '/',
-                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
-                'args': f'--force'
+              'partuuid': UUIDs[3],
+              'typeuuid': '8484680c-9521-48c6-9c11-b0720656f69e',
+              'start': '501MiB',
+              'end': '0',
+              'filesystem': 'btrfs',
+              'mount-point': '/',
+              'mount-options': 'noatime,compress=zstd:15,ssd,discard',
+              'args': '--force'
             }
         ]
     }

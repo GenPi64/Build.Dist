@@ -49,29 +49,32 @@ GenPi64Generic = Base | {
         'uuid': UUID,
         'partitions': [
             {
-                'start': '1MiB',
-                'end': '100MiB',
-                'format': 'vfat',
-                'mount-point': '/boot/efi',
-                'mount-options': 'noatime',
-                'flags': {
-                    'boot': 'on'
-                }
+              'typeuuid': 'c12a7328-f81f-11d2-ba4b-00a0c93ec93b',
+              'start': '1MiB',
+              'end': '100MiB',
+              'filesystem': 'vfat',
+              'mount-point': '/boot/efi',
+              'mount-options': 'noatime',
+              'flags': {
+                'boot': 'on'
+              }
             },
             {
+              'typeuuid': 'bc13c2ff-59e6-4262-a352-b275fd6f7172',
               'start': '101MiB',
               'end': '500MiB',
-              'format': 'vfat',
+              'filesystem': 'vfat',
               'mount-point': '/boot',
               'mount-options': 'noatime'
             },
             {
-                'start': '501MiB',
-                'end': '0',
-                'format': 'btrfs',
-                'mount-point': '/',
-                'mount-options': 'noatime,compress=zstd:15,ssd,discard',
-                'args': f'--force'
+              'typeuuid': 'b921b045-1df0-41c3-af44-4c6f280d3fae',
+              'start': '501MiB',
+              'end': '0',
+              'filesystem': 'btrfs',
+              'mount-point': '/',
+              'mount-options': 'noatime,compress=zstd:15,ssd,discard',
+              'args': '--force'
             }
         ]
     }

@@ -27,7 +27,7 @@ with open(f"{loopdevice_file}", 'r') as f:
 
 
 for idx, partition in enumerate(image['partitions']):
-    if partition['format'] == 'luks':
+    if partition['filesystem'] == 'luks':
         try:
             system(f"echo '{partition['luks_pass']}' | cryptsetup luksOpen {LOOP}p{idx + 1} {lvm['name']} -d -")
             system(f"pvcreate -ff /dev/mapper/{lvm['name']}")

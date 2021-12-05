@@ -18,7 +18,7 @@ aer = aer.replace('DEFAULTPW="raspberrypi64"', f'DEFAULTPW="{config["users"][0][
 
 image = config['image']
 p = image['mount-order'][0]
-fmt = image['partitions'][p]['format']
+fmt = image['partitions'][p]['filesystem']
 
 if fmt == 'btrfs':
     aer = aer.replace('if ! resize2fs -f "${ROOTPART}" &>/dev/null; then',

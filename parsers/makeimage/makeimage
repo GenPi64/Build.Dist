@@ -26,7 +26,7 @@ system(f"sync")
 if image['format'] == 'msdos':
     # TODO: How to make sfdisk create a new msdos label...?
     system(f"parted --script {image['name']} mklabel msdos")
-    system(f"sfdisk --label dos --disk-id {image['name']} 0x{image['uuid']} ")
+    system(f"sfdisk --label dos --disk-id {image['name']} 0x{image['uuid']}")
 
     for idx, partition in enumerate(image['partitions']):
         start = 0
@@ -38,9 +38,18 @@ if image['format'] == 'msdos':
 
         system(f"parted --script {image['name']} mkpart primary {start} {end}")
 
+        if mbrtypeid := partition.get('mbrtypeid'):
+            system(f"sfdisk --label dos {image['name']} --part-type {idx + 1} {mbrtypeid}")
+
         if flags := partition.get('flags'):
             for f, v in flags.items():
-                system(f"parted --script {image['name']} set {idx + 1} {f} {v}")
+                if "boot"==f and "on"==v:
+                  system(f"sfdisk --label dos --activate {image['name']} {idx + 1}")
+                else:
+                  # sfdisk only understands one flag, so we have to fallback to using parted
+                  # WARNING: This is almost certainly going to fuck up your image
+                  # Parted *does not* handle image files correctly.
+                  system(f"parted --script {image['name']} set {idx + 1} {f} {v}")
 
 else:
     # For either of GPT disks, or hybrid GPT+MBR disks, conduct these steps.
@@ -74,13 +83,6 @@ else:
             # Raspberry pi refuses to boot from a /boot partition that doesn't
             # have the LBA flag set.
             for f, v in flags.items():
-                if "on" == v:
-                    action = "set"
-                elif "off" == v:
-                    action = "clear"
-                else:
-                    continue
-
                 if "system" == f:
                     bit = 0
                 elif "boot" == f:
@@ -88,17 +90,31 @@ else:
                 else:
                     continue
 
-            system(f"sgdisk --attribute={idx}:{action}:{bit} {image['name']}")
+                if "on" == v:
+                    action = "set"
+                elif "off" == v:
+                    action = "clear"
+                else:
+                    continue
 
+                system(f"sgdisk --attribute={idx}:{action}:{bit} {image['name']}")
+
+# Hybrid also implies gpt, handled above.
 if image['format'] == 'hybrid':
     system(f"sgdisk --hybrid=1:EE {image['name']}")
-    p = subprocess.Popen(["/sbin/fdisk", '--type=mbr', image['name']], stdout=subprocess.PIPE, stdin=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-    p.stdin.write(f"a\n1\nt\nc\nw\n".encode('charmap'))
-    p.stdin.close()
-    p.wait()
-    p.poll() and (print(p.stdout.read().decode('charmap'), p.stderr.read().decode('charmap')), sys.exit(1))
 
+    for idx, partition in enumerate(image['partitions']):
+        if typeuuid := partition.get('mbrtypeid'):
+            system(f"sfdisk --label dos {image['name']} --part-type {idx + 1} {mbrtypeid}")
+
+        if flags := partition.get('flags'):
+            # Raspberry pi refuses to boot from a /boot partition that doesn't
+            # have the LBA flag set.
+            for f, v in flags.items():
+                if "boot"==f and "on"==v:
+                  system(f"sfdisk --label dos --activate {image['name']} {idx + 1}")
+                else:
+                  system(f"parted --script {image['name']} set {idx + 1} {f} {v}")
 
 # Use losetup to treat the image file as a block device
 system(f"losetup --find {image['name']}")
@@ -116,13 +132,13 @@ system(f"partprobe {LOOP}")
 # Note that we can't do the partitioning / filesystem creation directly on an image file
 # mkfs.* doesn't work on image files, only loop devices. So we do everything with the loop device.
 for idx, partition in enumerate(image['partitions']):
-    if partition['format'] == 'luks':
+    if partition['filesystem'] == 'luks':
         try:
             system(f"echo '{partition['luks_pass']}' | cryptsetup -y --use-random luksFormat {LOOP}p{idx + 1} -")
         except Exception as e:
             raise exit(1)
     else:
-        system(f"mkfs.{partition['format']} {LOOP}p{idx + 1} {partition.get('args', '')}")
+        system(f"mkfs.{partition['filesystem']} {LOOP}p{idx + 1} {partition.get('args', '')}")
 
 system(f"sync")
 system(f"losetup --detach {LOOP}")

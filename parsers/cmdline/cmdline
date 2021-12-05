@@ -12,5 +12,5 @@ image = config['image']
 with open("image/boot/cmdline.txt", "w") as cmdline:
     p = image['mount-order'][0]
     partition=image['partitions'][p]
-    e = dict(PARTUUID=partition['partuuid'], fstype=partition['format'])
+    e = dict(PARTUUID=partition['partuuid'], fstype=partition['filesystem'])
     cmdline.write(config['cmdline'] % e)

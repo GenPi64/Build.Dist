@@ -25,7 +25,7 @@ with open(f"{loopdevice_file}", 'w') as f:
 
 for p in image['mount-order']:
     print(p)
-    if image['partitions'][p]['format'] != 'lvm':
+    if image['partitions'][p]['filesystem'] != 'lvm':
         target = "image" + image['partitions'][p]['mount-point']
         print(target)
         os.system(f"mkdir -p {target}") and exit(1)

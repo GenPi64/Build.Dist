@@ -18,7 +18,6 @@ if [[ ! -d "$PROJECT_DIR" ]]; then
 	if [ ! -z $BTRFS_SNAPSHOTS ]; then
 	    btrfs subvolume create "$PROJECT_DIR"
 	fi
-	  
     fi
 fi
 

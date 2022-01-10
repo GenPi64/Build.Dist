@@ -18,9 +18,11 @@ GenPi64Systemd = GenPi64 | {
     "etc": GenPi64["etc"] | {
         "systemd/": {
             "network/": {
-                i: "systemd/network/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'),
-                                                                           'systemd/network'))
+                i: "systemd/network/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'systemd/network'))
             }
+        },
+        "repart.d/": {
+            i: "repart.d/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'repart.d'))
         }
     },
     "services": {

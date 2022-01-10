@@ -73,7 +73,7 @@ GenPi64Generic = Base | {
               'end': '0',
               'filesystem': 'btrfs',
               'mount-point': '/',
-              'mount-options': 'noatime,compress=zstd:15,ssd,discard',
+              'mount-options': 'noatime,compress=zstd:15,ssd,discard,x-systemd.growfs',
               'args': '--force'
             }
         ]

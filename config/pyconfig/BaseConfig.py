@@ -26,7 +26,8 @@ Base = {
             FEATURES="parallel-fetch parallel-install ".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
-            INPUT_DEVICES="libinput"
+            INPUT_DEVICES="libinput",
+            EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --binpkg-changed-deps=y --changed-slot=y"
         ),
         "patches/": {
             "app-editors/": "patches/app-editors",

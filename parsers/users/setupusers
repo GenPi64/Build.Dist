@@ -19,6 +19,3 @@ for((i=0;i<$usercount;i++)); do
 
     echo $(/em-config users $i name):$(/em-config users $i password) | chpasswd -c $(/em-config users $i format)
 done
-
-# And finally set the root password to the default
-chpasswd <<< "root:raspberrypi64"

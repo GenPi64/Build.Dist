@@ -76,7 +76,7 @@ GenPi64 = Base | {
     "profile": "genpi64:default/linux/arm64/17.0/genpi64",
     'users': [
         Base['users'][0] | dict(
-            password="raspberrypi64",
+            password="Raspberrypi64!",
             groups=Base['users'][0]['groups'] + ['plugdev', 'gpio', 'i2c', 'spi']
         )
     ],

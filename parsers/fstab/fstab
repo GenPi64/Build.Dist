@@ -17,4 +17,6 @@ with open("image/etc/fstab", "a") as fstab:
         fstype = image['partitions'][p]['filesystem']
         options = image['partitions'][p]['mount-options']
         options = options.replace("zstd:15", "zstd")
-        fstab.write(f'PARTUUID="{partuuid}"\t{target}\t{fstype}\t{options}\t0\t0\n')
+        dump = image['partitions'][p]['fstab-dump']
+        fsckPass = image['partitions'][p]['fstab-fsck-pass']
+        fstab.write(f'PARTUUID="{partuuid}"\t{target}\t{fstype}\t{options}\t{dump}\t{fsckPass}\n')

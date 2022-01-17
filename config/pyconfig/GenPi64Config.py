@@ -109,7 +109,9 @@ GenPi64 = Base | {
               'mount-options': 'noatime',
               'flags': {
                 'boot': 'on'
-              }
+              },
+              'fstab-dump': 0,
+              'fstab-fsck-pass': 1
             },
             {
               'name': 'rootfs',
@@ -121,7 +123,9 @@ GenPi64 = Base | {
               'filesystem': 'btrfs',
               'mount-point': '/',
               'mount-options': 'noatime,compress=zstd:15,ssd,discard,x-systemd.growfs',
-              'args': '--force'
+              'args': '--force',
+              'fstab-dump': 0,
+              'fstab-fsck-pass': 0
             }
         ]
     }

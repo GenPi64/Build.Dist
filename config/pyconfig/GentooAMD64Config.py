@@ -111,7 +111,9 @@ GentooAMD64 = Base | {
               'mount-options': 'noatime',
               'flags': {
                 'boot': 'on'
-              }
+              },
+              'fstab-dump': 0,
+              'fstab-fsck-pass': 2
             },
             {
               'partuuid': UUIDs[2],
@@ -120,7 +122,9 @@ GentooAMD64 = Base | {
               'end': '500MiB',
               'filesystem': 'vfat',
               'mount-point': '/boot',
-              'mount-options': 'noatime'
+              'mount-options': 'noatime',
+              'fstab-dump': 0,
+              'fstab-fsck-pass': 1
             },
             {
               'partuuid': UUIDs[3],
@@ -131,6 +135,8 @@ GentooAMD64 = Base | {
               'mount-point': '/',
               'mount-options': 'noatime,compress=zstd:15,ssd,discard,x-systemd.growfs',
               'args': '--force'
+              'fstab-dump': 0,
+              'fstab-fsck-pass': 0
             }
         ]
     }

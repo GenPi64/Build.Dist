@@ -57,7 +57,9 @@ GenPi64Generic = Base | {
               'mount-options': 'noatime',
               'flags': {
                 'boot': 'on'
-              }
+              },
+              'fstab-dump': 0,
+              'fstab-fsck-pass': 2
             },
             {
               'typeuuid': 'bc13c2ff-59e6-4262-a352-b275fd6f7172',
@@ -65,7 +67,9 @@ GenPi64Generic = Base | {
               'end': '500MiB',
               'filesystem': 'vfat',
               'mount-point': '/boot',
-              'mount-options': 'noatime'
+              'mount-options': 'noatime',
+              'fstab-dump': 0,
+              'fstab-fsck-pass': 1
             },
             {
               'typeuuid': 'b921b045-1df0-41c3-af44-4c6f280d3fae',
@@ -74,7 +78,9 @@ GenPi64Generic = Base | {
               'filesystem': 'btrfs',
               'mount-point': '/',
               'mount-options': 'noatime,compress=zstd:15,ssd,discard,x-systemd.growfs',
-              'args': '--force'
+              'args': '--force',
+              'fstab-dump': 0,
+              'fstab-fsck-pass': 0
             }
         ]
     }

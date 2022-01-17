@@ -27,15 +27,19 @@ GenPi64Systemd = GenPi64 | {
     },
     "services": {
         "tmp.mount": "mask",
-        "sshd.socket": "enable",
         "gpm.service": "enable",
+        "sshd.service": "enable",
         "rngd.service": "enable",
         "zram_tmp.service": "enable",
         "zram_swap.service": "enable",
         "zram_var_tmp.service": "enable",
+        "systemd-oomd.service": "enable",
+        "systemd-pstore.service": "enable",
         "systemd-networkd.service": "enable",
         "systemd-resolved.service": "enable",
-        "systemd-timesyncd.service": "enable"
+        "systemd-timesyncd.service": "enable",
+        "systemd-network-generator.service": "enable",
+        "systemd-networkd-wait-online.service": "disable"
     },
     'image': GenPi64['image'] | {
         'name': 'GenPi64Systemd.img'

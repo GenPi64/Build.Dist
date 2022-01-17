@@ -1,5 +1,5 @@
 [
-    {"name": "reetc", "deps": ["reconfig"], "parser": "etc", "args": [""]},
+    {"name": "reetc", "deps": [""], "parser": "etc", "args": [""]},
     {"name": "resetprofile", "deps": ["reetc"], "parser": "setprofile", "args": [""]},
     {"name": "remerge-profile", "deps": ["resetprofile"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
     {"name": "desktopsets", "deps": ["remerge-profile"], "parser": "addsets", "args": [""]},

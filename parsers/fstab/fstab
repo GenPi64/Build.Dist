@@ -10,7 +10,7 @@ from pyconfig import config
 
 image = config['image']
 
-with open("image/etc/fstab", "w") as fstab:
+with open("image/etc/fstab", "a") as fstab:
     for p in image['mount-order']:
         partuuid = image['partitions'][p]['partuuid']
         target = image['partitions'][p]['mount-point']

@@ -51,11 +51,8 @@ GenPi64 = Base | {
         "binrepos.conf": [
             "[genpi64-binhost]",
             "priority = 9999",
-            "sync-uri = https://packages.genpi64.com/",
+            "sync-uri = https://s3.genpi64.com/binpkgs/",
             "",
-            "[genpi64-european-binhost]",
-            "priority = 9998",
-            "sync-uri = https://fi.packages.genpi64.com/"
         ],
         "package.mask": "package.mask",
         "package.accept_keywords": "package.accept_keywords"

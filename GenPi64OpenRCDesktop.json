@@ -1,6 +1,6 @@
 [
     {"name": "genpi64openrc-lite", "deps": [""], "parser": "includejson", "args": ["GenPi64OpenRC.json"], "env": {"PROJECT": "GenPi64OpenRC"}},
     {"name": "reconfig", "deps": ["genpi64openrc-lite"], "parser": "config", "args": [""]},
-    {"name": "genpi64-desktop-finalize", "deps": ["reconfig"], "parser": "includejson", "args": ["subtargets/genpi64-desktop-finalize.json"]}
+    {"name": "genpi64-desktop-finalize", "deps": ["reconfig"], "parser": "includejson", "args": ["subtargets/genpi64-desktop-finalize.json"]},
     {"name": "echo-desktop-banner", "deps": ["genpi64-desktop-finalize"], "parser": "printf", "args": ["############################\n# Build complete\n# To install your image on an SD card, run\n# dd if=/path/to/image of=/path/to/sdcard\n#############################\n"]}
 ]

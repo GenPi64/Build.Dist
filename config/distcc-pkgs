@@ -16,7 +16,7 @@ app-editors/emacs
 app-editors/nano
 app-editors/vim
 app-editors/vim-core
-app-emacs/emacs-common-gentoo
+app-emacs/emacs-common
 app-misc/c_rehash
 app-misc/pax-utils
 app-misc/screen

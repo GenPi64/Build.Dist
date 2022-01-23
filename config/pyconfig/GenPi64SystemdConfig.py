@@ -7,8 +7,8 @@ GenPi64Systemd = GenPi64 | {
     "initsystem": "systemd",
     "service-manager": "systemctl_enable",
     "stage3": os.environ.get("STAGE3", "stage3-arm64-systemd.tar.xz"),
-    "stage3url": "http://bouncer.gentoo.org/fetch/root/all//releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt",
-    "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/",
+    "stage3url": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt",
+    "stage3mirror": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/",
     "profile": "genpi64:default/linux/arm64/17.0/genpi64/systemd",
     "portage": GenPi64["portage"] | {
         "make.conf": GenPi64["portage"]["make.conf"] | {

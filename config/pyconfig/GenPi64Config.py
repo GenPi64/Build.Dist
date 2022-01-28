@@ -20,7 +20,7 @@ GenPi64 = Base | {
             'auto-sync': 'yes',
             'clone-depth': '1',
             'sync-depth': '1',
-            'sync-git-clone-extra-opts': '--single-branch --branch alpha9',
+            'sync-git-clone-extra-opts': '--single-branch --branch master',
             "#commit-hash": "HEAD",
             "#clone-date": "2021-08-24"
         },

@@ -1,3 +1,2 @@
 [
-    {"name": "updateudev", "deps": [""], "before":"users", "parser": "emerge", "args": ["--update eudev"]}
 ]

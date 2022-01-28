@@ -1,10 +1,10 @@
 #!/bin/bash
 pushd ${PROJECT_DIR}
-rm -r image/var/db/repos/*
-rm -r image/var/cache/distfiles/*
-rm -r image/var/cache/binpkgs/*
-rm -r image/usr/portage/distfiles/*
-rm -r image/usr/portage/packages/*
+rm -rf image/var/db/repos/*
+rm -rf image/var/cache/distfiles/*
+rm -rf image/var/cache/binpkgs/*
+rm -rf image/usr/portage/distfiles/*
+rm -rf image/usr/portage/packages/*
 
 sed -i -E 's_distcc__' image/etc/portage/make.conf
 echo "127.0.0.1" > image/etc/distcc/hosts

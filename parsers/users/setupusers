@@ -18,5 +18,4 @@ for((i=0;i<$usercount;i++)); do
 	$(/em-config users $i name)
 
     echo $(/em-config users $i name):$(/em-config users $i password) | chpasswd -c $(/em-config users $i format)
-       
 done

@@ -2,4 +2,7 @@
 Name=*
 
 [Network]
-DHCP=yes
+DHCP=true
+# LLMNR defaults to true
+LLMNR=true
+MulticastDNS=true

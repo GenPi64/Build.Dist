@@ -1,4 +1,4 @@
-#!/usr/bin/python3.9
+#!/usr/bin/env python3
 import os
 import sys
 import subprocess
@@ -10,8 +10,7 @@ sys.path.insert(0, os.environ['CONFIG_DIR'])
 loopdevice_file = os.environ['PROJECT_DIR'] + "/loopdevice.txt"
 
 
-import config
-config = getattr(config, os.environ['PROJECT'])
+from pyconfig import config
 
 image = config['image']
 
@@ -25,6 +24,11 @@ with open(f"{loopdevice_file}", 'w') as f:
     f.write(f"{LOOP}")
 
 for p in image['mount-order']:
-    target = "image"+image['partitions'][p]['mount-point']
-    os.system(f"mkdir -p {target}") and exit(1)
-    os.system(f"mount {LOOP}p{p+1} {target} -o {image['partitions'][p]['mount-options']}") and exit(1)
+    print(p)
+    if image['partitions'][p]['filesystem'] != 'lvm':
+        target = "image" + image['partitions'][p]['mount-point']
+        print(target)
+        os.system(f"mkdir -p {target}") and exit(1)
+        os.system(f"mount {LOOP}p{p + 1} {target} -o {image['partitions'][p]['mount-options']}") and exit(1)
+    else:
+        continue

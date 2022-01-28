@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+import os
+import sys
+
+
+def system(cmd):
+    print(cmd)
+    return os.system(cmd) and sys.exit(1)
+
+
+os.chdir(os.environ['PROJECT_DIR'])
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+loopdevice_file = os.environ['PROJECT_DIR'] + "/loopdevice.txt"
+
+from pyconfig import config
+
+image = config['image']
+
+try:
+    lvm = config['lvm']
+except:
+    pass
+
+LOOP = ""
+with open(f"{loopdevice_file}", 'r') as f:
+    LOOP = f.read().replace('\n', '')
+
+
+for idx, partition in enumerate(image['partitions']):
+    if partition['filesystem'] == 'luks':
+        try:
+            system(f"echo '{partition['luks_pass']}' | cryptsetup luksOpen {LOOP}p{idx + 1} {lvm['name']} -d -")
+            system(f"pvcreate -ff /dev/mapper/{lvm['name']}")
+            system(f"vgcreate -ff vg1 /dev/mapper/{lvm['name']}")
+            for idx2, volume in enumerate(lvm['partitions']):
+                if volume['name'] == 'root':
+                    system(f"lvcreate -l {volume['size']} vg1 --name {volume['name']}")
+                else:
+                    system(f"lvcreate --size {volume['size']} vg1 --name {volume['name']}")
+        except Exception as e:
+            raise
+    else:
+        pass
+
+

@@ -1,9 +1,11 @@
-#! /bin/bash -e
+#!/bin/bash -e
 
 pushd $(dirname $0)
 
-cp setupusers $PROJECT_DIR/chroot/tmp
+cp setupusers $PROJECT_DIR/chroot/
 
-"${SCRIPTS}/chroot.py" /usr/bin/env -i bash -c tmp/setupusers
+"${SCRIPTS}/chroot.py" /usr/bin/env -i bash -c /setupusers
+
+rm $PROJECT_DIR/chroot/setupusers
 
 popd

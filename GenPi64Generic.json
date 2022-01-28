@@ -1,0 +1,7 @@
+[
+    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-aarch64.json", "patchtargets/gentoo-openrc.json"]},
+    {"name": "kernel", "deps": ["gentoo-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ') -bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree"]},
+    {"name": "packstage4", "deps": ["kernel"], "parser": "packstage4", "args": [""]},
+    {"name": "package", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/package-non-pi.json"]},
+    {"name": "echo-lite-banner", "deps": ["package"], "parser": "printf", "args": ["############################\n# Build complete\n# To install your image on an SD card, run\n# dd if=/path/to/image of=/path/to/sdcard\n#############################\n"]}
+]

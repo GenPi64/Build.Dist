@@ -1,16 +1,16 @@
-#!/usr/bin/python3.9
+#!/usr/bin/env python3
 import json
 import os
+import sys
 
-conffile = os.environ['CONFIG_DIR']+'/config.py'
+sys.path.insert(0, os.environ['CONFIG_DIR'])
+
 target = os.environ['CHROOT_DIR']+'/em-config'
 
-with open(conffile, 'r') as c:
-    config = {}
-    exec(compile(c.read(), conffile, 'exec'), config)
+from pyconfig import config
 
 with open(f'{target}.json', 'w') as f:
-    json.dump(config[os.environ['PROJECT']], f)
+    json.dump(config, f)
 
 emconfig = os.path.dirname(__file__)+'/emconfig'
 

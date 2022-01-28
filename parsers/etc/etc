@@ -1,4 +1,4 @@
-#!/usr/bin/python3.9
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -17,8 +17,7 @@ SCRIPTS = os.environ['SCRIPTS']
 print(f"Copying etc config files for {PROJECT}")
 
 sys.path.insert(0, CONFIG_DIR)
-import config
-config = getattr(config, PROJECT)
+from pyconfig import config
 
 def copyconf(conf, file):
     if isinstance(conf, dict):

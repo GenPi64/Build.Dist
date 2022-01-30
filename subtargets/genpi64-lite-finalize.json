@@ -1,6 +1,6 @@
 [
     {"name": "kernel", "deps": [""], "parser": "emerge", "args": ["$(/em-config kernel '* ') -bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree"]},
-    {"name": "addinitramfs", "deps": ["kernel"], "parser": "addinitramfs", "args": ["initramfs-1.0.2.cpio.gz"]},
+    {"name": "addinitramfs", "deps": ["kernel"], "parser": "addinitramfs", "args": ["initramfs-2.0.0.cpio.gz"]},
     {"name": "fixboot3", "deps": ["addinitramfs"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "", "kernel", "kernel8.img"]},
     {"name": "fixboot4", "deps": ["fixboot3"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "pi4", "kernel", "kernel8-p4.img"]},
     {"name": "enableuart", "deps": ["fixboot4"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "all", "enable_uart", "1"]},

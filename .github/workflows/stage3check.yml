@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Prebuild
       run: | 
-        sudo apt-get install systemd-container
+        sudo apt install -y systemd-container
         STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/latest-stage3-arm64.txt -O - | tail -n 1 | cut -d ' ' -f 1)
         wget https://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/${STAGE3} -O stage3.tar.xz
         mkdir chroot
@@ -34,7 +34,7 @@ jobs:
     steps:
     - name: Prebuild
       run: | 
-        sudo apt-get install systemd-container
+        sudo apt install -y systemd-container
         STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt -O - | tail -n 1 | cut -d ' ' -f 1)
         wget https://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/${STAGE3} -O stage3.tar.xz
         mkdir chroot
@@ -55,7 +55,7 @@ jobs:
     steps:
     - name: Prebuild
       run: | 
-        sudo apt-get install systemd-container
+        sudo apt install -y systemd-container
         STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-openrc.txt -O - | tail -n 1 | cut -d ' ' -f 1)
         wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/${STAGE3} -O stage3.tar.xz
         mkdir chroot
@@ -74,7 +74,7 @@ jobs:
     steps:
     - name: Prebuild
       run: | 
-        sudo apt-get install systemd-container
+        sudo apt install -y systemd-container
         STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-systemd.txt -O - | tail -n 1 | cut -d ' ' -f 1)
         wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/${STAGE3} -O stage3.tar.xz
         mkdir chroot

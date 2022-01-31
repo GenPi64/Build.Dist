@@ -1,87 +1,41 @@
 name: Stage3 Check
 
 on:
+  push:
   workflow_dispatch:
   schedule:
   - cron: '25 12 * * *'
 
 jobs:
-  aarch64_openrc:
-
+  stage3:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        arch: [arm64,amd64]
+        init: [openrc,systemd]
+
+    env:
+      STAGE3_ARCH:  ${{ matrix.arch == 'arm64'  && 'arm64'   || 'amd64'    }}
+      STAGE3_INIT:  ${{ matrix.init == 'openrc' && '-openrc' || '-systemd' }}
+
+
     steps:
-    - name: Prebuild
+    - name: Download
       run: | 
         sudo apt install -y systemd-container
-        STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/latest-stage3-arm64.txt -O - | tail -n 1 | cut -d ' ' -f 1)
-        wget https://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/${STAGE3} -O stage3.tar.xz
+        STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/${STAGE3_ARCH}/autobuilds/latest-stage3-${STAGE3_ARCH}${STAGE3_INIT}.txt -O - | tail -n 1 | cut -d ' ' -f 1)
+        wget https://bouncer.gentoo.org/fetch/root/all/releases/${STAGE3_ARCH}/autobuilds/${STAGE3} -O stage3.tar.xz
         mkdir chroot
         pushd chroot
         sudo tar -xaf ../stage3.tar.xz
-        sudo wget https://lp-programming.com/qemu-aarch64 -O usr/bin/qemu-aarch64
-        sudo chmod +x usr/bin/qemu-aarch64
+    - name: Qemu
+      if: ${{ matrix.arch == 'arm64' }}
+      run: |
+        sudo wget https://lp-programming.com/qemu-aarch64 -O chroot/usr/bin/qemu-aarch64
+        sudo chmod +x chroot/usr/bin/qemu-aarch64
         printf '%s\n' ':qemu-aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64:'"${QEMU_BINFMT_FLAGS}" | sudo tee /proc/sys/fs/binfmt_misc/register
     - name: Build
       run: |
-        sudo git clone --depth=1 https://github.com/gentoo-mirror/gentoo $PWD/chroot/var/db/repos/gentoo
-        sudo systemd-nspawn --directory=$PWD/chroot /usr/bin/emerge --pretend -v --update --newuse @world
-        
-  aarch64_systemd:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Prebuild
-      run: | 
-        sudo apt install -y systemd-container
-        STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt -O - | tail -n 1 | cut -d ' ' -f 1)
-        wget https://bouncer.gentoo.org/fetch/root/all/releases/arm64/autobuilds/${STAGE3} -O stage3.tar.xz
-        mkdir chroot
-        pushd chroot
-        sudo tar -xaf ../stage3.tar.xz
-        sudo wget https://lp-programming.com/qemu-aarch64 -O usr/bin/qemu-aarch64
-        sudo chmod +x usr/bin/qemu-aarch64
-        printf '%s\n' ':qemu-aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64:'"${QEMU_BINFMT_FLAGS}" | sudo tee /proc/sys/fs/binfmt_misc/register
-    - name: Build
-      run: |
-        sudo git clone --depth=1 https://github.com/gentoo-mirror/gentoo $PWD/chroot/var/db/repos/gentoo
-        sudo systemd-nspawn --directory=$PWD/chroot /usr/bin/emerge --pretend -v --update --newuse @world
-        
-  amd64_openrc:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Prebuild
-      run: | 
-        sudo apt install -y systemd-container
-        STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-openrc.txt -O - | tail -n 1 | cut -d ' ' -f 1)
-        wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/${STAGE3} -O stage3.tar.xz
-        mkdir chroot
-        pushd chroot
-        sudo tar -xaf ../stage3.tar.xz
-        
-    - name: Build
-      run: |
-        sudo git clone --depth=1 https://github.com/gentoo-mirror/gentoo $PWD/chroot/var/db/repos/gentoo
-        sudo systemd-nspawn --directory=$PWD/chroot /usr/bin/emerge --pretend -v --update --newuse @world
-
-  amd64_systemd:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Prebuild
-      run: | 
-        sudo apt install -y systemd-container
-        STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-systemd.txt -O - | tail -n 1 | cut -d ' ' -f 1)
-        wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/${STAGE3} -O stage3.tar.xz
-        mkdir chroot
-        pushd chroot
-        sudo tar -xaf ../stage3.tar.xz
-        
-    - name: Build
-      run: |
-        sudo git clone --depth=1 https://github.com/gentoo-mirror/gentoo $PWD/chroot/var/db/repos/gentoo
-        sudo systemd-nspawn --directory=$PWD/chroot /usr/bin/emerge --pretend -v --update --newuse @world
+        sudo git clone --depth=1 https://github.com/gentoo-mirror/gentoo chroot/var/db/repos/gentoo
+        sudo systemd-nspawn --directory=chroot /usr/bin/emerge --pretend -v --update --newuse @world

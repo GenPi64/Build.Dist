@@ -1,0 +1,25 @@
+name: Stage3 Check
+
+on:
+  workflow_dispatch:
+  
+
+jobs:
+  aarch64_openrc:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Prebuild
+      run: | 
+        STAGE3=$(wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-arm64.txt -O - | tail -n 1 | cut -d ' ' -f 1)
+        wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/${STAGE3} -O stage3.tar.xz
+        mkdir chroot
+        pushd chroot
+        tar -xaf ../stage3.tar.xz
+        wget https://lp-programming.com/qemu-aarch64 -O usr/bin/qemu-aarch64
+        chmod +x qemu-aarch64
+        git clone https://github.com/gentoo-mirror/gentoo var/db/repos/gentoo
+        ls /proc/sys/fs/binfmt_misc/register
+        printf '%s\n' ':qemu-aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-x86_64-aarch64:'"${QEMU_BINFMT_FLAGS}" >/proc/sys/fs/binfmt_misc/register
+        

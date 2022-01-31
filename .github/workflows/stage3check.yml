@@ -47,6 +47,7 @@ jobs:
       run: |
         sudo git clone --depth=1 https://github.com/gentoo-mirror/gentoo $PWD/chroot/var/db/repos/gentoo
         sudo systemd-nspawn --directory=$PWD/chroot /usr/bin/emerge --pretend -v --update --newuse @world
+        
   amd64_openrc:
 
     runs-on: ubuntu-latest
@@ -66,7 +67,6 @@ jobs:
         sudo git clone --depth=1 https://github.com/gentoo-mirror/gentoo $PWD/chroot/var/db/repos/gentoo
         sudo systemd-nspawn --directory=$PWD/chroot /usr/bin/emerge --pretend -v --update --newuse @world
 
-        
   amd64_systemd:
 
     runs-on: ubuntu-latest

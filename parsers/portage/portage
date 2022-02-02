@@ -8,12 +8,13 @@ import shutil
 def system(*args):
     os.system(*args) and sys.exit(1)
 
-
 CONFIG_DIR = os.environ['CONFIG_DIR']
 PROJECT_DIR = os.environ['PROJECT_DIR']
 PROJECT = os.environ['PROJECT']
 CHROOT_DIR = os.environ['CHROOT_DIR']
 PARSERS = os.environ['PARSERS']
+BINPKGS_DIR = os.environ['BINPKGS_DIR']
+DISTFILES_DIR = os.environ['DISTFILES_DIR']
 
 print(f"Copying portage config files for {PROJECT}")
 

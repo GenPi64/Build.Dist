@@ -4,8 +4,8 @@
 #Currently only netpbm.  Not sure why.
 
 #Use as a last resort.
-if [[ ! -d "$PROJECT_DIR/packages" ]]; then
-  mkdir "$PROJECT_DIR/packages"
-  cp -r $BINARY_ASSETS/binaryWorkarounds/$PROJECT/* $PROJECT_DIR/packages || echo "No binary workarounds detected."
+if [[ ! -d "$BINPKGS_DIR" ]]; then
+  mkdir "$BINPKGS_DIR"
+  cp -r "$BINARY_ASSETS"/binaryWorkarounds/$PROJECT/* "$BINPKGS_DIR" || echo "No binary workarounds detected."
 fi
 

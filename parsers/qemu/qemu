@@ -25,12 +25,12 @@ case "${cpu}" in
 	;;
 esac
 
-if [ "${cpu}" != "aarch64" ] ; then
+if [ "${cpu}" != "aarch64" ] && [ -f "/usr/bin/qemu-aarch64" ] ; then
     dest=$(head /proc/sys/fs/binfmt_misc/aarch64 -n 2 | tail -n 1 | cut -d' ' -f 2)
     cp "/usr/bin/qemu-aarch64" "${CHROOT_DIR}/${dest}"
 fi
 
-if [ "${cpu}" != "arm" ] ; then
+if [ "${cpu}" != "arm" ] && [ -f "/usr/bin/qemu-arm" ] ; then
     dest=$(head /proc/sys/fs/binfmt_misc/arm -n 2 | tail -n 1 | cut -d' ' -f 2)
     cp "/usr/bin/qemu-arm" "${CHROOT_DIR}/${dest}"
 fi

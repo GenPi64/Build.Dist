@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 pushd ${BASEDIR}
 stage3=$(${PARSERS}/config/getconfig stage3)
 

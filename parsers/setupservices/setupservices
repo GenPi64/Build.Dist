@@ -3,6 +3,12 @@ source "${SCRIPTS}/functions.sh"
 
 echo "Running $@"
 
+function finish
+{
+        rm -f ${PROJECT_DIR}/chroot/em-$$
+}
+trap finish EXIT
+
 echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
 service_count=$($PARSERS/config/getconfig services "#")
 service_manager=$($PARSERS/config/getconfig service-manager)

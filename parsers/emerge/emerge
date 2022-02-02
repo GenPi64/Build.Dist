@@ -1,8 +1,10 @@
 #!/bin/bash -e
 source "$BASEDIR/scripts/functions.sh"
 
-ckmkdir "${PROJECT_DIR}/packages"
+ckmkdir "${BINPKGS_DIR}"
+ckmkdir "${DISTFILES_DIR}"
 ckmkdir "${PROJECT_DIR}/chroot/var/cache/binpkgs"
+ckmkdir "${PROJECT_DIR}/chroot/var/cache/distfiles"
 
 if [[ ! -z "$2" ]]; then
   USE="export USE='${2}'"
@@ -12,6 +14,12 @@ fi
 
 echo "emerging with $USE"
 
+function finish
+{
+	rm -f ${PROJECT_DIR}/chroot/em-$$
+}
+trap finish EXIT
+
 echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
 echo SHELL="/bin/bash" >> "${PROJECT_DIR}/chroot/em-$$"
 echo TERM="linux" >> "${PROJECT_DIR}/chroot/em-$$"
@@ -19,6 +27,4 @@ echo "$USE" >> "${PROJECT_DIR}/chroot/em-$$"
 echo "${EXTRA_EMERGE_ENV}" >> "${PROJECT_DIR}/chroot/em-$$"
 echo -n '$(which eatmydata) ' >> "${PROJECT_DIR}/chroot/em-$$" ; echo "emerge --autounmask-backtrack=y $1" >> "${PROJECT_DIR}/chroot/em-$$"
 "${SCRIPTS}/chroot.py" /usr/bin/env -i bash --login /em-$$
-
-rm "${PROJECT_DIR}/chroot/em-$$"
 

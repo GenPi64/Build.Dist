@@ -4,8 +4,6 @@ pushd $(dirname $0)
 
 PROFILE=$(${PARSERS}/config/getconfig profile)
 
-
-
 "${SCRIPTS}/chroot.py" /usr/bin/env -i bash -c "eselect profile set --force ${PROFILE}"
 
 popd

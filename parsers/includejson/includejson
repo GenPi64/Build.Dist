@@ -50,7 +50,6 @@ def takeSnapshot(step):
   print("Taking snapshot:", step)
   cwd = os.getcwd()
   try:
-    
     os.chdir(PROJECT_DIR)
     os.chdir('..')
     if os.path.exists(os.path.join(os.environ["BTRFS_SNAPSHOTS"], step)):
@@ -60,7 +59,6 @@ def takeSnapshot(step):
     p.poll() and sys.exit(p.poll())
   finally:
     os.chdir(cwd)
-    
 
 PROJECT_DIR=os.environ['PROJECT_DIR']
 
@@ -156,7 +154,7 @@ def execute(manifest):
           v = os.environ.get(var)
           if v is not None:
             env[var]=v
-      
+
       copyenv( ('PROJECT',
                 'PARSERS',
                 'BINARY_ASSETS',
@@ -170,6 +168,8 @@ def execute(manifest):
                 'BREAK_AT',
                 'NO_PARALLEL',
                 'BTRFS_SNAPSHOTS',
+                'BINPKGS_DIR',
+                'DISTFILES_DIR',
                 'CHROOT_CMD' ) )
       env |= item.get('env', {})
 
@@ -179,7 +179,7 @@ def execute(manifest):
       if item['parser'] == "includejson":
         args.append('--name')
         args.append(item['name'])
-      
+
       jobs.append( (subprocess.Popen([os.path.join(os.environ['PARSERS'],item['parser'],item['parser']), *args], env=env), item['name']) )
       manifest.remove(item)
       if NO_PARALLEL:
@@ -214,7 +214,7 @@ def checkjob(jobs):
     takeSnapshot(name)
 
 exitcode = 0
-    
+
 jobs=[]
 emptyloops=0
 while manifest:
@@ -226,8 +226,7 @@ while manifest:
       exitcode = 1
 
   checkdeps(manifest)
-  
-  
+
   jobs1=jobs+execute(manifest)
   jobs=jobs1
   if len(jobs) == 0:
@@ -239,17 +238,16 @@ while manifest:
   if emptyloops > 100:
     print("No jobs running.  Exiting.")
     exit(1)
-  
+
   checkjob(jobs)
 
   time.sleep(1)
-  
 
 print ("waiting for jobs to complete")
 while jobs:
   checkjob(jobs)
   time.sleep(1)
-    
+
 if exitcode:
   print("Exiting at breakpoint")
   exit(exitcode)

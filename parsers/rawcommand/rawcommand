@@ -1,10 +1,13 @@
 #!/bin/bash -e
 source "$BASEDIR/scripts/functions.sh"
 
-
-
-
 echo "Running $@"
+
+function finish
+{
+        rm -f ${PROJECT_DIR}/chroot/em-$$
+}
+trap finish EXIT
 
 echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
 echo "$@" >> "${PROJECT_DIR}/chroot/em-$$"

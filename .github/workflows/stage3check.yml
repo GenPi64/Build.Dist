@@ -63,9 +63,10 @@ jobs:
       run: | 
         if [ -d "gentoo-repo" ]
         then
-            sudo git -C gentoo-repo pull
+            sudo git -C gentoo-repo pull --depth=10
+            sudo git -C gentoo-repo gc --prune=all
         else
-            sudo git clone --depth=1 https://github.com/gentoo-mirror/gentoo gentoo-repo
+            sudo git clone --depth=10 https://github.com/gentoo-mirror/gentoo gentoo-repo
         fi
 
     - name: Build

@@ -23,6 +23,9 @@ jobs:
 
 
     steps:
+    - name: Run apt update
+      run: |
+        sudo apt update
     - name: Install Dependencies
       run: | 
         sudo apt install -y systemd-container qemu-user-static

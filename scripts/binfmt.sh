@@ -1,4 +1,4 @@
-
+#!/bin/bash
 cpu="$(uname -m)"
 case "${cpu}" in
     armv[4-9]*)

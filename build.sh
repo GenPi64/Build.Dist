@@ -16,9 +16,9 @@ source "${BASEDIR}"/env.sh
 
 if [[ ! -d "${PROJECT_DIR}" ]]; then
     if [[ ! -e "$PROJECT_DIR" ]]; then
-	if [ -n "${BTRFS_SNAPSHOTS}" ]; then
-	    btrfs subvolume create "${PROJECT_DIR}"
-	fi
+    	if [ -n "${BTRFS_SNAPSHOTS}" ]; then
+    	    btrfs subvolume create "${PROJECT_DIR}"
+    	fi
     fi
 fi
 

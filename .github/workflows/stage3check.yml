@@ -67,7 +67,7 @@ jobs:
         if [ -d "gentoo-repo" ]
         then
             sudo git -C gentoo-repo fetch --depth=10
-            sudo git -C gentoo-repo reset --hard origin/master
+            sudo git -C gentoo-repo reset --hard origin/stable
             sudo git -C gentoo-repo gc --prune=all
         else
             sudo git clone --depth=10 https://github.com/gentoo-mirror/gentoo gentoo-repo

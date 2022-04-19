@@ -1,0 +1,328 @@
+Distcc
+
+reference: https://wiki.gentoo.org/wiki/Distcc
+
+requirement across all hosts
+    - need to have the same GCC versions.  3.3.x  mixes probably okay, but not 3.3.x  & 3.2.x
+    - same version of binutils (eselect binutils list)
+    
+USE flags:
+    gtk - Add support for x11-libs/gtk+ (The GIMP Toolkit) 
+    
+Pre-run Test:
+    Host gentooVM1
+        gentooVM1 /home/jlpoole # emerge sys-devel/distcc -p
+
+        These are the packages that would be merged, in order:
+
+        Calculating dependencies... done!
+        [ebuild  N     ] acct-group/distcc-1
+        [ebuild  N     ] acct-user/distcc-1
+        [ebuild  N     ] dev-util/shadowman-3
+        [ebuild  N     ] sys-devel/distcc-3.4  USE="gtk ipv6 -gssapi -hardened (-selinux) -xinetd -zeroconf" PYTHON_SINGLE_TARGET="python3_9 -python3_8"
+        gentooVM1 /home/jlpoole #
+
+    Target GenPi64
+        GenPi64 /home/jlpoole # emerge sys-devel/distcc -p
+
+        These are the packages that would be merged, in order:
+
+        Calculating dependencies... done!
+        GenPi64 /home/jlpoole #
+
+Uh oh... what happened GenPi64??
+
+    GenPi64 /home/jlpoole # eix distcc -I
+    [I] acct-group/distcc
+         Available versions:  1
+         Installed versions:  1(08:18:08 AM 01/25/2022)
+         Description:         System group: distcc
+
+    [I] acct-user/distcc
+         Available versions:  1
+         Installed versions:  1(08:18:19 AM 01/25/2022)
+         Description:         User used to run distcc daemon
+
+    [I] sys-devel/distcc
+         Available versions:  3.3.3-r3 3.4 {gssapi gtk hardened ipv6 selinux xinetd zeroconf PYTHON_SINGLE_TARGET="python3_8 python3_9"}
+         Installed versions:  3.4(09:54:22 AM 01/25/2022)(ipv6 -gssapi -gtk -hardened -selinux -xinetd -zeroconf PYTHON_SINGLE_TARGET="python3_9 -python3_8")
+         Homepage:            https://github.com/distcc/distcc
+         Description:         Distribute compilation of C code across several machines on a network
+
+    Found 3 matches
+    GenPi64 /home/jlpoole #
+
+GenPi64 does not have gtk flag, so set the flag and try test emerge.
+Had I previously specified USE flags??
+    GenPi64 /home/jlpoole # date
+    Fri Apr  8 03:40:37 PM UTC 2022
+    GenPi64 /home/jlpoole #
+    GenPi64 /home/jlpoole # find /etc/portage -type f |xargs grep distcc
+    /etc/portage/env/enable-distcc:FEATURES="${FEATURES} distcc"
+    /etc/portage/package.env/distcc:sys-apps/rng-tools  enable-distcc
+    /etc/portage/package.env/distcc:app-arch/zstd  enable-distcc
+    /etc/portage/package.env/distcc:app-editors/nano  enable-distcc
+    /etc/portage/package.env/distcc:app-admin/sudo  enable-distcc
+    /etc/portage/package.env/distcc:app-arch/bzip2  enable-distcc
+    /etc/portage/package.env/distcc:app-arch/gzip  enable-distcc
+    /etc/portage/package.env/distcc:app-arch/libarchive  enable-distcc
+    /etc/portage/package.env/distcc:app-arch/tar  enable-distcc
+    /etc/portage/package.env/distcc:app-arch/unzip  enable-distcc
+    /etc/portage/package.env/distcc:app-arch/xz-utils  enable-distcc
+    /etc/portage/package.env/distcc:app-crypt/gnupg  enable-distcc
+    /etc/portage/package.env/distcc:app-crypt/gpgme  enable-distcc
+    /etc/portage/package.env/distcc:app-crypt/libb2  enable-distcc
+    /etc/portage/package.env/distcc:app-crypt/pinentry  enable-distcc
+    /etc/portage/package.env/distcc:app-editors/emacs  enable-distcc
+    /etc/portage/package.env/distcc:app-editors/nano  enable-distcc
+    /etc/portage/package.env/distcc:app-editors/vim  enable-distcc
+    /etc/portage/package.env/distcc:app-editors/vim-core  enable-distcc
+    /etc/portage/package.env/distcc:app-emacs/emacs-common  enable-distcc
+    /etc/portage/package.env/distcc:app-misc/c_rehash  enable-distcc
+    /etc/portage/package.env/distcc:app-misc/pax-utils  enable-distcc
+    /etc/portage/package.env/distcc:app-misc/screen  enable-distcc
+    /etc/portage/package.env/distcc:app-portage/eix  enable-distcc
+    /etc/portage/package.env/distcc:app-portage/elt-patches  enable-distcc
+    /etc/portage/package.env/distcc:app-portage/gemato  enable-distcc
+    /etc/portage/package.env/distcc:app-portage/gentoolkit  enable-distcc
+    /etc/portage/package.env/distcc:app-shells/bash  enable-distcc
+    /etc/portage/package.env/distcc:app-shells/push  enable-distcc
+    /etc/portage/package.env/distcc:app-shells/quoter  enable-distcc
+    /etc/portage/package.env/distcc:app-text/build-docbook-catalog  enable-distcc
+    /etc/portage/package.env/distcc:app-text/docbook-xml-dtd  enable-distcc
+    /etc/portage/package.env/distcc:app-text/docbook-xsl-stylesheets  enable-distcc
+    /etc/portage/package.env/distcc:app-text/manpager  enable-distcc
+    /etc/portage/package.env/distcc:app-text/opensp  enable-distcc
+    /etc/portage/package.env/distcc:app-text/po4a  enable-distcc
+    /etc/portage/package.env/distcc:dev-db/sqlite  enable-distcc
+    /etc/portage/package.env/distcc:dev-embedded/rpi-eeprom  enable-distcc
+    /etc/portage/package.env/distcc:dev-lang/perl  enable-distcc
+    /etc/portage/package.env/distcc:dev-lang/python  enable-distcc
+    /etc/portage/package.env/distcc:dev-lang/python-exec  enable-distcc
+    /etc/portage/package.env/distcc:dev-lang/swig  enable-distcc
+    /etc/portage/package.env/distcc:dev-lang/tcl  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/gobject-introspection  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/gobject-introspection-common  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/icu  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/json-c  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/jsoncpp  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libassuan  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libbsd  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libestr  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libfastjson  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libffi  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libgcrypt  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libgpg-error  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libgudev  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libical  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libksba  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libltdl  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libpcre  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libnl  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libpcre2  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libpipeline  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libtasn1  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libunistring  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libusb  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libusb-compat  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libuv  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libxslt  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/libyaml  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/lzo  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/mpfr  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/nspr  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/npth  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/popt  enable-distcc
+    /etc/portage/package.env/distcc:dev-libs/openssl  enable-distcc
+    /etc/portage/package.env/distcc:dev-perl/YAML-Tiny  enable-distcc
+    /etc/portage/package.env/distcc:dev-python/certifi  enable-distcc
+    /etc/portage/package.env/distcc:dev-python/cffi  enable-distcc
+    /etc/portage/package.env/distcc:dev-python/chardet  enable-distcc
+    /etc/portage/package.env/distcc:dev-python/cryptography  enable-distcc
+    /etc/portage/package.env/distcc:dev-python/cython  enable-distcc
+    /etc/portage/package.env/distcc:dev-python/lxml  enable-distcc
+    /etc/portage/package.env/distcc:dev-python/pygobject  enable-distcc
+    /etc/portage/package.env/distcc:dev-python/pyopenssl  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/desktop-file-utils  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/glib-utils  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/gperf  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/intltool  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/itstool  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/meson  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/ninja  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/pkgconf  enable-distcc
+    /etc/portage/package.env/distcc:dev-util/re2c  enable-distcc
+    /etc/portage/package.env/distcc:dev-vcs/git  enable-distcc
+    /etc/portage/package.env/distcc:media-libs/freetype  enable-distcc
+    /etc/portage/package.env/distcc:media-libs/fontconfig  enable-distcc
+    /etc/portage/package.env/distcc:media-libs/lcms  enable-distcc
+    /etc/portage/package.env/distcc:media-libs/libpng  enable-distcc
+    /etc/portage/package.env/distcc:net-dialup/ppp  enable-distcc
+    /etc/portage/package.env/distcc:net-dns/libidn2  enable-distcc
+    /etc/portage/package.env/distcc:net-fs/sshfs  enable-distcc
+    /etc/portage/package.env/distcc:net-firewall/iptables  enable-distcc
+    /etc/portage/package.env/distcc:net-libs/libmbim  enable-distcc
+    /etc/portage/package.env/distcc:net-libs/libndp  enable-distcc
+    /etc/portage/package.env/distcc:net-libs/libmnl  enable-distcc
+    /etc/portage/package.env/distcc:net-libs/libnsl  enable-distcc
+    /etc/portage/package.env/distcc:net-libs/libqmi  enable-distcc
+    /etc/portage/package.env/distcc:net-libs/libtirpc  enable-distcc
+    /etc/portage/package.env/distcc:net-libs/nghttp2  enable-distcc
+    /etc/portage/package.env/distcc:net-misc/chrony  enable-distcc
+    /etc/portage/package.env/distcc:net-misc/curl  enable-distcc
+    /etc/portage/package.env/distcc:net-misc/iputils  enable-distcc
+    /etc/portage/package.env/distcc:net-misc/openssh  enable-distcc
+    /etc/portage/package.env/distcc:net-misc/rsync  enable-distcc
+    /etc/portage/package.env/distcc:net-misc/telnet-bsd  enable-distcc
+    /etc/portage/package.env/distcc:net-misc/wget  enable-distcc
+    /etc/portage/package.env/distcc:net-wireless/crda  enable-distcc
+    /etc/portage/package.env/distcc:net-wireless/iw  enable-distcc
+    /etc/portage/package.env/distcc:net-wireless/wpa_supplicant  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/acl  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/attr  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/busybox  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/dbus  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/debianutils  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/file  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/findutils  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/flashrom  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/gawk  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/grep  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/groff  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/i2c-tools  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/iproute2  enable-distcc
+    /etc/portage/package.env/distcc:sys-apps/kbd  enable-distcc
+    /etc/portage/package.env/distcc:sys-kernel/raspberrypi-kernel  enable-distcc
+    GenPi64 /home/jlpoole #
+
+# Add a USE flag did not change missing results:
+
+    GenPi64 /home/jlpoole # emerge sys-devel/distcc -p
+
+    These are the packages that would be merged, in order:
+
+    Calculating dependencies... done!
+    GenPi64 /home/jlpoole #
+
+# try using --ask && responding "yes"
+
+    GenPi64 /home/jlpoole # emerge sys-devel/distcc --ask
+
+    These are the packages that would be merged, in order:
+
+    Calculating dependencies... done!
+
+
+     * sys-devel/distcc
+
+    Would you like to add these packages to your world favorites? [Yes/No] yes
+    >>> Recording sys-devel/distcc in "world" favorites file...
+    GenPi64 /home/jlpoole #
+
+# something is screwy with portage and/or its settings.  I recall this had some of the 
+# sakaki modifications for portage, e.g. parallel processing?
+
+GenPi64 /home/jlpoole # cat /etc/portage/make.conf
+CFLAGS="-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe"
+CXXFLAGS="${CFLAGS}"
+FCFLAGS="${CFLAGS}"
+FFLAGS="${CFLAGS}"
+USE="bindist -checkboot -systemd elogind"
+FEATURES="parallel-fetch parallel-install -userpriv -usersandbox -network-sandbox -pid-sandbox buildpkg binpkg-multi-instance"
+MAKEOPTS="-j2 -l2"
+VIDEO_CARDS="vc4 v3d fbdev"
+INPUT_DEVICES="libinput"
+EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --binpkg-changed-deps=y --changed-slot=y"
+CC="aarch64-unknown-linux-gnu-gcc-11.2.1"
+CXX="aarch64-unknown-linux-gnu-g++-11.2.1"
+CHOST="aarch64-unknown-linux-gnu"
+
+
+# tried rem'ing FEATURES and then " emerge sys-devel/distcc -p" and same result: missing output.
+GenPi64 /home/jlpoole # # rem'd some more lines
+GenPi64 /home/jlpoole # cat /etc/portage/make.conf |grep '^\#'
+#USE="bindist -checkboot -systemd elogind"
+#FEATURES="parallel-fetch parallel-install -userpriv -usersandbox -network-sandbox -pid-sandbox buildpkg binpkg-multi-instance"
+#EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --binpkg-changed-deps=y --changed-slot=y"
+GenPi64 /home/jlpoole #
+
+# Now emerge shows me what I expect:, though it doesn't show what USE flags.... hmmm
+
+    GenPi64 /home/jlpoole # emerge sys-devel/distcc -p
+
+    These are the packages that would be merged, in order:
+
+    Calculating dependencies... done!
+    [ebuild   R    ] sys-devel/distcc-3.4
+    GenPi64 
+
+# emerge distcc on both machines
+8:57 AM 4/8/2022
+
+4:43 PM 4/8/2022
+
+Modified default /etc/conf.d/distccd
+specifying log-file => /var/log/disticcd.log
+changing niceness to 5
+Looks like the allowed IPs are a range which will encompass all of my servers.
+
+Executed:
+    touch /var/log/distccd.log 
+    chown distcc:root /var/log/distccd.log 
+    rc-update add distccd default 
+    rc-service distccd start 
+    
+Skipped section "Specifying participating hosts" since I've only 1 for now.
+
+4:52 PM 4/8/2022
+Section "Usage"
+added gentooVM1 to the /etc/distcc/hosts file
+modified /etc/portage/make.conf
+    #
+    # 4/8/22 jlpoole: DO NOT use "-march=native" for CFLAGS or CXXFLAGS
+    #                 as that will defeat distcc
+    #
+
+    FEATURES="distcc"
+    #OLD: MAKEOPTS="-j2 -l2"
+    #
+    # gentooVM1 has 8 cpus, so
+    #  8*2 = 16 + 1 for this Raspberry Pi
+    #
+    MAKEOPTS="-j17 -1M"
+
+# my gtk did not "take"!!
+eix:
+    [I] sys-devel/distcc
+         Available versions:  3.3.3-r3 3.4 {gssapi gtk hardened ipv6 selinux xinetd zeroconf PYTHON_SINGLE_TARGET="python3_8 python3_9"}
+         Installed versions:  3.4(03:55:32 PM 04/08/2022)(ipv6 -gssapi -gtk -hardened -selinux -xinetd -zeroconf PYTHON_SINGLE_TARGET="python3_9 -python3_8")
+         Homepage:            https://github.com/distcc/distcc
+         Description:         Distribute compilation of C code across several machines on a network
+
+"gtk" is necessary for the distccmon-gui, a desirable option.
+
+ISSUE:  what of "CFLAGS="-mtune=cortex-a72 "
+The Raspberry Pi 4B has the a74 cortex, whereas the Pi Zero 2 W has the A53 cortex"  If I am going to be switching between these two platorms, better not to have a specific "tuning", or will the compiler try to be smart and tune to the existing environment?
+
+Kept getting error messages.
+
+7:06 PM 4/8/2022
+    GenPi64 /home/jlpoole # /usr/bin/distcc-config --set-hosts "192.168.1.41"
+    GenPi64 /home/jlpoole # /usr/bin/distcc-config
+    Usage: /usr/bin/distcc-config --set-hosts DISTCC_HOSTS | --get-hosts
+           /usr/bin/distcc-config --set-verbose { 0 | 1 }  | --get-verbose
+           /usr/bin/distcc-config --set-log FILE           | --get-log
+           /usr/bin/distcc-config --set-env VARIABLE VALUE | --get-env [VARIABLE]
+           /usr/bin/distcc-config --update-masquerade
+           /usr/bin/distcc-config --update-masquerade-with-crossdev
+    GenPi64 /home/jlpoole # /usr/bin/distcc-config --get-hosts
+    192.168.1.41
+    GenPi64 /home/jlpoole # /usr/bin/distcc-config --get-verbose
+    DISTCC_VERBOSE=0
+    GenPi64 /home/jlpoole # /usr/bin/distcc-config --set-verbose 1
+    If you want to use these new settings in an existing shell,
+    you need to "source /etc/profile" to get the changes.
+    GenPi64 /home/jlpoole # >>> Regenerating /etc/ld.so.cache...
+
+    GenPi64 /home/jlpoole # source /etc/profile
+    GenPi64 /home/jlpoole #

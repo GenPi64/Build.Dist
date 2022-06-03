@@ -30,7 +30,6 @@ Base = {
             EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --binpkg-changed-deps=y --changed-slot=y"
         ),
         "patches/": {
-            "app-editors/": "patches/app-editors",
             "sys-apps/": "patches/sys-apps",
             "dev-lang/": "patches/dev-lang"
         },

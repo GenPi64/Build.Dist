@@ -22,6 +22,10 @@ if [[ -z "$BINARY_ASSETS" ]]; then
 	export BINARY_ASSETS="${PROJECT_DIR}/build-binary-assets"
 fi
 
+if [[ -z "$OVERLAYS_CACHE_DIR" ]]; then
+	export OVERLAYS_CACHE_DIR="${PROJECT_DIR}/overlays-cache"
+fi
+
 #This list of variables must also be included in the copyenv directive of parsers/include
 export CONFIG_DIR="${BASEDIR}/config"
 export CHROOT_DIR="${PROJECT_DIR}/chroot"

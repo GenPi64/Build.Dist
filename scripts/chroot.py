@@ -25,6 +25,7 @@ if 'CHROOT_CMD' in os.environ:
     elif chroot_cmd == 'systemd-nspawn':
         os.execvpe('systemd-nspawn',
                    ['systemd-nspawn',
+                    f'--suppress-sync=true',
                     f'--machine={uuid.uuid4()}',
                     f'--directory={os.environ["CHROOT_DIR"]}',
                     f'--bind={os.environ["BINPKGS_DIR"]}:/var/cache/binpkgs',
@@ -44,6 +45,7 @@ elif os.path.exists('/sbin/openrc-run'):
 elif 'systemd' in os.readlink('/proc/1/exe'):
     os.execvpe('systemd-nspawn',
                ['systemd-nspawn',
+                f'--suppress-sync=true',
                 f'--machine={uuid.uuid4()}',
                 f'--directory={os.environ["CHROOT_DIR"]}',
                 f'--bind={os.environ["BINPKGS_DIR"]}:/var/cache/binpkgs',

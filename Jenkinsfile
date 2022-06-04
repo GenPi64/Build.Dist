@@ -4,11 +4,9 @@ pipeline
 	{
 		withAWS(endpointUrl:'https://s3.genpi64.com',credentials:'genpi-s3')
 	}
-
-	agent { 
-		node {
-                  label 'aarch64'
-	}       }
+	agent { node {
+		label 'aarch64'
+	} }
 	stages { stage('Build') { matrix
 	{
 		agent any

@@ -21,6 +21,7 @@ for ((ridx=0; ridx<$repocount; ridx++)); do
                 git clone                            \
                     --bare                           \
                     --dissociate                     \
+                    --filter=blob:none               \
                     --no-reject-shallow              \
                     --reference-if-able=${OVERLAY}   \
                     ${URI}                           \

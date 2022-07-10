@@ -39,7 +39,7 @@ GenPi64 = Base | {
     ],
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
-            "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -ftree-vectorize -O2 -pipe",
+            "CFLAGS": "${CFLAGS}",
             'CHOST':"aarch64-unknown-linux-gnu",
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),

@@ -24,7 +24,7 @@ GentooAMD64Systemd = GentooAMD64 | {
     "profile": "default/linux/amd64/17.1",
     'portage': GentooAMD64['portage'] | {
         "make.conf": GentooAMD64['portage']['make.conf'] | {
-            'CFLAGS': '-march=x86-64 -mtune=generic -pipe',
+            'CFLAGS': '${CFLAGS} -march=x86-64 -mtune=generic -pipe',
             'CHOST': 'x86_64-pc-linux-gnu',
             "USE": 'bindist systemd openssl'.split(),
             'GRUB_PLATFORMS': "pc",

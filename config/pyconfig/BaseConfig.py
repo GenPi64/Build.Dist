@@ -18,7 +18,7 @@ def readlines(p):
 Base = {
     'portage': {
         "make.conf": dict(
-            CFLAGS="-march=native -O2 -pipe",
+            CFLAGS="${CFLAGS} -march=native -O2 -pipe",
             CXXFLAGS="${CFLAGS}",
             FCFLAGS="${CFLAGS}",
             FFLAGS="${CFLAGS}",

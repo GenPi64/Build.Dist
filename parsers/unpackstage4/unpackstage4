@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ev
 pushd ${PROJECT_DIR}/image
 
 tar --zstd --extract --file ../latest-${PROJECT}.tar.zst

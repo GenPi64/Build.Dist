@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ev
 
 mkdir -p ${OVERLAYS_CACHE_DIR}
 
@@ -18,10 +18,11 @@ for ((ridx=0; ridx<$repocount; ridx++)); do
                 GIT_DIR=${OVERLAYS_CACHE_DIR}/${OVERLAY} git fetch --all --prune
             else
 		# Note: Cant use shallow-since, doesnt work with reference repos
+		# --filter=blob:none causes "unable to read *hash*" errors in the reference repo...
+		# --filter=blob:none               \
                 git clone                            \
                     --bare                           \
                     --dissociate                     \
-                    --filter=blob:none               \
                     --no-reject-shallow              \
                     --reference-if-able=${OVERLAY}   \
                     ${URI}                           \

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ev
 pushd ${BASEDIR}
 stage3=$(${PARSERS}/config/getconfig stage3)
 
@@ -9,7 +9,7 @@ stage3_mirror=$(${PARSERS}/config/getconfig stage3mirror)
 
 if [ -f "${BINARY_ASSETS}/stage3/${stage3}" ]; then
   if wget ${stage3_mirror}/${stage3_image}.DIGESTS -O - | diff "${BINARY_ASSETS}/stage3/${stage3}.DIGESTS" -; then
-  echo "stage3 digest indicates stage3 image isout of date, removing and re-downloading."
+  echo "stage3 digest indicates stage3 image is out of date, removing and re-downloading."
     rm -rf "${BINARY_ASSETS}/stage3/"
   else
     exit 0

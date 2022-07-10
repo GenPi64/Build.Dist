@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ev
 
 groupcount=$(/em-config groups "#")
 

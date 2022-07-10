@@ -19,5 +19,3 @@ for((i=0;$i<$service_count;i++)); do
 done
 
 "${SCRIPTS}/chroot.py" /usr/bin/env -i bash --login /em-$$
-
-rm "${PROJECT_DIR}/chroot/em-$$"

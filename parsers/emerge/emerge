@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 source "$BASEDIR/scripts/functions.sh"
 
 ckmkdir "${BINPKGS_DIR}"

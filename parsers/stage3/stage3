@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 
 if [[ ! -d "${PROJECT_DIR}/chroot" ]]; then
   mkdir "${PROJECT_DIR}/chroot"

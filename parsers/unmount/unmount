@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 pushd ${PROJECT_DIR}
 
 umount --recursive image

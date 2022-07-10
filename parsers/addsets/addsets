@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 mkdir -p ${CHROOT_DIR}/etc/portage/sets/
 echo > ${CHROOT_DIR}/var/lib/portage/world_sets
 

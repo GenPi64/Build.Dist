@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 
 rm "$CHROOT_DIR"/em-* || echo "no scripts to clean"
 

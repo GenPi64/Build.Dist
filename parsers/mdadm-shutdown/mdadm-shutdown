@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 tail -n+10 $0 > $PROJECT_DIR/chroot/etc/init.d/mdadm-shutdown
 chmod +x $PROJECT_DIR/chroot/etc/init.d/mdadm-shutdown
 ln -s /etc/init.d/mdadm-shutdown $PROJECT_DIR/chroot/etc/runlevels/shutdown

@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 pushd $(dirname $(realpath $0))
 
 for A in dist/* ; do

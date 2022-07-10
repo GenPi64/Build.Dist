@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 pushd ${PROJECT_DIR}
 rm -rf image/var/db/repos/*
 rm -rf image/var/cache/distfiles/*

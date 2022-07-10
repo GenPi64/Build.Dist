@@ -1,4 +1,4 @@
-#!/bin/bash -ev
+#!/bin/bash -evx
 #Install binary packages for things that don't compile when called from a python script, but that are otherwise fine.
 
 #Currently only netpbm.  Not sure why.

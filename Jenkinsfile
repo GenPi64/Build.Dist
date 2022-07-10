@@ -59,7 +59,7 @@ pipeline
 			}}
 			stage('Setup') { steps
 			{
-				sh "sudo mkdir -p $BINPKGS_DIR $DISTFILES_DIR $BINARY_ASSETS"
+				sh "sudo mkdir -p $CCACHE_DIR $BINPKGS_DIR $DISTFILES_DIR $BINARY_ASSETS"
 			}}
 			stage('Print Environment') { steps
 			{

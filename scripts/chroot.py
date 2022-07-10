@@ -4,6 +4,9 @@ import os
 import sys
 import uuid
 
+if not os.path.exists(os.environ['CCACHE_DIR']):
+    os.mkdir(os.environ['CCACHE_DIR'])
+
 if not os.path.exists(os.environ['BINPKGS_DIR']):
     os.mkdir(os.environ['BINPKGS_DIR'])
 

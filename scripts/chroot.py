@@ -16,10 +16,9 @@ if 'CHROOT_CMD' in os.environ:
     if chroot_cmd == 'pychroot':
         os.execvpe('pychroot',
                    ['pychroot',
-                    '-B',
-                    f'{os.environ["BINPKGS_DIR"]}:/var/cache/binpkgs',
-                    '-B',
-                    f'{os.environ["DISTFILES_DIR"]}:/var/cache/distfiles',
+                    '-B', f'{os.environ["CCACHE_DIR"]}:/var/tmp/ccache',
+                    '-B', f'{os.environ["BINPKGS_DIR"]}:/var/cache/binpkgs',
+                    '-B', f'{os.environ["DISTFILES_DIR"]}:/var/cache/distfiles',
                     os.environ['CHROOT_DIR'],
                     *sys.argv[1:]], os.environ)
     elif chroot_cmd == 'systemd-nspawn':
@@ -27,6 +26,7 @@ if 'CHROOT_CMD' in os.environ:
                    ['systemd-nspawn',
                     f'--machine={uuid.uuid4()}',
                     f'--directory={os.environ["CHROOT_DIR"]}',
+                    f'--bind={os.environ["CCACHE_DIR"]}:/var/tmp/ccache',
                     f'--bind={os.environ["BINPKGS_DIR"]}:/var/cache/binpkgs',
                     f'--bind={os.environ["DISTFILES_DIR"]}:/var/cache/distfiles',
                     *sys.argv[1:]],
@@ -36,10 +36,9 @@ if 'CHROOT_CMD' in os.environ:
 elif os.path.exists('/sbin/openrc-run'):
     os.execvpe('pychroot',
                ['pychroot',
-                '-B',
-                f'{os.environ["BINPKGS_DIR"]}:/var/cache/binpkgs',
-                '-B',
-                f'{os.environ["DISTFILES_DIR"]}:/var/cache/distfiles',
+                '-B', f'{os.environ["CCACHE_DIR"]}:/var/tmp/ccache',
+                '-B', f'{os.environ["BINPKGS_DIR"]}:/var/cache/binpkgs',
+                '-B', f'{os.environ["DISTFILES_DIR"]}:/var/cache/distfiles',
                 os.environ['CHROOT_DIR'],
                 *sys.argv[1:]], os.environ)
 elif 'systemd' in os.readlink('/proc/1/exe'):
@@ -47,6 +46,7 @@ elif 'systemd' in os.readlink('/proc/1/exe'):
                ['systemd-nspawn',
                 f'--machine={uuid.uuid4()}',
                 f'--directory={os.environ["CHROOT_DIR"]}',
+                f'--bind={os.environ["CCACHE_DIR"]}:/var/tmp/ccache',
                 f'--bind={os.environ["BINPKGS_DIR"]}:/var/cache/binpkgs',
                 f'--bind={os.environ["DISTFILES_DIR"]}:/var/cache/distfiles',
                 *sys.argv[1:]],

@@ -18,6 +18,10 @@ if [[ -z "$DISTFILES_DIR" ]] ; then
         export DISTFILES_DIR=${PROJECT_DIR}/distfiles
 fi
 
+if [[ -z "$CCACHE_DIR" ]]; then
+	export CCACHE_DIR="${PROJECT_DIR}/ccache"
+fi
+
 if [[ -z "$BINARY_ASSETS" ]]; then
 	export BINARY_ASSETS="${PROJECT_DIR}/build-binary-assets"
 fi

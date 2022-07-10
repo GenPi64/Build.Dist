@@ -157,6 +157,7 @@ def execute(manifest):
 
       copyenv( ('PROJECT',
                 'PARSERS',
+                'CCACHE_DIR',
                 'BINARY_ASSETS',
                 'OVERLAYS_CACHE_DIR',
                 'SCRIPTS',

@@ -41,6 +41,7 @@ pipeline
 		environment
 		{
 			PROJECT="GenPi64${INIT_SYSTEM}"
+			CCACHE_DIR="${HOME}/shared/ccache/"
 			BINPKGS_DIR="${HOME}/shared/binpkgs/"
 			DISTFILES_DIR="${HOME}/shared/distfiles/"
 			OVERLAYS_CACHE_DIR="${HOME}/shared/overlays-cache/"
@@ -64,6 +65,7 @@ pipeline
 			{
 				// Clear out anything from the previous build...
 				sh "env"
+				sh "ls -lah $CCACHE_DIR"
 				sh "ls -lah $BINPKGS_DIR"
 				sh "ls -lah $DISTFILES_DIR"
 				sh "ls -lah $BINARY_ASSETS"

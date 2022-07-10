@@ -55,7 +55,6 @@ pipeline
 				// Clear out anything from the previous build...
 				sh "sudo rm -rf ./*"
 				sh "git checkout ."
-				sh "sudo rm -rf ${BINARY_ASSETS}"
 			}}
 			stage('Setup') { steps
 			{
@@ -68,6 +67,7 @@ pipeline
 				sh "ls -lah $BINPKGS_DIR"
 				sh "ls -lah $DISTFILES_DIR"
 				sh "ls -lah $BINARY_ASSETS"
+				sh "ls -lah $OVERLAYS_CACHE_DIR"
 			}}
 			stage('Build Lite') { steps
 			{

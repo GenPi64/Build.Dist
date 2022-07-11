@@ -8,7 +8,7 @@
     {"name": "etc", "deps": ["portage"], "parser": "etc", "args": [""]},
     {"name": "locale", "deps": ["etc"], "parser": "rawcommand", "args": ["eselect locale set en_US.utf8"]},
     {"name": "update_portage", "deps": ["locale"], "parser": "emerge", "args": ["--verbose --oneshot --jobs --ignore-default-opts sys-apps/portage"]},
-    {"name": "install_ccache", "deps": ["update_portage"], "parser": "emerge", "args": ["--verbose --oneshot ccache"]},
+    {"name": "install_ccache", "deps": ["update_portage"], "parser": "emerge", "args": ["--verbose --oneshot --ignore-default-opts --jobs ccache ccache"]},
     {"name": "update_world", "deps": ["install_ccache"], "parser": "emerge", "args": ["--verbose --update @world"]},
     {"name": "rebuild_system", "deps": ["update_world"], "parser": "emerge", "args": ["--verbose --emptytree @system"]},
     {"name": "rebuild_world", "deps": ["rebuild_system"], "parser": "emerge", "args": ["--verbose --emptytree @world"]},

@@ -30,5 +30,5 @@ cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
 	emerge $1
 EOF
 
-"${SCRIPTS}/chroot.py" --login /em-$$
+"${SCRIPTS}/chroot.py" /em-$$
 

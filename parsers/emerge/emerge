@@ -20,7 +20,7 @@ function finish
 }
 trap finish EXIT
 
-cat <<<EOF > "${PROJECT_DIR}/chroot/em-$$"
+cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
 	#!/usr/bin/env bash -evx
 	source /etc/profile
 	export SHELL="/bin/bash"

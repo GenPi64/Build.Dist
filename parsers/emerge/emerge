@@ -30,5 +30,7 @@ cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
 	emerge $1
 EOF
 
+chmod +x /em-$$
+
 "${SCRIPTS}/chroot.py" /em-$$
 

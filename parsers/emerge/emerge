@@ -21,7 +21,10 @@ function finish
 trap finish EXIT
 
 cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
-	#!/usr/bin/env bash -evx
+	#!/usr/bin/env bash
+	set -e
+	set -v
+	set -x
 	source /etc/profile
 	export SHELL="/bin/bash"
 	export TERM="linux"
@@ -30,7 +33,7 @@ cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
 	emerge $1
 EOF
 
-chmod +x /em-$$
+chmod +x "${PROJECT_DIR}/chroot//em-$$"
 
-"${SCRIPTS}/chroot.py" /em-$$
+"${SCRIPTS}/chroot.py" "/em-$$"
 

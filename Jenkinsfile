@@ -7,6 +7,7 @@ pipeline
 	agent { node {
 		label 'aarch64'
 	} }
+	options { timestamps () }
 	stages { stage('Build') { matrix
 	{
 		agent any

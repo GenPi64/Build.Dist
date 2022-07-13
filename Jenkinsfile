@@ -2,12 +2,12 @@ pipeline
 {
 	options
 	{
+		timestamps()
 		withAWS(endpointUrl:'https://s3.genpi64.com',credentials:'genpi-s3')
 	}
 	agent { node {
 		label 'aarch64'
 	} }
-	options { timestamps () }
 	stages { stage('Build') { matrix
 	{
 		agent any

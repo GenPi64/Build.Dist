@@ -1,9 +1,9 @@
-#!/bin/bash -evx
+#!/usr/bin/env bash
+set -evx
 
 groupcount=$(/em-config groups "#")
 
 usercount=$(/em-config users "#")
-
 
 for((i=0;i<$groupcount;i++)); do
     groupadd -g $(/em-config groups $i gid) $(/em-config groups $i name)

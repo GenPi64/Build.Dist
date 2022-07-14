@@ -16,7 +16,7 @@ echo "emerging with $USE"
 
 function finish
 {
-	rm -f :${PROJECT_DIR}/chroot/em-$$"
+	rm -f "${PROJECT_DIR}/chroot/em-$$"
 }
 trap finish EXIT
 

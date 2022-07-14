@@ -17,7 +17,8 @@
     {"name": "add_sets", "deps": ["emerge_new_profile"], "parser": "addsets", "args": [""]},
     {"name": "emerge_new_sets", "deps": ["add_sets"], "parser": "emerge", "args": ["--verbose --update @world"]},
     {"name": "depclean", "deps": ["emerge_new_sets"], "parser": "emerge", "args": ["--verbose --depclean"]},
-    {"name": "users", "deps": ["depclean"], "parser": "users", "args": [""]},
+    {"name": "eclean", "deps": ["depclean"], "parser": "rawcommand", "args": ["eclean --time-limit=1m"]},
+    {"name": "users", "deps": ["eclean"], "parser": "users", "args": [""]},
     {"name": "setup_services", "deps": ["users"], "parser": "setupservices", "args": [""]},
     {"name": "news", "deps": ["setup_services"], "parser": "rawcommand", "args": ["eselect news read &>/dev/null"]},
     {"name": "set_root_password","deps": ["news"], "parser": "password", "args": [""]}

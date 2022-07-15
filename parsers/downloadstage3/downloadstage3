@@ -18,5 +18,5 @@ fi
 
 mkdir -p "${BINARY_ASSETS}/stage3/"
 
-cat "${stage3_digest}" > "${BINARY_ASSETS}/stage3/${stage3}.DIGESTS"
+cat "${stage3_digests}" > "${BINARY_ASSETS}/stage3/${stage3}.DIGESTS"
 wget ${stage3_mirror}/${stage3_image} -O "${BINARY_ASSETS}/stage3/${stage3}"

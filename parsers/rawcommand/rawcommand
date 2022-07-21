@@ -5,13 +5,15 @@ echo "Running $@"
 
 function finish
 {
-        rm -f ${PROJECT_DIR}/chroot/em-$$
+        rm -f "${PROJECT_DIR}/chroot/em-$$"
 }
 trap finish EXIT
 
-echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
-echo "$@" >> "${PROJECT_DIR}/chroot/em-$$"
-"${SCRIPTS}/chroot.py"  /usr/bin/env -i bash --login /em-$$
+cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
+        #!/usr/bin/env bash
+        set -evx
+        source /etc/profile
+        $@
+EOF
 
-rm "${PROJECT_DIR}/chroot/em-$$"
-
+"${SCRIPTS}/chroot.py" /em-$$

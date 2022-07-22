@@ -15,5 +15,6 @@ cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
         source /etc/profile
         $@
 EOF
+chmod +x "${PROJECT_DIR}/chroot/em-$$"
 
 "${SCRIPTS}/chroot.py" /em-$$

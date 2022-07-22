@@ -6,8 +6,12 @@ rm -rf image/var/cache/binpkgs/*
 rm -rf image/usr/portage/distfiles/*
 rm -rf image/usr/portage/packages/*
 
-sed -i -E 's_distcc__' image/etc/portage/make.conf
-echo "127.0.0.1" > image/etc/distcc/hosts
+sed -i -E 's_distcc__' image/etc/portage/make.conf || echo "No distcc entries to remove"
 
-rm image/wget-log*
+if [[ -f image/etc/distcc/hosts ]]
+then
+	echo "127.0.0.1" > image/etc/distcc/hosts
+fi
+
+rm -f image/wget-log*
 exit 0

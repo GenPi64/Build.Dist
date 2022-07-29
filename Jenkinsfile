@@ -55,6 +55,7 @@ pipeline
 			stage('Clean Up') { steps
 			{
 				// Clear out anything from the previous build...
+				sh "sudo losetup -D"
 				sh "sudo rm -rf ./*"
 				sh "git checkout ."
 			}}

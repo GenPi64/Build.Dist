@@ -18,7 +18,7 @@ def check(p):
     if p.poll():
         raise RuntimeError(f"{p} exited non-zero: {p.poll()}")
 
-p = subprocess.Popen(['/sbin/btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
+p = subprocess.Popen(['env', 'btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
 check(p)
 
 p.stdout.readline()
@@ -29,10 +29,10 @@ unused = int(p.stdout.readline().decode('utf-8').split(':',1)[1])
 print(30, unused)
 
 
-p = subprocess.Popen(['/sbin/btrfs', 'filesystem', 'resize', f'-{unused // 1024 - 1024*1024}K', 'image'])
+p = subprocess.Popen(['env', 'btrfs', 'filesystem', 'resize', f'-{unused // 1024 - 1024*1024}K', 'image'])
 check(p)
 
-p = subprocess.Popen(['/sbin/btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
+p = subprocess.Popen(['env', 'btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
 check(p)
 
 p.stdout.readline()
@@ -50,7 +50,7 @@ p.stdout.readline()
 disksize = int(p.stdout.readline().decode('utf-8').split()[3])
 bootsize = int(p.stdout.readline().decode('utf-8').split()[3])
 
-p = subprocess.Popen(['/usr/sbin/parted', '---pretend-input-tty', image['name'], "resizepart", "2", f'{(bootsize+filesystemsize-slack+1024*1024) // 1024 + 1}KiB\n'], stdin=subprocess.PIPE)
+p = subprocess.Popen(['env', 'parted', '---pretend-input-tty', image['name'], "resizepart", "2", f'{(bootsize+filesystemsize-slack+1024*1024) // 1024 + 1}KiB\n'], stdin=subprocess.PIPE)
 
 p.stdin.write(b'yes\n')
 p.stdin.flush()

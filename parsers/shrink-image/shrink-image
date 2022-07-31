@@ -18,7 +18,7 @@ def check(p):
     if p.poll():
         raise RuntimeError(f"{p} exited non-zero: {p.poll()}")
 
-p = subprocess.Popen(['env', 'btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
+p = subprocess.Popen(['/usr/bin/env', 'btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
 check(p)
 
 p.stdout.readline()
@@ -29,10 +29,10 @@ unused = int(p.stdout.readline().decode('utf-8').split(':',1)[1])
 print(30, unused)
 
 
-p = subprocess.Popen(['env', 'btrfs', 'filesystem', 'resize', f'-{unused // 1024 - 1024*1024}K', 'image'])
+p = subprocess.Popen(['/usr/bin/env', 'btrfs', 'filesystem', 'resize', f'-{unused // 1024 - 1024*1024}K', 'image'])
 check(p)
 
-p = subprocess.Popen(['env', 'btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
+p = subprocess.Popen(['/usr/bin/env', 'btrfs', 'device', 'usage', '-b', 'image'], stdout=subprocess.PIPE)
 check(p)
 
 p.stdout.readline()
@@ -44,13 +44,13 @@ with open('loopdevice.txt') as f:
     loopdevice = f.read().strip()
 
 
-p = subprocess.Popen(['lsblk', '-b', loopdevice], stdout=subprocess.PIPE)
+p = subprocess.Popen(['/usr/bin/env', 'lsblk', '-b', loopdevice], stdout=subprocess.PIPE)
 check(p)
 p.stdout.readline()
 disksize = int(p.stdout.readline().decode('utf-8').split()[3])
 bootsize = int(p.stdout.readline().decode('utf-8').split()[3])
 
-p = subprocess.Popen(['env', 'parted', '---pretend-input-tty', image['name'], "resizepart", "2", f'{(bootsize+filesystemsize-slack+1024*1024) // 1024 + 1}KiB\n'], stdin=subprocess.PIPE)
+p = subprocess.Popen(['/usr/bin/env', 'parted', '---pretend-input-tty', image['name'], "resizepart", "2", f'{(bootsize+filesystemsize-slack+1024*1024) // 1024 + 1}KiB\n'], stdin=subprocess.PIPE)
 
 p.stdin.write(b'yes\n')
 p.stdin.flush()
@@ -59,5 +59,5 @@ check(p)
 print(bootsize, filesystemsize, slack, sep='\n')
 print("Resizing to: "+f'{(bootsize + filesystemsize - slack + 1024 * 1024) // 1024 + 1024*32}KiB')
 
-p = subprocess.Popen(['truncate', '-s', f'{(bootsize + filesystemsize - slack + 1024 * 1024) // 1024 + 1024*32}KiB', image['name']])
+p = subprocess.Popen(['/usr/bin/env', 'truncate', '-s', f'{(bootsize + filesystemsize - slack + 1024 * 1024) // 1024 + 1024*32}KiB', image['name']])
 check(p)

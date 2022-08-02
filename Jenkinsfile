@@ -55,7 +55,15 @@ pipeline
 			stage('Clean Up') { steps
 			{
 				// Clear out anything from the previous build...
+				sh "cat /proc/mounts"
+
+				sh "for var in ./build/*/image/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+				sh "for var in ./build/*/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+
+				sh "sudo losetup -all --list --output NAME,BACK-FILE"
+				sh "for var in \$(sudo losetup -all --list --output NAME,BACK-FILE | grep deleted | cut -f1 -d' '); do losetup -d \$var || echo \"\$(sudo losetup -all --list --output NAME,BACK-FILE | grep \$var) cant be detached\"; done"
 				sh "sudo losetup -D"
+
 				sh "sudo rm -rf ./*"
 				sh "git checkout ."
 			}}
@@ -159,7 +167,18 @@ pipeline
 		}
 		post { always
 		{
+				// Clear out anything from the previous build...
+			sh "cat /proc/mounts"
+
+			sh "for var in ./build/*/image/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+			sh "for var in ./build/*/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+
+			sh "sudo losetup -all --list --output NAME,BACK-FILE"
+			sh "for var in \$(sudo losetup -all --list --output NAME,BACK-FILE | grep deleted | cut -f1 -d' '); do losetup -d \$var || echo \"\$(sudo losetup -all --list --output NAME,BACK-FILE | grep \$var) cant be detached\"; done"
+			sh "sudo losetup -D"
+
 			sh "sudo rm -rf ./*"
+			sh "git checkout ."
 		}}
 	}}}
 }

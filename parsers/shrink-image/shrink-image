@@ -50,7 +50,7 @@ p.stdout.readline()
 disksize = int(p.stdout.readline().decode('utf-8').split()[3])
 bootsize = int(p.stdout.readline().decode('utf-8').split()[3])
 
-p = subprocess.Popen(['/usr/bin/env', 'parted', '---pretend-input-tty', image['name'], "resizepart", "2", f'{(bootsize+filesystemsize-slack+1024*1024) // 1024 + 1}KiB\n'], stdin=subprocess.PIPE)
+p = subprocess.Popen('/usr/sbin/parted', '---pretend-input-tty', image['name'], "resizepart", "2", f'{(bootsize+filesystemsize-slack+1024*1024) // 1024 + 1}KiB\n'], stdin=subprocess.PIPE)
 
 p.stdin.write(b'yes\n')
 p.stdin.flush()

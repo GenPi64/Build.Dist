@@ -126,6 +126,7 @@ pipeline
 			}}
 			stage('Upload Lite') { steps
 			{
+				sh "ls -lah *"
 				s3Upload(bucket:"images", includePathPattern:'*.zst')
 			}}
 				//}
@@ -162,6 +163,7 @@ pipeline
 			}}
 			stage('Upload Desktop') { steps
 			{
+				sh "ls -lah *"
 				s3Upload(bucket:"images", includePathPattern:'*.zst')
 			}}
 		}

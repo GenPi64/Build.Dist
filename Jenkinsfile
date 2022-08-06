@@ -127,7 +127,8 @@ pipeline
 			stage('Upload Lite') { steps
 			{
 				sh "ls -lah *"
-				s3Upload(bucket:"images", includePathPattern:'*.zst')
+				sh "ls -lah build/*"
+				s3Upload(bucket:"images", includePathPattern:'build/*.zst')
 			}}
 				//}
 			//}
@@ -164,7 +165,8 @@ pipeline
 			stage('Upload Desktop') { steps
 			{
 				sh "ls -lah *"
-				s3Upload(bucket:"images", includePathPattern:'*.zst')
+				sh "ls -lah build/*"
+				s3Upload(bucket:"images", includePathPattern:'build/*.zst')
 			}}
 		}
 		post { always

@@ -128,7 +128,10 @@ pipeline
 			{
 				sh "ls -lah *"
 				sh "ls -lah build/*"
-				s3Upload(bucket:"images", path:"build", includePathPattern:'*.zst*')
+				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"*.zst*\")"
+				s3Upload(bucket:"images", path:"build", includePathPattern:"*.zst*")
+				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"build/*.zst*\")"
+				s3Upload(bucket:"images", path:"build", includePathPattern:"build/*.zst*")
 			}}
 				//}
 			//}
@@ -166,7 +169,10 @@ pipeline
 			{
 				sh "ls -lah *"
 				sh "ls -lah build/*"
-				s3Upload(bucket:"images", path:"build", includePathPattern:'*.zst*')
+				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"*.zst*\")"
+				s3Upload(bucket:"images", path:"build", includePathPattern:"*.zst*")
+				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"build/*.zst*\")"
+				s3Upload(bucket:"images", path:"build", includePathPattern:"build/*.zst*")
 			}}
 		}
 		post { always

@@ -128,20 +128,14 @@ pipeline
 			{
 				sh "ls -lah *"
 				sh "ls -lah build/*"
-				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"*.zst*\")"
-				s3Upload(bucket:"images", path:"build", includePathPattern:"*.zst*")
-				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"build/*.zst*\")"
-				s3Upload(bucket:"images", path:"build", includePathPattern:"build/*.zst*")
 
-				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.img.zst\")"
-				s3Upload(bucket:"images", path:"build/${PROJECT}.img.zst")
-				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.img.zst.sum\")"
-				s3Upload(bucket:"images", path:"build/${PROJECT}.img.zst.sum")
-
-				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.tar.zst\")"
-				s3Upload(bucket:"images", path:"build/${PROJECT}.tar.zst")
-				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.tar.zst.sum\")"
-				s3Upload(bucket:"images", path:"build/${PROJECT}.tar.zst.sum")
+				script {
+					FILES = findFiles(glob: 'build/*.zst*')
+					FILES.each{ item -> 
+						echo "s3Upload(bucket:\"images\", path: '', file: \"${item.path}\")"
+						s3Upload(bucket: 'image', path: '', file: "${item.path}")
+					}
+				}
 			}}
 				//}
 			//}
@@ -179,20 +173,14 @@ pipeline
 			{
 				sh "ls -lah *"
 				sh "ls -lah build/*"
-				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"*.zst*\")"
-				s3Upload(bucket:"images", path:"build", includePathPattern:"*.zst*")
-				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"build/*.zst*\")"
-				s3Upload(bucket:"images", path:"build", includePathPattern:"build/*.zst*")
 
-				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.img.zst\")"
-				s3Upload(bucket:"images", path:"build/${PROJECT}.img.zst")
-				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.img.zst.sum\")"
-				s3Upload(bucket:"images", path:"build/${PROJECT}.img.zst.sum")
-
-				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.tar.zst\")"
-				s3Upload(bucket:"images", path:"build/${PROJECT}.tar.zst")
-				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.tar.zst.sum\")"
-				s3Upload(bucket:"images", path:"build/${PROJECT}.tar.zst.sum")
+				script {
+					FILES = findFiles(glob: 'build/*.zst*')
+					FILES.each{ item -> 
+						echo "s3Upload(bucket:\"images\", path: '', file: \"${item.path}\")"
+						s3Upload(bucket: 'image', path: '', file: "${item.path}")
+					}
+				}
 			}}
 		}
 		post { always

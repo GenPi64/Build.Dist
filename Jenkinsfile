@@ -132,6 +132,16 @@ pipeline
 				s3Upload(bucket:"images", path:"build", includePathPattern:"*.zst*")
 				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"build/*.zst*\")"
 				s3Upload(bucket:"images", path:"build", includePathPattern:"build/*.zst*")
+
+				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.img.zst\")"
+				s3Upload(bucket:"images", path:"build/${PROJECT}.img.zst")
+				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.img.zst.sum\")"
+				s3Upload(bucket:"images", path:"build/${PROJECT}.img.zst.sum")
+
+				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.tar.zst\")"
+				s3Upload(bucket:"images", path:"build/${PROJECT}.tar.zst")
+				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.tar.zst.sum\")"
+				s3Upload(bucket:"images", path:"build/${PROJECT}.tar.zst.sum")
 			}}
 				//}
 			//}
@@ -173,6 +183,16 @@ pipeline
 				s3Upload(bucket:"images", path:"build", includePathPattern:"*.zst*")
 				echo "s3Upload(bucket:\"images\", path:\"build\", includePathPattern:\"build/*.zst*\")"
 				s3Upload(bucket:"images", path:"build", includePathPattern:"build/*.zst*")
+
+				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.img.zst\")"
+				s3Upload(bucket:"images", path:"build/${PROJECT}.img.zst")
+				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.img.zst.sum\")"
+				s3Upload(bucket:"images", path:"build/${PROJECT}.img.zst.sum")
+
+				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.tar.zst\")"
+				s3Upload(bucket:"images", path:"build/${PROJECT}.tar.zst")
+				echo "s3Upload(bucket:\"images\", path:\"build/${PROJECT}.tar.zst.sum\")"
+				s3Upload(bucket:"images", path:"build/${PROJECT}.tar.zst.sum")
 			}}
 		}
 		post { always

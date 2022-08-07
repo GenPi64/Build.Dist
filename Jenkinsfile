@@ -129,15 +129,15 @@ pipeline
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}.img.zst\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}.img.zst")
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}.img.zst.sum\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}.img.zst.sum")
+				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.img.zst\")"
+				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.img.zst")
+				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.img.zst.sum\")"
+				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.img.zst.sum")
 
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}.tar.zst\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}.tar.zst")
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}.tar.zst.sum\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}.tar.zst.sum")
+				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.tar.zst\")"
+				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.tar.zst")
+				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.tar.zst.sum\")"
+				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.tar.zst.sum")
 			}}
 				//}
 			//}
@@ -176,15 +176,15 @@ pipeline
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}.img.zst\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}.img.zst")
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}.img.zst.sum\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}.img.zst.sum")
+				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.img.zst\")"
+				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.img.zst")
+				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.img.zst.sum\")"
+				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.img.zst.sum")
 
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}.tar.zst\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}.tar.zst")
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}.tar.zst.sum\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}.tar.zst.sum")
+				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.tar.zst\")"
+				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.tar.zst")
+				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.tar.zst.sum\")"
+				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.tar.zst.sum")
 			}}
 		}
 		post { always

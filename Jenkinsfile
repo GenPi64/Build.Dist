@@ -3,7 +3,6 @@ pipeline
 	options
 	{
 		timestamps()
-		withAWS(endpointUrl:'https://s3.genpi64.com',credentials:'genpi-s3')
 	}
 	agent { node {
 		label 'aarch64'
@@ -49,6 +48,7 @@ pipeline
 			BINARY_ASSETS="${HOME}/shared/binary_assets"
 			NO_PARALLEL="yes"
 			CHROOT_COMMAND="systemd-nspawn"
+			def BUILDVERSION = sh(script: "echo `date +%d_%m_%y`", returnStdout: true).trim()
 		}
 		stages
 		{
@@ -129,15 +129,15 @@ pipeline
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.img.zst\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.img.zst")
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.img.zst.sum\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.img.zst.sum")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.img.zst\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.img.zst")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.img.zst.sum\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.img.zst.sum")
 
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.tar.zst\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.tar.zst")
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.tar.zst.sum\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.tar.zst.sum")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.tar.zst\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.tar.zst")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.tar.zst.sum\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.tar.zst.sum")
 			}}
 				//}
 			//}
@@ -176,15 +176,15 @@ pipeline
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.img.zst\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.img.zst")
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.img.zst.sum\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.img.zst.sum")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.img.zst\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.img.zst")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.img.zst.sum\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.img.zst.sum")
 
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.tar.zst\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.tar.zst")
-				echo "s3Upload(bucket:\"images\", file:\"build/${PROJECT}/${PROJECT}.tar.zst.sum\")"
-				s3Upload(bucket:"images", file:"build/${PROJECT}/${PROJECT}.tar.zst.sum")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.tar.zst\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.tar.zst")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.tar.zst.sum\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.tar.zst.sum")
 			}}
 		}
 		post { always

@@ -47,8 +47,7 @@ pipeline
 			OVERLAYS_CACHE_DIR="${HOME}/shared/overlays-cache"
 			BINARY_ASSETS="${HOME}/shared/binary_assets"
 			NO_PARALLEL="yes"
-			CHROOT_COMMAND="systemd-nspawn"
-			def BUILDVERSION = sh(script: "echo `date +%d_%m_%y`", returnStdout: true).trim()
+			def BUILDVERSION = sh(script: "echo `date +%d-%m-%y`", returnStdout: true).trim()
 		}
 		stages
 		{
@@ -128,16 +127,21 @@ pipeline
 			{
 				sh "ls -lah *"
 				sh "ls -lah build/*"
+				
+				sh "mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
+				sh "mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
+				sh "mv build/${PROJECT}/${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
+				sh "mv build/${PROJECT}/${PROJECT}.tar.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst.sum"
 
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.img.zst\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.img.zst")
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.img.zst.sum\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.img.zst.sum")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
+				echo "minio(bucket:\"images\", includes:\"bbuild/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
 
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.tar.zst\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.tar.zst")
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.tar.zst.sum\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.tar.zst.sum")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
 			}}
 				//}
 			//}
@@ -176,20 +180,25 @@ pipeline
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.img.zst\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.img.zst")
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.img.zst.sum\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.img.zst.sum")
+				sh "mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
+				sh "mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
+				sh "mv build/${PROJECT}/${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
+				sh "mv build/${PROJECT}/${PROJECT}.tar.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst.sum"
 
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.tar.zst\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.tar.zst")
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}.tar.zst.sum\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}.tar.zst.sum")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
+				echo "minio(bucket:\"images\", includes:\"bbuild/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
+
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst")
+				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
+				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
 			}}
 		}
 		post { always
 		{
-				// Clear out anything from the previous build...
+			// Clear out anything from the previous build...
 			sh "cat /proc/mounts"
 
 			sh "for var in ./build/*/image/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"

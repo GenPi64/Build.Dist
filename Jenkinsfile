@@ -78,7 +78,8 @@ pipeline
 				sh "ls -lahR $BINPKGS_DIR"
 				sh "ls -lahR $DISTFILES_DIR"
 				sh "ls -lahR $BINARY_ASSETS"
-				sh "ls -lah  $OVERLAYS_CACHE_DIR/*/*/*/*"
+				// Will kill the build if doesn't exist otherwise..
+				sh "ls -lah  $OVERLAYS_CACHE_DIR"
 			}}
 			stage('Build Lite') { steps
 			{

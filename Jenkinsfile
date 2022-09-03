@@ -131,8 +131,7 @@ pipeline
 				
 				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
 				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
-				sh "sudo mv build/${PROJECT}/${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
-				sh "sudo mv build/${PROJECT}/${PROJECT}.tar.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst.sum"
+				sh "sudo mv build/${PROJECT}/latest-${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
 
 				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
 				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
@@ -183,8 +182,7 @@ pipeline
 
 				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
 				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
-				sh "sudo mv build/${PROJECT}/${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
-				sh "sudo mv build/${PROJECT}/${PROJECT}.tar.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst.sum"
+				sh "sudo mv build/${PROJECT}/latest-${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
 
 				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
 				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")

@@ -129,10 +129,10 @@ pipeline
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 				
-				sh "mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
-				sh "mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
-				sh "mv build/${PROJECT}/${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
-				sh "mv build/${PROJECT}/${PROJECT}.tar.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst.sum"
+				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
+				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
+				sh "sudo mv build/${PROJECT}/${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
+				sh "sudo mv build/${PROJECT}/${PROJECT}.tar.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst.sum"
 
 				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
 				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
@@ -181,10 +181,10 @@ pipeline
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 
-				sh "mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
-				sh "mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
-				sh "mv build/${PROJECT}/${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
-				sh "mv build/${PROJECT}/${PROJECT}.tar.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst.sum"
+				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
+				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
+				sh "sudo mv build/${PROJECT}/${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
+				sh "sudo mv build/${PROJECT}/${PROJECT}.tar.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst.sum"
 
 				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
 				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")

@@ -6,7 +6,8 @@
     {"name": "fstab", "deps": ["unpackstage4"], "parser": "fstab", "args": [""]},
     {"name": "grub", "deps": ["fstab"], "parser": "grub", "args": [""]},
     {"name": "strip", "deps": ["fstab"], "parser": "strip", "args": [""]},
-    {"name": "unmount-image", "deps": ["strip"], "parser": "unmount", "args": [""]},
+    {"name": "genpi-releaser", "deps":  ["strip"], "parser": "release-tagger", "args": [""]},
+    {"name": "unmount-image", "deps": ["genpi-releaser"], "parser": "unmount", "args": [""]},
     {"name": "compress-image", "deps": ["unmount-image"], "parser": "compress-image", "args": [""]},
     {"name": "convertimg", "deps": ["compress-image"], "parser": "convertimg", "args": [""]}
 ]

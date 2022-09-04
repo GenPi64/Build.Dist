@@ -5,7 +5,8 @@
     {"name": "sudoers", "deps": ["unpackstage4"], "parser": "sudoers", "args": [""]},
     {"name": "fstab", "deps": ["sudoers"], "parser": "fstab", "args": [""]},
     {"name": "cmdline", "deps": ["fstab"], "parser": "cmdline", "args": [""]},
-    {"name": "strip", "deps": ["cmdline"], "parser": "strip", "args": [""]},
+    {"name": "genpi-releaser", "deps":  ["cmdline"], "parser": "release-tagger", "args": [""]},
+    {"name": "strip", "deps": ["genpi-releaser"], "parser": "strip", "args": [""]},
     {"name": "shrink-image", "deps": ["strip"], "parser": "shrink-image", "args": [""]},
     {"name": "unmount-image", "deps": ["shrink-image"], "parser": "unmount", "args": [""]},
     {"name": "compress-image", "deps": ["unmount-image"], "parser": "compress-image", "args": [""]}

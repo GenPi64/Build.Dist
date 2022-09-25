@@ -172,7 +172,10 @@ def execute(manifest):
                 'BTRFS_SNAPSHOTS',
                 'BINPKGS_DIR',
                 'DISTFILES_DIR',
-                'CHROOT_CMD' ) )
+                'CHROOT_CMD',
+                'CI',
+                'NODE_NAME',
+                'TIMESTAMP') )
       env |= item.get('env', {})
 
       env['TERM'] = config.get('TERM', 'dumb')

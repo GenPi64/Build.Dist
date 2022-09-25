@@ -8,19 +8,18 @@ os.chdir(os.environ['PROJECT_DIR'])
 sys.path.insert(0, os.environ['CONFIG_DIR'])
 
 with open("image/etc/genpi-release", "a") as release:
-    #if os.environ['CI']:
-    #    TIMESTAMP = os.environ['BUILD_TIMESTAMP']
-    #    NODE_NAME = os.environ['NODE_NAME']
-
-    #    release.write(f"Built at: {TIMESTAMP}\nBuilt on node: {NODE_NAME}")
-    #else:
-    #    TIMESTAMP = datetime.now().strftime("%d-%m-%Y")
-
-    #    release.write(f"Built at: {TIMESTAMP}\nMANUAL BUILD")
-    
     print(f"ENV: {os.environ}")
+    if os.environ['CI']:
+        TIMESTAMP = os.environ['BUILD_TIMESTAMP']
+        NODE_NAME = os.environ['NODE_NAME']
+
+        release.write(f"Built at: {TIMESTAMP}\nBuilt on node: {NODE_NAME}")
+    else:
+        TIMESTAMP = datetime.now().strftime("%d-%m-%Y")
+
+        release.write(f"Built at: {TIMESTAMP}\nMANUAL BUILD")
     
-    TIMESTAMP = datetime.now().strftime("%d-%m-%Y")
-    NODE_NAME = os.environ['NODE_NAME']
+    #TIMESTAMP = datetime.now().strftime("%d-%m-%Y")
+    #NODE_NAME = os.environ['NODE_NAME']
     
-    release.write(f"Built at: {TIMESTAMP}\nBuilt on node: {NODE_NAME}")
+    #release.write(f"Built at: {TIMESTAMP}\nBuilt on node: {NODE_NAME}")

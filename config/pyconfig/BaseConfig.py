@@ -30,8 +30,7 @@ Base = {
             EMERGE_DEFAULT_OPTS="--jobs --keep-going --newrepo --newuse --changed-use --changed-deps --changed-slot --deep --tree --backtrack=3000 --complete-graph --with-bdeps=y --rebuild-if-new-rev --rebuild-if-new-ver --rebuild-if-unbuilt --rebuilt-binaries --binpkg-respect-use=y --binpkg-changed-deps=y --usepkg=y"
         ),
         "patches/": {
-            "sys-apps/": "patches/sys-apps",
-            "dev-lang/": "patches/dev-lang"
+            "sys-apps/": "patches/sys-apps"
         },
         "savedconfig/": {
             "sys-kernel/": {

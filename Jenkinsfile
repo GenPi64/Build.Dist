@@ -162,48 +162,54 @@ pipeline
 					sh "sudo --preserve-env ./build.sh"
 				}
 			}
-			stage('Package Desktop') { steps
+			stage('Package Desktop')
 			{
 				environment
 				{
 					PROJECT="GenPi64${INIT_SYSTEM}Desktop"
 				}
-				// here we resume from the end of the desktop job and produce an image
-				// file for each desktop job for each partition type. Ultimately
-				// producing a matrix of a matrix of a matrix of images.
-				// we have 5 matrix diminsions for the base image(arch, libc, init, lto, hardened)
-				// then some number of desktop environments (xfce, lxqt, gnome, kde, so on)
-				// then 3 potential partition schemes (msdos, hybrid, gpt)
-				// then 4 potential bootloaders (raspi native (excluded from x86), uefi "native", grub, systemd-boot)
-				// ultimately culminating in an 8 dimensional matrix of images that we can produce.
-				// though of course there are big holes in the matrix, and we would only produce images
-				// that someone is willing to put work into.
-				echo "Package Desktop"
-			}}
-			stage('Upload Desktop') { steps
+				steps
+				{
+					// here we resume from the end of the desktop job and produce an image
+					// file for each desktop job for each partition type. Ultimately
+					// producing a matrix of a matrix of a matrix of images.
+					// we have 5 matrix diminsions for the base image(arch, libc, init, lto, hardened)
+					// then some number of desktop environments (xfce, lxqt, gnome, kde, so on)
+					// then 3 potential partition schemes (msdos, hybrid, gpt)
+					// then 4 potential bootloaders (raspi native (excluded from x86), uefi "native", grub, systemd-boot)
+					// ultimately culminating in an 8 dimensional matrix of images that we can produce.
+					// though of course there are big holes in the matrix, and we would only produce images
+					// that someone is willing to put work into.
+					echo "Package Desktop"
+				}
+			}
+			stage('Upload Desktop')
 			{
 				environment
 				{
 					PROJECT="GenPi64${INIT_SYSTEM}Desktop"
 				}
-				sh "ls -lah *"
-				sh "ls -lah build/*"
-				
-				sh "sudo mv build/${PROJECT}/${PROJECT}.img build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img"
-				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
-				sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
-				sh "sudo mv build/${PROJECT}/latest-${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
+				steps
+				{
+					sh "ls -lah *"
+					sh "ls -lah build/*"
+					
+					sh "sudo mv build/${PROJECT}/${PROJECT}.img build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img"
+					sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst"
+					sh "sudo mv build/${PROJECT}/${PROJECT}.img.zst.sum build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum"
+					sh "sudo mv build/${PROJECT}/latest-${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst"
 
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
-				echo "minio(bucket:\"images\", includes:\"bbuild/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
+					echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
+					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
+					echo "minio(bucket:\"images\", includes:\"bbuild/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
+					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
 
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst")
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
-			}}
+					echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst\")"
+					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst")
+					echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
+					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
+				}
+			}
 		}
 		post { always
 		{

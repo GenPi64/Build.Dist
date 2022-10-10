@@ -164,6 +164,10 @@ pipeline
 			}
 			stage('Package Desktop') { steps
 			{
+				environment
+				{
+					PROJECT="GenPi64${INIT_SYSTEM}Desktop"
+				}
 				// here we resume from the end of the desktop job and produce an image
 				// file for each desktop job for each partition type. Ultimately
 				// producing a matrix of a matrix of a matrix of images.
@@ -178,6 +182,10 @@ pipeline
 			}}
 			stage('Upload Desktop') { steps
 			{
+				environment
+				{
+					PROJECT="GenPi64${INIT_SYSTEM}Desktop"
+				}
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 				

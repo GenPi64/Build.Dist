@@ -129,7 +129,7 @@ pipeline
 				sh "ls -lah *"
 				sh "ls -lah build/*"
 				
-				sh "sudo ./.ci/scripts/check-filename-is-renamed.sh"
+				sh "sudo --preserve-env ./.ci/scripts/check-filename-is-renamed.sh"
 
 				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
 				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
@@ -191,7 +191,7 @@ pipeline
 					sh "ls -lah *"
 					sh "ls -lah build/*"
 					
-					sh "sudo ./.ci/scripts/check-filename-is-renamed.sh"
+					sh "sudo --preserve-env ./.ci/scripts/check-filename-is-renamed.sh"
 
 					echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
 					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")

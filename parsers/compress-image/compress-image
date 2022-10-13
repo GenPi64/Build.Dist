@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 pushd ${PROJECT_DIR}
 zstd --ultra -vv -f -T2 --maxdict=$((1024*1024*512)) -22 --memory=1024MB "$($PARSERS/config/getconfig image name)" -o "$($PARSERS/config/getconfig image name).zst"
 sha512sum "$($PARSERS/config/getconfig image name).zst" > "$($PARSERS/config/getconfig image name).zst.sum"

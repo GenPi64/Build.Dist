@@ -1,4 +1,4 @@
-#!/bin/bash -evx
+#!/bin/bash -ex
 
 cpu="$(uname -m)"
 case "${cpu}" in

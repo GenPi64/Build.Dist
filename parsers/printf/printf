@@ -1,2 +1,2 @@
-#!/bin/bash -evx
+#!/bin/bash -ex
 printf $@

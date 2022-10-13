@@ -1,4 +1,4 @@
-#!/bin/bash -evx
+#!/bin/bash -ex
 source "$BASEDIR/scripts/functions.sh"
 
 echo "Running grub tasks"

@@ -1,4 +1,4 @@
-#!/bin/bash -evx
+#!/bin/bash -ex
 
 mkdir -p ${OVERLAYS_CACHE_DIR}
 

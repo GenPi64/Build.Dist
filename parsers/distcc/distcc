@@ -1,4 +1,4 @@
-#!/bin/bash -evx
+#!/bin/bash -ex
 echo > ${CHROOT_DIR}/etc/distcc/hosts
 for((i=0;i<$(${PARSERS}/config/getconfig distcc "#");i++)); do
     echo $(${PARSERS}/config/getconfig distcc $i) >> ${CHROOT_DIR}/etc/distcc/hosts

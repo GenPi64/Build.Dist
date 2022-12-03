@@ -27,7 +27,7 @@ Base = {
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
             INPUT_DEVICES="libinput",
-            EMERGE_DEFAULT_OPTS="--jobs --keep-going --newrepo --newuse --changed-use --changed-deps --changed-slot --deep --tree --backtrack=3000 --complete-graph --with-bdeps=y --rebuild-if-new-rev --rebuild-if-new-ver --rebuild-if-unbuilt --rebuilt-binaries --binpkg-respect-use=y --binpkg-changed-deps=y --usepkg=y"
+            EMERGE_DEFAULT_OPTS="--jobs --keep-going --newrepo --newuse --changed-use --changed-deps --changed-slot --deep --tree --backtrack=3000 --complete-graph --with-bdeps=y --rebuild-if-new-rev --rebuild-if-new-ver --rebuild-if-unbuilt --rebuilt-binaries --binpkg-respect-use=y --binpkg-changed-deps=y --usepkg=y --buildpkg-exclude 'virtual/* sys-kernel/*-sources */*-bin'"
         ),
         "patches/": {
             "sys-apps/": "patches/sys-apps"

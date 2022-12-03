@@ -78,13 +78,6 @@ GentooAMD64 = Base | {
         "sys-kernel/gentoo-kernel",
         "sys-kernel/linux-firmware"
     ],
-    "etc": Base["etc"] | {
-        "kernel/": {
-            "config.d/": {
-                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
-            }
-        }
-    },
     "services": {
         "cronie": "default",
         "sshd": "default",

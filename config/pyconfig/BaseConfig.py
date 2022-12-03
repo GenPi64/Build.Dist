@@ -49,6 +49,11 @@ Base = {
         }
     },
     "etc": {
+        "kernel/": {
+            "config.d/": {
+                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
+            }
+        },
         "locale.gen": "locale.gen",
         "profile": "profile"
     },

@@ -58,12 +58,6 @@ GenPi64 = Base | {
         "package.accept_keywords": "package.accept_keywords"
     },
     "etc": Base["etc"] | {
-        "kernel/": {
-            "config.d/": {
-                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'),
-                                                                         'kernel-config'))
-            }
-        },
         "dhcpcd.conf": "dhcpcd.conf",
         "hostname": "hostname"
     },

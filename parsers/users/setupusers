@@ -1,21 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -evx
 
 groupcount=$(/em-config groups "#")
 
 usercount=$(/em-config users "#")
 
-
 for((i=0;i<$groupcount;i++)); do
-    groupadd -g $(/em-config groups $i gid) $(/em-config groups $i name)
+    groupadd -g $(/em-config groups $i gid) $(/em-config groups $i name) || echo "Group already exists with ID $(/em-config groups $i gid) and name $(/em-config groups $i name)"
 done
 
 for((i=0;i<$usercount;i++)); do
-    useradd \
-	-g $(/em-config users $i group) \
-	-G $(/em-config users $i groups | python -c 'print(str.join(",",eval(input(""))))') \
-	-s $(/em-config users $i shell) \
-	-u $(/em-config users $i uid) \
-	$(/em-config users $i name)
+	useradd	\
+		-g $(/em-config users $i group)	\
+		-G $(/em-config users $i groups | python -c 'print(str.join(",",eval(input(""))))') \
+		-s $(/em-config users $i shell)	\
+		-u $(/em-config users $i uid)	\
+		$(/em-config users $i name) || echo "User already exists"
 
     echo $(/em-config users $i name):$(/em-config users $i password) | chpasswd -c $(/em-config users $i format)
 done

@@ -1,25 +1,22 @@
-#!/bin/bash
+#!/bin/bash -ex
 pushd ${BASEDIR}
 stage3=$(${PARSERS}/config/getconfig stage3)
 
+stage3_url=$(${PARSERS}/config/getconfig stage3url)
+stage3_image=$(wget "${stage3_url}" -O - | tail -n 1 | cut -f 1 -d ' ' )
+stage3_mirror=$(${PARSERS}/config/getconfig stage3mirror)
+stage3_digests=$(wget ${stage3_mirror}/${stage3_image}.DIGESTS -O -)
 
 if [ -f "${BINARY_ASSETS}/stage3/${stage3}" ]; then
-  if [[ $(find "${BINARY_ASSETS}/stage3/${stage3}" -mtime +14 -print) ]]; then
-    echo "stage3 is too old (14+ days), removing and re-downloading."
-    rm -rf "${BINARY_ASSETS}/stage3/"
-  else
-    exit 0
-  fi
+    if diff "${BINARY_ASSETS}/stage3/${stage3}.DIGESTS" - <<< "${stage3_digests}"; then
+        echo "stage3 digest indicates stage3 image is out of date, removing and re-downloading."
+        rm -rf "${BINARY_ASSETS}/stage3/"
+    else
+        exit 0
+    fi
 fi
 
 mkdir -p "${BINARY_ASSETS}/stage3/"
 
-stage3_url=$(${PARSERS}/config/getconfig stage3url)
-stage3_mirror=$(${PARSERS}/config/getconfig stage3mirror)
-
-stage3_image=$(wget "${stage3_url}" -O - | tail -n 1 | cut -f 1 -d ' ' )
-
-wget ${stage3_mirror}/${stage3_image}.DIGESTS -O "${BINARY_ASSETS}/stage3/${stage3}.DIGESTS"
+cat <<<"${stage3_digests}" > "${BINARY_ASSETS}/stage3/${stage3}.DIGESTS"
 wget ${stage3_mirror}/${stage3_image} -O "${BINARY_ASSETS}/stage3/${stage3}"
-
-   

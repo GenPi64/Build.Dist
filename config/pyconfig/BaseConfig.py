@@ -18,21 +18,19 @@ def readlines(p):
 Base = {
     'portage': {
         "make.conf": dict(
-            CFLAGS="-march=native -O2 -pipe",
+            CFLAGS="${CFLAGS} -march=native -O2 -pipe",
             CXXFLAGS="${CFLAGS}",
             FCFLAGS="${CFLAGS}",
             FFLAGS="${CFLAGS}",
             USE=["bindist"],
-            FEATURES="parallel-fetch parallel-install ".split(),
+            FEATURES="buildpkg binpkg-multi-instance clean-logs compress-build-logs parallel-fetch parallel-install userfetch usersync ccache ".split(),
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
             INPUT_DEVICES="libinput",
-            EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --binpkg-changed-deps=y --changed-slot=y"
+            EMERGE_DEFAULT_OPTS="--jobs --keep-going --newrepo --newuse --changed-use --changed-deps --changed-slot --deep --tree --backtrack=3000 --complete-graph --with-bdeps=y --rebuild-if-new-rev --rebuild-if-new-ver --rebuild-if-unbuilt --rebuilt-binaries --binpkg-respect-use=y --binpkg-changed-deps=y --usepkg=y --buildpkg-exclude 'virtual/* sys-kernel/*-sources */*-bin acct-user/* acct-group/*'"
         ),
         "patches/": {
-            "app-editors/": "patches/app-editors",
-            "sys-apps/": "patches/sys-apps",
-            "dev-lang/": "patches/dev-lang"
+            "sys-apps/": "patches/sys-apps"
         },
         "savedconfig/": {
             "sys-kernel/": {
@@ -49,6 +47,11 @@ Base = {
         }
     },
     "etc": {
+        "kernel/": {
+            "config.d/": {
+                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
+            }
+        },
         "locale.gen": "locale.gen",
         "profile": "profile"
     },
@@ -83,7 +86,7 @@ Base = {
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-08-23",
+            "#clone-date": "2022-01-01",
         }
     ],
     'sets': [],

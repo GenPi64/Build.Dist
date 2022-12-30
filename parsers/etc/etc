@@ -13,6 +13,8 @@ PROJECT = os.environ['PROJECT']
 CHROOT_DIR = os.environ['CHROOT_DIR']
 PARSERS = os.environ['PARSERS']
 SCRIPTS = os.environ['SCRIPTS']
+BINPKGS_DIR = os.environ['BINPKGS_DIR']
+DISTFILES_DIR = os.environ['DISTFILES_DIR']
 
 print(f"Copying etc config files for {PROJECT}")
 
@@ -31,7 +33,7 @@ def copyconf(conf, file):
     else:
         if not conf.startswith("/"):
             conf = f'{CONFIG_DIR}/{conf}'
-        shutil.copy2(conf, file)        
+        shutil.copy2(conf, file)
 
 def copydir(conf, dest):
     for node, content in conf.items():
@@ -51,6 +53,6 @@ copydir(config['etc'], f"{CHROOT_DIR}/etc")
 system(f"chmod 700 {CHROOT_DIR}/etc/shadow")
 system(f"chmod 755 {CHROOT_DIR}/etc/profile")
 
-system(f"{SCRIPTS}/chroot.py  /usr/sbin/locale-gen")
-system(f"{SCRIPTS}/chroot.py  /usr/sbin/env-update")
+system(f"{SCRIPTS}/chroot.py /usr/sbin/locale-gen")
+system(f"{SCRIPTS}/chroot.py /usr/sbin/env-update")
 

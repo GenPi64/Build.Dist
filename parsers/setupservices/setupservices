@@ -1,7 +1,13 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 source "${SCRIPTS}/functions.sh"
 
 echo "Running $@"
+
+function finish
+{
+        rm -f ${PROJECT_DIR}/chroot/em-$$
+}
+trap finish EXIT
 
 echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
 service_count=$($PARSERS/config/getconfig services "#")
@@ -13,5 +19,3 @@ for((i=0;$i<$service_count;i++)); do
 done
 
 "${SCRIPTS}/chroot.py" /usr/bin/env -i bash --login /em-$$
-
-rm "${PROJECT_DIR}/chroot/em-$$"

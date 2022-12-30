@@ -12,4 +12,3 @@ with open("config.txt", "w") as f:
         f.write(line)
         if line.startswith("kernel="):
             f.write(f"initramfs {sys.argv[1]}\n")
-            

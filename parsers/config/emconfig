@@ -13,7 +13,7 @@ with open(f'{prefix}/em-config.json', 'r') as f:
     config = json.load(f)
 
 t = config
-    
+
 for i in sys.argv[1:]:
     if i[0] == '*':
         print(str.join(i[1:], t))

@@ -1,18 +1,50 @@
-#!/bin/bash
+#!/bin/bash -ex
+
+mkdir -p ${OVERLAYS_CACHE_DIR}
 
 repocount=$(${PARSERS}/config/getconfig overlays '#' )
 for ((ridx=0; ridx<$repocount; ridx++)); do
-    # shellcheck disable=SC2046
-    if [ $(${PARSERS}/config/getconfig overlays $ridx sync-type) == "git" ]; then
-        git clone --shallow-since=$(${PARSERS}/config/getconfig overlays $ridx '#clone-date'  ) \
-        $(${PARSERS}/config/getconfig overlays $ridx sync-git-clone-extra-opts? ) \
-        $(${PARSERS}/config/getconfig overlays $ridx sync-uri) \
-        ${CHROOT_DIR}/$(${PARSERS}/config/getconfig overlays $ridx location)
+	# shellcheck disable=SC2046
+	if [ $(${PARSERS}/config/getconfig overlays $ridx sync-type) == "git" ]; then
+		URI=$(${PARSERS}/config/getconfig overlays $ridx sync-uri)
+		OVERLAY=$(${PARSERS}/config/getconfig overlays $ridx location)
+		SHALLOW_SINCE=$(${PARSERS}/config/getconfig overlays $ridx '#clone-date' )
 
-	pushd ${CHROOT_DIR}/$(${PARSERS}/config/getconfig overlays $ridx location)
-	git checkout $(${PARSERS}/config/getconfig overlays $ridx '#commit-hash?' )
-	popd
-    fi
+		mkdir -p ${OVERLAYS_CACHE_DIR}/$(dirname ${OVERLAY})
+
+		(
+			flock -e 200
+			if GIT_DIR=${OVERLAYS_CACHE_DIR}/${OVERLAY} git rev-parse --git-dir > /dev/null 2>&1; then
+				GIT_DIR=${OVERLAYS_CACHE_DIR}/${OVERLAY} git fetch --all --prune --progress
+			else
+				# Note: Cant use shallow-since, doesnt work with reference repos
+				# --filter=blob:none causes "unable to read *hash*" errors in the reference repo...
+				# --filter=blob:none				\
+				git clone							\
+					--bare							\
+					--progress						\
+					--dissociate					\
+					--no-reject-shallow				\
+					--reference-if-able=${OVERLAY}	\
+					${URI}							\
+					${OVERLAYS_CACHE_DIR}/${OVERLAY}
+			fi
+		) 200>${OVERLAYS_CACHE_DIR}/${OVERLAY}.lock
+
+		git clone																		\
+			--progress																	\
+			--dissociate																\
+			--no-reject-shallow															\
+			--reference-if-able=${OVERLAYS_CACHE_DIR}/${OVERLAY}						\
+			--shallow-since=${SHALLOW_SINCE}											\
+			$(${PARSERS}/config/getconfig overlays $ridx sync-git-clone-extra-opts? )	\
+			$(${PARSERS}/config/getconfig overlays $ridx sync-uri)						\
+			${CHROOT_DIR}/${OVERLAY}
+
+		pushd ${CHROOT_DIR}/${OVERLAY}
+			git checkout $(${PARSERS}/config/getconfig overlays $ridx '#commit-hash?' )
+		popd
+	fi
 done
 
 

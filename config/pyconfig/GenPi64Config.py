@@ -39,9 +39,7 @@ GenPi64 = Base | {
     ],
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
-            "CFLAGS": "-mtune=cortex-a72 -march=armv8-a+crc -O2 -pipe",
-            'CC':"aarch64-unknown-linux-gnu-gcc-11.2.0",
-            'CXX':"aarch64-unknown-linux-gnu-g++-11.2.0",
+            "CFLAGS": "${CFLAGS}",
             'CHOST':"aarch64-unknown-linux-gnu",
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
@@ -58,17 +56,11 @@ GenPi64 = Base | {
         "package.accept_keywords": "package.accept_keywords"
     },
     "etc": Base["etc"] | {
-        "kernel/": {
-            "config.d/": {
-                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'),
-                                                                         'kernel-config'))
-            }
-        },
         "dhcpcd.conf": "dhcpcd.conf",
         "hostname": "hostname"
     },
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
-    "stage3url": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/latest-stage3-arm64.txt",
+    "stage3url": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/latest-stage3-arm64-openrc.txt",
     "stage3mirror": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/",
     "profile": "genpi64:default/linux/arm64/17.0/genpi64",
     'users': [

@@ -14,7 +14,7 @@ GenPi64Generic = Base | {
     ],
     'portage': {
         "make.conf": dict(
-            CFLAGS="-mtune=generic -O2 -pipe",
+            CFLAGS="${CFLAGS} -mtune=generic -O2 -pipe",
             CXXFLAGS="${CFLAGS}",
             FCFLAGS="${CFLAGS}",
             FFLAGS="${CFLAGS}",

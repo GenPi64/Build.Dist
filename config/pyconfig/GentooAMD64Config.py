@@ -24,7 +24,7 @@ GentooAMD64 = Base | {
     "profile": "default/linux/amd64/17.1",
     'portage': Base['portage'] | {
         "make.conf": Base['portage']['make.conf'] | {
-            'CFLAGS': '-march=x86-64 -mtune=generic -pipe',
+            'CFLAGS': '${CFLAGS} -march=x86-64 -mtune=generic -pipe',
             'CHOST': 'x86_64-pc-linux-gnu',
             "USE": 'bindist -systemd openssl'.split(),
             'GRUB_PLATFORMS': "pc",
@@ -78,13 +78,6 @@ GentooAMD64 = Base | {
         "sys-kernel/gentoo-kernel",
         "sys-kernel/linux-firmware"
     ],
-    "etc": Base["etc"] | {
-        "kernel/": {
-            "config.d/": {
-                i: "kernel-config/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'kernel-config'))
-            }
-        }
-    },
     "services": {
         "cronie": "default",
         "sshd": "default",
@@ -134,7 +127,7 @@ GentooAMD64 = Base | {
               'filesystem': 'btrfs',
               'mount-point': '/',
               'mount-options': 'noatime,compress=zstd:15,ssd,discard,x-systemd.growfs',
-              'args': '--force'
+              'args': '--force',
               'fstab-dump': 0,
               'fstab-fsck-pass': 0
             }

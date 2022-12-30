@@ -1,14 +1,20 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 source "$BASEDIR/scripts/functions.sh"
-
-
-
 
 echo "Running $@"
 
-echo "source /etc/profile" > "${PROJECT_DIR}/chroot/em-$$"
-echo "$@" >> "${PROJECT_DIR}/chroot/em-$$"
-"${SCRIPTS}/chroot.py"  /usr/bin/env -i bash --login /em-$$
+function finish
+{
+        rm -f "${PROJECT_DIR}/chroot/em-$$"
+}
+trap finish EXIT
 
-rm "${PROJECT_DIR}/chroot/em-$$"
+cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
+        #!/usr/bin/env bash
+        set -evx
+        source /etc/profile
+        $@
+EOF
+chmod +x "${PROJECT_DIR}/chroot/em-$$"
 
+"${SCRIPTS}/chroot.py" /em-$$

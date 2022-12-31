@@ -29,9 +29,9 @@ Base = {
             INPUT_DEVICES="libinput",
             EMERGE_DEFAULT_OPTS="--jobs --keep-going --newrepo --newuse --changed-use --changed-deps --changed-slot --deep --tree --backtrack=3000 --complete-graph --with-bdeps=y --rebuild-if-new-rev --rebuild-if-new-ver --rebuild-if-unbuilt --rebuilt-binaries --binpkg-respect-use=y --binpkg-changed-deps=y --usepkg=y --buildpkg-exclude 'virtual/* sys-kernel/*-sources */*-bin acct-user/* acct-group/*'"
         ),
-        "patches/": {
-            "sys-apps/": "patches/sys-apps"
-        },
+        #"patches/": {
+        #    {}
+        #},
         "savedconfig/": {
             "sys-kernel/": {
                 "linux-firmware": "linux-firmware"

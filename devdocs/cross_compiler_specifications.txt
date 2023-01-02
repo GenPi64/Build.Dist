@@ -32,7 +32,7 @@ The kernel used to compile was:
     Linux jenk 5.15.11-gentoo-x86_64 #1 SMP Sun Jan 16 09:24:16 -00 2022 x86_64 AMD FX(tm)-8120 Eight-Core Processor AuthenticAMD GNU/Linux
     jlpoole@jenk ~ $
 
-John uses a common boot directory for the Gentoo VMs, including Dom 0.  The project required two modules to be manually loaded as they were not specified as defaults in  the kernal.  The were loop and btrfs.
+John uses a common boot directory for the Gentoo VMs, including Dom 0.  The project required two modules to be manually loaded as they were not specified as defaults in  the kernel.  The were loop and btrfs.
 John had to copy the kernel modules to the guest VM
 
     [in Dom0 "hermes"]

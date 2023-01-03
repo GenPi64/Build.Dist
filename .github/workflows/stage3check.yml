@@ -49,7 +49,7 @@ jobs:
             STAGE3=$(tail -n 1 latest-stage3.txt | cut -d ' ' -f 1)
             wget https://bouncer.gentoo.org/fetch/root/all/releases/${STAGE3_ARCH}/autobuilds/${STAGE3} -O stage3.tar.xz
         fi
-        mkdir chroot
+        mkdir -p chroot
         pushd chroot
         sudo tar -xaf ../stage3.tar.xz
 

@@ -5,7 +5,7 @@
 
 #Use as a last resort.
 if [[ ! -d "$BINPKGS_DIR" ]]; then
-  mkdir "$BINPKGS_DIR"
+  mkdir -p "$BINPKGS_DIR"
   cp -r "$BINARY_ASSETS"/binaryWorkarounds/$PROJECT/* "$BINPKGS_DIR" || echo "No binary workarounds detected."
 fi
 

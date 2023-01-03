@@ -268,3 +268,37 @@ Result:  success (always remember to include "\n" for Hello World!)
 
 4:57 AM 4/8/2022
 Next steps: install distcc on both machines and perform some distcc compiling tests
+
+        Monday  Jan 02, 2023  1:3:17 PM
+        The aarch64 release of Gentoo has crept up, so we need a new cross compiler.
+        Analysis of contents of the RCBuild
+        D:\work\GenPi64\OSU_Releases>perl Search_Criters_for_Contents.pl
+        binutils:       2.39-r4 binutils-2.39-r4
+        gcc:    11.3.1_p20221209        gcc-11.3.1_p20221209
+        glibc:  2.36-r5 glibc-2.36-r5
+
+D:\work\GenPi64\OSU_Releases>
+
+Example:
+ crossdev --g [gcc version] --l [(g)libc version] --b [binutils version] --k [kernel headers version] -P -v -t [tuple]
+ 
+My prior command:
+
+    crossdev --g 11.2.1 --l 2.33 --b 2.37 --k 5.10.92 -P -v -t cross-aarch64-unknown-linux-gnu
+    
+New command:
+
+    crossdev --g 11.3.1 --l 2.36 --b 2.39 --k 5.15 -P -v -t cross-aarch64-unknown-linux-gnu
+    
+        >>> cross-aarch64-unknown-linux-gnu/gcc-11.3.0 merged.
+
+         * GNU info directory index is up-to-date.
+
+         * IMPORTANT: 5 news items need reading for repository 'gentoo'.
+         * Use eselect news read to view new items.
+                                                                                                                [ ok ]
+
+        real    87m56.862s
+        user    120m43.920s
+        sys     43m0.103s
+        gentooVM1 /home/jlpoole #

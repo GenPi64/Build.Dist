@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 
 if [[ ! -d "${PROJECT_DIR}/chroot" ]]; then
-  mkdir "${PROJECT_DIR}/chroot"
+  mkdir -p "${PROJECT_DIR}/chroot"
 fi
 
 pushd "$PROJECT_DIR/chroot" || exit 1

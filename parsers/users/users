@@ -2,7 +2,9 @@
 
 function finish
 {
-    rm -f "${PROJECT_DIR}/chroot/setupusers"
+	ret=$?
+	rm -f "${PROJECT_DIR}/chroot/setupusers"
+	exit $ret
 }
 trap finish EXIT
 

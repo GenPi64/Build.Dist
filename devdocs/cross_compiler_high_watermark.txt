@@ -1,0 +1,88 @@
+In April 2022, I configured a cross compiler on my GentooVM1 to match the GenPi64 libraries with these specifications:
+
+    binutils: 2.37
+    gcc: 11.2.1
+    libc: 2.33
+
+On 4/6/2022, in response to John's inquiry about versions and matching, Logan advised: 
+
+    libc and gcc version need to be perfect matches, and binutils needs to be at least the same major/minor version
+
+
+On December 31, 2022, I performed an emerge --sync on GentooVM1; I had not upgraded since the assembly of the cross compiler.  When I performed a pretend update, I received this messge:
+
+
+    jenk /etc/portage/package.accept_keywords # emerge -p dev-libs/libpcre2
+
+     * IMPORTANT: config file '/etc/portage/package.use/zlib' needs updating.
+     * See the CONFIGURATION FILES and CONFIGURATION FILES UPDATE TOOLS
+     * sections of the emerge man page to learn how to update config files.
+
+    These are the packages that would be merged, in order:
+
+    Calculating dependencies... done!
+    [ebuild     U  ] dev-libs/libpcre2-10.40-r1 [10.39] USE="-verify-sig%"
+
+    !!! The following installed packages are masked:
+    - sys-devel/binutils-2.37_p1-r2::gentoo (masked by: package.mask)
+    /var/db/repos/gentoo/profiles/package.mask:
+    # Andreas K. H¦ttel <dilfridge@gentoo.org> (2017-05-21)
+    # (and others, updated later)
+    # These old versions of toolchain packages (binutils, gcc, glibc) are no
+    # longer officially supported and are not suitable for general use. Using
+    # these packages can result in build failures (and possible breakage) for
+    # many packages, and may leave your system vulnerable to known security
+    # exploits.
+    # If you still use one of these old toolchain packages, please upgrade (and
+    # switch the compiler / the binutils) ASAP. If you need them for a specific
+    # (isolated) use case, feel free to unmask them on your system.
+
+    - sys-libs/glibc-2.33-r13::gentoo (masked by: package.mask)
+    For more information, see the MASKED PACKAGES section in the emerge
+    man page or refer to the Gentoo Handbook.
+
+
+     * IMPORTANT: 15 news items need reading for repository 'gentoo'.
+     * Use eselect news read to view new items.
+
+        Source: GentooVM1:/home/jlpoole/emerge_warning_binutils_no_longer_supported_Dec_31_2022.txt
+    
+Here is the current state of binutils based on the April configuration:
+   
+    jenk /etc/portage/package.use # eix binutils -I
+    [U?] sys-devel/binutils
+         Available versions:
+         (2.32) [M]~2.32-r2^t
+         (2.33) [M]2.33.1-r1^t
+         (2.34) [M]2.34-r2^t
+         (2.35) [M]2.35.2^t
+         (2.36) [M]2.36.1-r2^t
+         (2.37) [M]2.37_p1-r2^t
+         (2.38) 2.38-r2^t
+         (2.39) ~2.39-r4^t
+         (9999) **9999*l^t
+           {cet default-gold doc (+)gold gprofng multitarget +nls pgo +plugins static-libs test vanilla zstd}
+         Installed versions:  2.37_p1-r2(2.37)^t(05:10:52 AM 02/17/2022)(gold nls plugins -cet -default-gold -doc -multitarget -pgo -static-libs -test -vanilla)
+         Homepage:            https://sourceware.org/binutils/
+         Description:         Tools necessary to build programs
+
+    [U] sys-devel/binutils-config
+         Available versions:  5.4.1 **9999*l {+native-symlinks}
+         Installed versions:  5.4(02:06:14 PM 07/08/2021)(native-symlinks)
+         Homepage:            https://wiki.gentoo.org/wiki/Project:Toolchain
+         Description:         Utility to change the binutils version being used
+
+    [U] sys-libs/binutils-libs
+         Available versions:  2.34-r2(0/2.34) 2.35.2(0/2.35.2) 2.36.1-r2(0/2.36.1) 2.37_p1-r2(0/2.37) 2.38-r2(0/2.38) ~2.39-r4(0/2.39) {64-bit-bfd cet multitarget nls static-libs ABI_MIPS="n32 n64 o32" ABI_S390="32 64" ABI_X86="32 64 x32"}
+         Installed versions:  2.37_p1-r2(0/2.37)(12:48:52 PM 03/13/2022)(nls -64-bit-bfd -cet -multitarget -static-libs ABI_MIPS="-n32 -n64 -o32" ABI_S390="-32 -64" ABI_X86="64 -32 -x32")
+         Homepage:            https://sourceware.org/binutils/
+         Description:         Core binutils libraries (libbfd, libopcodes, libiberty) for external packages
+
+    Found 3 matches
+    jenk /etc/portage/package.use #
+
+So, this conflict raises the question of coordinating cross compilers with releases of GenPi64. The last successful build of GenPi64 Lite is October 8, 2022.
+
+The downloaded release of stage3-arm64-openrc-20221225T234752Z.tar.xz.CONTENTS.gz (from https://gentoo.osuosl.org/releases/arm64/autobuilds/current-stage3-arm64-openrc/) has:
+ 2022-12-26 00:21 ./var/db/pkg/sys-devel/binutils-2.38-r2/binutils-2.38-r2.ebuild
+ 

@@ -19,4 +19,4 @@ cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
 EOF
 chmod +x "${PROJECT_DIR}/chroot/em-$$"
 
-"${SCRIPTS}/chroot.py" /em-$$
+"${SCRIPTS}/chroot.py /em-$$"

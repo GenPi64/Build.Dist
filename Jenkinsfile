@@ -206,14 +206,14 @@ pipeline
 			}
 			stage('Upload binary packages')
 			{
-			  environment
-              {
-                    BINPKGS_DIR="${HOME}/shared/binpkgs"
-              }
-			  steps {
-			     sh "ls -lah ${BINPKGS_DIR}"
-			     minio(bucket:"binpkgs", includes:"${BINPKGS_DIR}/*")
-			  }
+            	environment
+            	{
+            		BINPKGS_DIR="${HOME}/shared/binpkgs"
+            	}
+                steps {
+                    sh "ls -lah ${BINPKGS_DIR}"
+                    minio(bucket:"binpkgs", includes:"${BINPKGS_DIR}/*")
+                }
 			}
 		}
 		post { always

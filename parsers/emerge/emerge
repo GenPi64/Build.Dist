@@ -28,6 +28,7 @@ cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
 	source /etc/profile
 	export SHELL="/bin/bash"
 	export TERM="linux"
+	export MAKEOPTS="-j$(nproc) -l$(nproc)"
 	${USE}
 	${EXTRA_EMERGE_ENV}
 	emerge $1

@@ -10,12 +10,14 @@ function finish
 	exit $ret
 }
 trap finish EXIT
-
+#
+# No white space before shebang!
+#
 cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
-        #!/usr/bin/env bash
-        set -evx
-        source /etc/profile
-        $@
+#!/usr/bin/env bash
+set -evx
+source /etc/profile
+$@
 EOF
 chmod +x "${PROJECT_DIR}/chroot/em-$$"
 

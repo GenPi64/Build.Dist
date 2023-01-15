@@ -39,8 +39,8 @@ GenPi64 = Base | {
     ],
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
-            "CFLAGS": "${CFLAGS}",
-            'CHOST':"aarch64-unknown-linux-gnu",
+            "CHOST":"aarch64-unknown-linux-gnu",
+            "MAKEOPTS":"-j4 -l4",
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"],

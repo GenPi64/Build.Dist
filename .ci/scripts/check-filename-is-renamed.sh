@@ -12,5 +12,6 @@ if [ -f "build/${PROJECT}/${PROJECT}.img" ]; then
      sudo mv build/${PROJECT}/latest-${PROJECT}.tar.zst build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst
     fi
   else
-    echo "File build/${PROJECT}/${PROJECT}.img doesn't exist, exiting"
+    echo "File build/${PROJECT}/${PROJECT}.img doesn't exist, exiting with status 1 to indicate an error."
+    exit 1
 fi

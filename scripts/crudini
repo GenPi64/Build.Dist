@@ -10,14 +10,22 @@
 from __future__ import print_function
 
 import atexit
+import pkgutil
 import sys
 import contextlib
 import errno
 import getopt
 import hashlib
-import iniparse
+try:
+    import iniparse
+except ModuleNotFoundError:
+    for package in pkgutil.iter_modules():
+        print(package.name)
+    import socket
+    print(f"System hostname: {socket.gethostname()}")
+    exit(991)
 import os
-import pipes
+import shlex
 import shutil
 import string
 import tempfile
@@ -301,7 +309,7 @@ class PrintSh(Print):
             sys.exit(1)
         if value == 'crudini_no_arg':
             value = ''
-        sys.stdout.write("%s=%s\n" % (name, pipes.quote(value)))
+        sys.stdout.write("%s=%s\n" % (name, shlex.quote(value)))
 
 
 class Crudini():
@@ -944,7 +952,7 @@ Options:
 
                 if self.verbose:
                     def quote_val(val):
-                        return pipes.quote(val).replace('\n', '\\n')
+                        return shlex.quote(val).replace('\n', '\\n')
                     what = ' '.join(map(quote_val,
                                         list(filter(bool,
                                                     [self.mode, self.cfgfile,

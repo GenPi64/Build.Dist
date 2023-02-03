@@ -25,21 +25,17 @@ sys.path.insert(0, os.environ['CONFIG_DIR'])
 from pyconfig import config
 
 def writecompleted(JobName):
+  lock = lockfile.LockFile(os.path.join(PROJECT_DIR, completed_name))
   try:
-    lock=lockfile.LockFile(os.path.join(PROJECT_DIR, completed_name))
-    while not lock.is_locked():
-      try:
-        lock.acquire()
-      except AlreadyLocked:
-        pass
-      except LockFailed:
-        print( "ABORT: FILE LOCKING NOT SUPPORTED.")
-        exit(1)
-      time.sleep(1)
-    f=open(os.path.join(PROJECT_DIR,completed_name),"a")
-    f.write(JobName)
-    f.write("\n")
-    f.close()
+    lock.acquire()
+    with open(os.path.join(PROJECT_DIR, completed_name), "a") as f:
+      f.write(JobName + "\n")
+  except lockfile.AlreadyLocked:
+    print("ABORT: {} is already locked.".format(os.path.join(PROJECT_DIR, completed_name)))
+    sys.exit(1)
+  except lockfile.LockFailed:
+    print("ABORT: File locking not supported.")
+    sys.exit(1)
   finally:
     lock.release()
 
@@ -60,73 +56,74 @@ def takeSnapshot(step):
   finally:
     os.chdir(cwd)
 
-PROJECT_DIR=os.environ['PROJECT_DIR']
-
+PROJECT_DIR = os.environ['PROJECT_DIR']
 NO_PARALLEL = os.environ.get("NO_PARALLEL", False)
-
 BREAK_AT = os.environ.get("BREAK_AT", False)
 
-MANIFEST=open(sys.argv[1],"r").readlines()
-completed=["",]
-print( "loading manifest")
-with open(sys.argv[1], 'r') as f:
-  manifest: list = json.load(f)
+manifest_file = sys.argv[1]
+completed = []
+
+print("Loading manifest")
+with open(manifest_file, 'r') as f:
+  manifest = json.load(f)
 
   for idx, item in enumerate(manifest):
     if "--allprev--" in item['deps']:
       item['deps'].remove("--allprev--")
-      for thing in manifest[:idx-1]:
+      for thing in manifest[:idx]:
         item['deps'].append(thing['name'])
 
-for patch in sys.argv[2:]:
-  print("loading patch", patch)
-  with open(patch, 'r') as p:
+for patch_file in sys.argv[2:]:
+  print(f"Loading patch: {patch_file}")
+  with open(patch_file, 'r') as p:
     p_manifest = json.load(p)
-    for p_idx, p_item in enumerate(p_manifest):
-      if b4 := p_item.get('before'):
+    for p_item in p_manifest:
+      before = p_item.get('before')
+      if before:
         for idx, item in enumerate(manifest):
-          if item['name'] == b4:
+          if item['name'] == before:
             item['deps'].append(p_item['name'])
             if idx > 0:
               p_item['deps'].append(manifest[idx-1]['name'])
             manifest.insert(idx, p_item)
             break
         else:
-          print(f"WARNING: patch-step {p_item['name']} should run before {b4}, but I can't find {b4}")
+          print(f"WARNING: Patch-step {p_item['name']} should run before {before}, but {before} could not be found.")
           manifest.append(p_item)
       else:
         for idx, item in enumerate(manifest):
           if item['name'] == p_item['name']:
-            print(f"INFO: overwriting {item['name']} with patched version")
+            print(f"INFO: Overwriting {item['name']} with patched version")
             manifest[idx] = p_item
             break
         else:
           manifest.append(p_item)
-print("load complete")
+print("Loading complete")
 
 print("Loading status")
+completed = []
+completed_file = os.path.join(os.environ['PROJECT_DIR'], completed_name)
 try:
-  with open(os.path.join(os.environ['PROJECT_DIR'], completed_name),"r") as f:
+  with open(completed_file, "r") as f:
     for entry in f.readlines():
       entry = entry.strip('\n')
+      found = False
       for m in manifest:
         if m['name'] == entry:
           if m['parser'] == 'includejson':
             break
           completed.append(entry)
+          found = True
           break
-      else:
-        print("Got completed entry name but no known step by that name, adding anyway")
+      if not found:
+        print(f"Warning: Completed entry name '{entry}' not found in manifest, adding anyway")
         completed.append(entry)
-  print(f"steps for {completed_name}", completed)
-  dump=[]
-  for item in manifest:
-    if item['name'] in completed:
-      dump.append(item)
-  for item in dump:
-    manifest.remove(item)
-except:
-  print("status not loadable")
+  print(f"Completed steps for {completed_name}: {completed}")
+  manifest = [item for item in manifest if item['name'] not in completed]
+except FileNotFoundError:
+  print(f"{completed_file} not found")
+except Exception as e:
+  print(f"Error loading status from {completed_file}: {e}")
 
 print("load complete")
 print(manifest)
@@ -185,35 +182,41 @@ def execute(manifest):
         args.append('--name')
         args.append(item['name'])
 
-      jobs.append( (subprocess.Popen([os.path.join(os.environ['PARSERS'],item['parser'],item['parser']), *args], env=env), item['name']) )
+      try:
+        process = subprocess.Popen([os.path.join(os.environ['PARSERS'], item['parser'], item['parser']), *args],
+                                   env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        jobs.append((process, item['name']))
+      except Exception as e:
+        print(f"Error executing {item['name']}: {e}")
       manifest.remove(item)
       if NO_PARALLEL:
         return jobs
-  return( jobs)
+  return jobs
 
 def checkjob(jobs):
-  print("running jobs",jobs)
-  onefinished=False
+  print("running jobs", jobs)
+  onefinished = False
   name = None
   while not onefinished and jobs:
     for job in jobs:
       job[0].poll()
-      if job[0].returncode != None:
-        onefinished=True
+      if job[0].returncode is not None:
+        onefinished = True
         if job[0].returncode == 0:
-          print( "jobdone",job[1])
+          print("jobdone", job[1])
           completed.append(job[1])
           writecompleted(job[1])
           jobs.remove(job)
           name = job[1]
         else:
-          print("FATAL: JOBFAILED ",job[1])
+          print(f"FATAL: JOB {job[1]} FAILED with exit code {job[0].returncode}, stderr: {job[0].stderr}, "
+                f"stdout: {job[0].stdout}")
           jobs.remove(job)
           while jobs:
-            print("Waiting for jobs to complete...")
+            print("Waiting for other jobs to complete...")
             checkjob(jobs)
             time.sleep(10)
-          exit(1)
+          sys.exit(1)
     time.sleep(1)
   if os.environ.get('BTRFS_SNAPSHOTS', False):
     takeSnapshot(name)

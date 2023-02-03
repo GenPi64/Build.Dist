@@ -19,8 +19,9 @@ import hashlib
 try:
     import iniparse
 except ModuleNotFoundError:
+    print(f"Iniparse failed to be imported")
     for package in pkgutil.iter_modules():
-        print(package.name)
+        print(f"Package that was found in path: {package.name}")
     import socket
     print(f"System hostname: {socket.gethostname()}")
     exit(991)

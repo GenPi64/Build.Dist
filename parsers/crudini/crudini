@@ -6,6 +6,12 @@ import subprocess
 
 os.chdir(os.environ['CHROOT_DIR'])
 
-p = subprocess.Popen([f'{os.environ["SCRIPTS"]}/crudini', *sys.argv[1:]])
-p.wait()
-sys.exit(p.poll())
+p = subprocess.Popen([f'{os.environ["SCRIPTS"]}/crudini', *sys.argv[1:]], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+stdout, stderr = p.communicate()
+
+if p.returncode != 0:
+    sys.stderr.write(stderr.decode())
+    sys.exit(p.returncode)
+else:
+    sys.stdout.write(stdout.decode())
+    sys.exit(0)

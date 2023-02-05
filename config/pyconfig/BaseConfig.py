@@ -27,6 +27,12 @@ Base = {
             MAKEOPTS=f"-j{len(os.sched_getaffinity(0))} -l{len(os.sched_getaffinity(0))}",
             VIDEO_CARDS="",
             INPUT_DEVICES="libinput",
+            BINPKG_FORMAT="gpkg",
+            BINPKG_COMPRESS="zstd",
+            BINPKG_COMPRESS_FLAGS="-15",
+            PORTAGE_COMPRESS="zstd",
+            PORTAGE_COMPRESS_FLAGS="-15",
+            PORTAGE_NICENESS="20",
             EMERGE_DEFAULT_OPTS="--jobs --newrepo --newuse --changed-use --changed-deps --changed-slot --deep --tree --unordered-display --nospinner --backtrack=3000 --complete-graph --with-bdeps=y --rebuild-if-new-rev --rebuild-if-new-ver --rebuild-if-unbuilt --rebuilt-binaries --binpkg-respect-use=y --binpkg-changed-deps=y --usepkg=y --buildpkg-exclude 'virtual/* sys-kernel/*-sources */*-bin acct-user/* acct-group/*'"
         ),
         #"patches/": {

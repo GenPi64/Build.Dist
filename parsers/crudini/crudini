@@ -14,6 +14,6 @@ if p.returncode != 0:
     sys.stdout.write(stdout.decode())
     sys.exit(p.returncode)
 else:
-    sys.stdout.write(stdout.decode())
+    sys.stderr.write(stdout.decode())
     sys.stdout.write(stdout.decode())
     sys.exit(0)

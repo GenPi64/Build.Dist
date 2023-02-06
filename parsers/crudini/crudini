@@ -11,7 +11,9 @@ stdout, stderr = p.communicate()
 
 if p.returncode != 0:
     sys.stderr.write(stderr.decode())
+    sys.stdout.write(stdout.decode())
     sys.exit(p.returncode)
 else:
+    sys.stdout.write(stdout.decode())
     sys.stdout.write(stdout.decode())
     sys.exit(0)

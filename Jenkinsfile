@@ -230,9 +230,6 @@ pipeline
 			sh "sudo losetup -all --list --output NAME,BACK-FILE"
 			sh "for var in \$(sudo losetup -all --list --output NAME,BACK-FILE | grep deleted | cut -f1 -d' '); do losetup -d \$var || echo \"\$(sudo losetup -all --list --output NAME,BACK-FILE | grep \$var) cant be detached\"; done"
 			sh "sudo losetup -D"
-
-			sh "sudo rm -rf ./*"
-			sh "git checkout ."
 		}}
 	}}}
 }

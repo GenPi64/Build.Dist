@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 if [[ ! "$UID" == "0" ]]; then
     echo "Build must run as root!"

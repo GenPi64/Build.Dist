@@ -1,9 +1,9 @@
 [
     {"name": "reetc", "deps": [""], "parser": "etc", "args": [""]},
     {"name": "resetprofile", "deps": ["reetc"], "parser": "setprofile", "args": [""]},
-    {"name": "remerge-profile", "deps": ["resetprofile"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
+    {"name": "remerge-profile", "deps": ["resetprofile"], "parser": "emerge", "args": ["--update @world"]},
     {"name": "desktopsets", "deps": ["remerge-profile"], "parser": "addsets", "args": [""]},
-    {"name": "emergedesktop", "deps": ["desktopsets"], "parser": "emerge", "args": ["-v1bg --update --newuse --deep --with-bdeps=y --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree --autounmask-backtrack=y --backtrack=3000 @world"]},
+    {"name": "emergedesktop", "deps": ["desktopsets"], "parser": "emerge", "args": ["--update @world"]},
     {"name": "desktopdepclean", "deps": ["emergedesktop"], "parser": "emerge", "args": ["-v --depclean"]},
     {"name": "repackstage4", "deps": ["desktopdepclean"], "parser": "packstage4", "args": [""]},
     {"name": "packgenpidesktop", "deps": ["repackstage4"], "parser": "includejson", "args": ["subtargets/pack-genpi.json"]},

@@ -10,7 +10,7 @@
 from __future__ import print_function
 
 import atexit
-import pkgutil
+import traceback
 import sys
 import contextlib
 import errno
@@ -20,10 +20,10 @@ try:
     import iniparse
 except ModuleNotFoundError:
     print(f"Iniparse failed to be imported")
-    for package in pkgutil.iter_modules():
-        print(f"Package that was found in path: {package.name}")
     import socket
     print(f"System hostname: {socket.gethostname()}")
+    print("Traceback:")
+    traceback.print_exc()
     exit(991)
 import os
 import shlex

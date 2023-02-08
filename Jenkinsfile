@@ -5,6 +5,8 @@ pipeline
 		timestamps()
 	}
 
+	agent any
+
 	stages {
 	    stage('Build (aarch64)') {
 	     matrix {

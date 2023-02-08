@@ -1,5 +1,4 @@
 [
-    {"name": "enabledistcc", "deps": ["distcchost"], "parser": "echo", "args": ["Not enabling distcc"]},
-    {"name": "removeoldgcc", "deps": ["updatelibc"], "parser": "echo", "args": ["No old gcc version to remove"]},
-    {"name": "switchgcc", "deps": ["updategcc"], "parser": "echo", "args": ["No need to switch."]}
+    {"name": "eclean-pkg", "deps": ["depclean_new_profile"], "parser": "echo", "args": ["Not supported"]},
+    {"name": "eclean-dist", "deps": ["eclean-pkg"], "parser": "echo", "args": ["Not supported"]}
 ]

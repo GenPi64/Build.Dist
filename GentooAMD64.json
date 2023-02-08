@@ -1,5 +1,5 @@
 [
-    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json"]},
+    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-amd64.json"]},
     {"name": "kernel", "deps": ["gentoo-base"], "parser": "emerge", "args": ["$(/em-config kernel '* ') -bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree"]},
     {"name": "packstage4", "deps": ["kernel"], "parser": "packstage4", "args": [""]},
     {"name": "package", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/package-non-pi.json"]},

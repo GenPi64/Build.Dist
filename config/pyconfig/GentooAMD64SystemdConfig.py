@@ -18,10 +18,10 @@ GentooAMD64Systemd = GentooAMD64 | {
     "initsystem": "systemd",
     "initramfs": "none",
     "service-manager": "systemctl_enable",
-    "stage3": "stage3-amd64-systemd.tar.xz",
-    "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-systemd.txt",
+    "stage3": "stage3-amd64-systemd-mergedusr.tar.xz",
+    "stage3url": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/latest-stage3-amd64-systemd-mergedusr.txt",
     "stage3mirror": "http://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds",
-    "profile": "default/linux/amd64/17.1",
+    "profile": "default/linux/amd64/17.1/systemd/merged-usr",
     'portage': GentooAMD64['portage'] | {
         "make.conf": GentooAMD64['portage']['make.conf'] | {
             'CFLAGS': '${CFLAGS} -march=x86-64 -mtune=generic -pipe',

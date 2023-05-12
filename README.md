@@ -31,11 +31,11 @@ You need to download the stage 3 tarball you want to use, and put it in `build-b
 Edit `config/config.py` and update the path to the stage3 version you're using.
 
 Pick a target by running
-`export PROJECT=<projectname>` 
+`export PROJECT="<projectname>"` 
 default is `GenPi64`.  
 
 If you want to set where the build should happen, run
-`export PROJECT_DIR=</path/to/build/location>`
+`export PROJECT_DIR="</path/to/build/location>"`
 default is `$PWD/build/$PROJECT`.
 
 Then run `sh build.sh`.  Wait (a *long* time).  At the end, you should have your output in `$PROJECT_DIR`.  

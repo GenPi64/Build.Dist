@@ -44,7 +44,8 @@ GenPi64 = Base | {
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"],
-            "VIDEO_CARDS": ["vc4"] + ["v3d"] + ["fbdev"]
+            "VIDEO_CARDS": ["vc4"] + ["v3d"] + ["fbdev"],
+			"LLVM_TARGETS": ["AArch64"] + ["BPF"]
         },
         "binrepos.conf": [
             "[genpi64-binhost]",

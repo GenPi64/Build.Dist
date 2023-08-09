@@ -31,6 +31,7 @@ cat <<- EOF > "${PROJECT_DIR}/chroot/em-$$"
 	export MAKEOPTS="-j$(nproc) -l$(nproc)"
 	${USE}
 	${EXTRA_EMERGE_ENV}
+	unset SCRIPTS
 	emerge $1
 EOF
 

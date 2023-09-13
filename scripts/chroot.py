@@ -27,6 +27,8 @@ if 'CHROOT_CMD' in os.environ:
     elif chroot_cmd == 'systemd-nspawn':
         os.execvpe('systemd-nspawn',
                    ['systemd-nspawn',
+                    f'--timezone=off',
+                    f'--resolv-conf=bind-host',
                     f'--machine={uuid.uuid4()}',
                     f'--directory={os.environ["CHROOT_DIR"]}',
                     f'--bind={os.environ["CCACHE_DIR"]}:/var/tmp/ccache',
@@ -47,6 +49,8 @@ elif os.path.exists('/sbin/openrc-run'):
 elif 'systemd' in os.readlink('/proc/1/exe'):
     os.execvpe('systemd-nspawn',
                ['systemd-nspawn',
+                f'--timezone=off',
+                f'--resolv-conf=bind-host',
                 f'--machine={uuid.uuid4()}',
                 f'--directory={os.environ["CHROOT_DIR"]}',
                 f'--bind={os.environ["CCACHE_DIR"]}:/var/tmp/ccache',

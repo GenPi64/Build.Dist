@@ -39,8 +39,12 @@ GenPi64 = Base | {
     ],
     "portage": Base["portage"] | {
         "make.conf": Base["portage"]["make.conf"] | {
-            "CHOST":"aarch64-unknown-linux-gnu",
-            "MAKEOPTS":"-j4 -l4",
+            "CFLAGS": "${CFLAGS} -march=armv8-a+crc -mtune=cortex-a72 -ftree-vectorize -O2 -pipe",
+            "CXXFLAGS": "${CFLAGS}",
+            "FCFLAGS": "${CFLAGS}",
+            "FFLAGS": "${CFLAGS}",
+            "CHOST": "aarch64-unknown-linux-gnu",
+            "MAKEOPTS": "-j4 -l4",
             "FEATURES": Base["portage"]["make.conf"][
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"],

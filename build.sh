@@ -9,7 +9,7 @@ cd "$(dirname $0)"
 
 source scripts/functions.sh
 
-export BASEDIR=${PWD}
+export BASEDIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
 source ${BASEDIR}/env.sh
 

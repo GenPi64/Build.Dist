@@ -3,7 +3,7 @@ pushd ${BASEDIR}
 stage3=$(${PARSERS}/config/getconfig stage3)
 
 stage3_url=$(${PARSERS}/config/getconfig stage3url)
-stage3_image=$(wget "${stage3_url}" -O - | tail -n 1 | cut -f 1 -d ' ' )
+stage3_image=$(wget "${stage3_url}" -O - | sed '/^-----BEGIN PGP SIGNATURE-----$/,$d' | tail -n 1 | cut -f 1 -d ' ' )
 stage3_mirror=$(${PARSERS}/config/getconfig stage3mirror)
 stage3_digests=$(wget ${stage3_mirror}/${stage3_image}.DIGESTS -O -)
 

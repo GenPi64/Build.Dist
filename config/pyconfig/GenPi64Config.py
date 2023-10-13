@@ -50,18 +50,17 @@ GenPi64 = Base | {
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"],
             "VIDEO_CARDS": ["vc4"] + ["v3d"] + ["fbdev"]
         },
-        "binrepos.conf": [
-            "[genpi64-binhost]",
-            "priority = 9999",
-            "sync-uri = https://s3.genpi64.com/binpkgs/",
-            "",
-        ],
         "package.mask": "package.mask",
         "package.accept_keywords": "package.accept_keywords"
     },
     "etc": Base["etc"] | {
         "dhcpcd.conf": "dhcpcd.conf",
-        "hostname": "hostname"
+        "hostname": "hostname",
+        "portage/": {
+            "binrepos.conf/": {
+                "genpi64binhost.conf" : "genpi64binhost.conf"
+            }
+        }
     },
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
     "stage3url": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/latest-stage3-arm64-openrc.txt",

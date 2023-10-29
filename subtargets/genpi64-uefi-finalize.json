@@ -1,0 +1,10 @@
+[
+    {"name": "mkdir_efi", "deps": [""], "parser": "rawcommand", "args": ["mkdir /efi"]},
+    {"name": "systemd_boot_install", "deps": ["mkdir_efi"], "parser": "rawcommand", "args": ["SYSTEMD_RELAX_ESP_CHECKS=1 SYSTEMD_RELAX_XBOOTLDR_CHECKS=1 bootctl install --no-variables --graceful --root=/ --esp-path=/efi --boot-path=/boot"]},
+    {"name": "systemd_patch_remove", "deps": ["systemd_boot_install"], "parser": "rawcommand", "args": ["rm -rf /etc/portage/patches/"]},
+    {"name": "systemd_rebuild", "deps": ["systemd_patch_remove"], "parser" : "emerge", "args": ["--verbose --oneshot --jobs --tree --ignore-default-opts sys-apps/systemd"]},
+    {"name": "installkernel_systemd", "deps": ["systemd_rebuild"], "parser": "emerge", "args": ["sys-kernel/installkernel-systemd"]},
+    {"name": "kernel", "deps": ["installkernel_systemd"], "parser": "emerge", "args": ["$(/em-config kernel '* ') -bk --jobs $(/em-config jobs) --load-average $(/em-config load-average) --tree"]},
+    {"name": "packstage4", "deps": ["kernel"], "parser": "packstage4", "args": [""]},
+    {"name": "packgenpi", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/pack-genpi.json"]}
+]

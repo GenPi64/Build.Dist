@@ -35,9 +35,6 @@ Base = {
             PORTAGE_NICENESS="20",
             EMERGE_DEFAULT_OPTS="--jobs --newrepo --newuse --changed-use --changed-deps --changed-slot --deep --tree --unordered-display --nospinner --backtrack=3000 --complete-graph --with-bdeps=y --rebuild-if-new-rev --rebuild-if-new-ver --rebuild-if-unbuilt --rebuilt-binaries --binpkg-respect-use=y --binpkg-changed-deps=y --usepkg=y --buildpkg-exclude='virtual/*' --buildpkg-exclude='sys-kernel/*-sources' --buildpkg-exclude='*/*-bin' --buildpkg-exclude='acct-user/*' --buildpkg-exclude='acct-group/*' --buildpkg-exclude='dev-perl/*' --usepkg-exclude='virtual/*' --usepkg-exclude='sys-kernel/*-sources' --usepkg-exclude='*/*-bin' --usepkg-exclude='acct-user/*' --usepkg-exclude='acct-group/*' --usepkg-exclude='dev-perl/*'"
         ),
-        #"patches/": {
-        #    {}
-        #},
         "savedconfig/": {
             "sys-kernel/": {
                 "linux-firmware": "linux-firmware"

@@ -33,7 +33,7 @@ jobs:
 
     - name: Check Remote Resources
       run: | 
-        wget https://bouncer.gentoo.org/fetch/root/all/releases/${STAGE3_ARCH}/autobuilds/latest-stage3-${STAGE3_ARCH}-${STAGE3_INIT}.txt -O - | tail -n 1 | tee latest-stage3.txt
+        wget https://bouncer.gentoo.org/fetch/root/all/releases/${STAGE3_ARCH}/autobuilds/latest-stage3-${STAGE3_ARCH}-${STAGE3_INIT}.txt -O - | awk '/-----BEGIN PGP SIGNATURE-----/{print x}{x=$0}' | tail -n 1 | tee latest-stage3.txt
         git ls-remote https://github.com/gentoo-mirror/gentoo HEAD | tee gentoo-repo-head.txt
 
     - name: Initialize Cache of Stage 3

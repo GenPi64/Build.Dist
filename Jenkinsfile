@@ -14,11 +14,6 @@ pipeline
 		{
 			axis
 			{
-				name 'INIT_SYSTEM'
-				values 'OpenRC', 'Systemd'
-			}
-			axis
-			{
 				name 'LIBC'
 				values 'GlibC'
 			}
@@ -40,7 +35,7 @@ pipeline
 		}
 		environment
 		{
-			PROJECT="GenPi64${INIT_SYSTEM}"
+			PROJECT="GenPi64Osuosl"
 			CCACHE_DIR="${HOME}/shared/ccache"
 			BINPKGS_DIR="${HOME}/shared/binpkgs"
 			DISTFILES_DIR="${HOME}/shared/distfiles"

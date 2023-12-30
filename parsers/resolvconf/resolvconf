@@ -1,0 +1,4 @@
+#!/bin/bash -ex
+source "$BASEDIR/scripts/functions.sh"
+
+ln -sf /run/systemd/resolve/stub-resolv.conf "${PROJECT_DIR}/chroot/etc/resolv.conf"

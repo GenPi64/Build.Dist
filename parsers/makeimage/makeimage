@@ -77,7 +77,7 @@ else:
             system(f"sgdisk --typecode={idx + 1}:{typeuuid} {image['name']}")
 
         if name := partition.get('name'):
-            system(f"sgdisk --change-name={idx + 1}:{name} {image['name']}")
+            system(f"sgdisk --change-name={idx + 1}:'{name}' {image['name']}")
 
         if flags := partition.get('flags'):
             # Raspberry pi refuses to boot from a /boot partition that doesn't
@@ -87,6 +87,8 @@ else:
                     bit = 0
                 elif "boot" == f:
                     bit = 2
+                elif "grow-file-system" == f:
+                    bit = 59
                 else:
                     continue
 

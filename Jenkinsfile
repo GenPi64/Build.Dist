@@ -15,7 +15,7 @@ pipeline
 			axis
 			{
 				name 'INIT_SYSTEM'
-				values 'OpenRC', 'Systemd', 'OsuOsl'
+				values 'OpenRC', 'Systemd', 'Osuosl'
 			}
 			axis
 			{

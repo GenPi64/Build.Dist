@@ -225,7 +225,7 @@ pipeline
 			sh "for var in ./build/*/image/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
 			sh "for var in ./build/*/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
 			
-			sh "for var in ./build/*/chroot/var/log/emerge.log; do sudo cat \$var; done"
+			sh "for var in $(find . -maxdepth 1 -name './build/*/chroot/var/log/emerge.log' -print); do sudo cat \$var; done"
 
 			sh "sudo losetup -all --list --output NAME,BACK-FILE"
 			sh "for var in \$(sudo losetup -all --list --output NAME,BACK-FILE | grep deleted | cut -f1 -d' '); do losetup -d \$var || echo \"\$(sudo losetup -all --list --output NAME,BACK-FILE | grep \$var) cant be detached\"; done"

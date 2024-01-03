@@ -1,0 +1,6 @@
+[
+    {"name": "gentoo-base", "deps": [""], "parser": "includejson", "args": ["subtargets/gentoo-base.json", "patchtargets/gentoo-amd64.json", "patchtargets/gentoo-systemd.json"]},
+    {"name": "resolvconf", "deps": ["gentoo-base"], "parser": "resolvconf", "args": [""]},
+    {"name": "genpi64-uefi-finalize", "deps": ["resolvconf"], "parser": "includejson", "args": ["subtargets/genpi64-uefi-finalize.json"]},
+    {"name": "echo-lite-banner", "deps": ["genpi64-uefi-finalize"], "parser": "printf", "args": ["############################\n# Build complete\n# To install your image on an SD card, run\n# dd if=/path/to/image of=/path/to/sdcard\n#############################\n"]}
+]

@@ -9,8 +9,9 @@ sys.path.insert(0, os.environ['CONFIG_DIR'])
 from pyconfig import config
 
 image = config['image']
-with open("image/boot/cmdline.txt", "w") as cmdline:
-    p = image['mount-order'][0]
-    partition=image['partitions'][p]
-    e = dict(PARTUUID=partition['partuuid'], fstype=partition['filesystem'])
-    cmdline.write(config['cmdline'] % e)
+if os.path.exists("image/boot/cmdline.txt"):
+    with open("image/boot/cmdline.txt", "w") as cmdline:
+        p = image['mount-order'][0]
+        partition=image['partitions'][p]
+        e = dict(PARTUUID=partition['partuuid'], fstype=partition['filesystem'])
+        cmdline.write(config['cmdline'] % e)

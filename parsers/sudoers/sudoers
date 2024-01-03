@@ -14,7 +14,8 @@ image = config['image']
 
 os.chdir("image")
 
-with open("etc/sudoers", "r") as f:
-    sudoers = f.read()
-with open("etc/sudoers", "w") as f:
-    f.write(sudoers.replace("# %wheel ALL=(ALL) NOPASSWD: ALL", "%wheel ALL=(ALL) NOPASSWD: ALL"))
+if os.path.exists("etc/sudoers"):
+    with open("etc/sudoers", "r") as f:
+        sudoers = f.read()
+    with open("etc/sudoers", "w") as f:
+        f.write(sudoers.replace("# %wheel ALL=(ALL) NOPASSWD: ALL", "%wheel ALL=(ALL) NOPASSWD: ALL"))

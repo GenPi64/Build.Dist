@@ -49,9 +49,7 @@ GenPi64 = Base | {
                             "FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["-checkboot"],
             "VIDEO_CARDS": ["vc4"] + ["v3d"] + ["fbdev"]
-        },
-        "package.mask": "package.mask",
-        "package.accept_keywords": "package.accept_keywords"
+        }
     },
     "etc": Base["etc"] | {
         "dhcpcd.conf": "dhcpcd.conf",

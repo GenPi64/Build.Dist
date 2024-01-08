@@ -99,7 +99,8 @@ else:
                 else:
                     continue
 
-                system(f"sgdisk --attributes={idx}:{action}:{bit} {image['name']}")
+                system(f"sgdisk --attributes={idx + 1}:{action}:{bit} {image['name']}")
+                system(f"sgdisk --info={idx + 1} {image['name']}")
 
 # Hybrid also implies gpt, handled above.
 if image['format'] == 'hybrid':

@@ -122,7 +122,10 @@ GenPi64UefiSystemd = Base | {
               'mount-point': '/efi',
               'mount-options': 'noatime',
               'fstab-dump': 0,
-              'fstab-fsck-pass': 1
+              'fstab-fsck-pass': 1,
+              'flags': {
+                  'boot': 'on'
+                }
             },
             {
               'name': 'Extended Boot Loader Partition',
@@ -150,7 +153,7 @@ GenPi64UefiSystemd = Base | {
               'fstab-fsck-pass': 0,
               'flags': {
                   'grow-file-system': 'on'
-                },
+                }
             }
         ]
     }

@@ -88,7 +88,8 @@ GenPi64 = Base | {
         'uuid': UUID[:8],
         'partitions': [
             {
-              'name': 'bootfs',
+              'partlabel': 'bootfs',
+              'fslabel': 'bootfs',
               'partuuid': UUID[:8]+'-01',
               'typeuuid': 'c12a7328-f81f-11d2-ba4b-00a0c93ec93b',
               'mbrtypeid': 'c',
@@ -104,7 +105,8 @@ GenPi64 = Base | {
               'fstab-fsck-pass': 1
             },
             {
-              'name': 'rootfs',
+              'partlabel': 'rootfs',
+              'fslabel': 'rootfs',
               'partuuid': UUID[:8]+'-02',
               'typeuuid': 'b921b045-1df0-41c3-af44-4c6f280d3fae',
               'mbrtypeid': '83',

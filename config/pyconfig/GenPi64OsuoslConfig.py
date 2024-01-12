@@ -16,5 +16,5 @@ GenPi64Osuosl = GenPi64UefiSystemd | {
     }
 }
 
-GenPi64Osuosl["image"]["partitions"][2]["name"] = 'Root Partition 64-bit ARM/AArch64'
+GenPi64Osuosl["image"]["partitions"][2]["partlabel"] = 'Root Partition 64-bit ARM/AArch64'
 GenPi64Osuosl["image"]["partitions"][2]["typeuuid"] = 'B921B045-1DF0-41C3-AF44-4C6F280D3FAE'

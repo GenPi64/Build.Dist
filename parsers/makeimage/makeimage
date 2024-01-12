@@ -76,8 +76,8 @@ else:
         if typeuuid := partition.get('typeuuid'):
             system(f"sgdisk --typecode={idx + 1}:{typeuuid} {image['name']}")
 
-        if name := partition.get('name'):
-            system(f"sgdisk --change-name={idx + 1}:'{name}' {image['name']}")
+        if partlabel := partition.get('partlabel'):
+            system(f"sgdisk --change-name={idx + 1}:'{partlabel}' {image['name']}")
 
         if flags := partition.get('flags'):
             # Raspberry pi refuses to boot from a /boot partition that doesn't
@@ -99,7 +99,8 @@ else:
                 else:
                     continue
 
-                system(f"sgdisk --attributes={idx}:{action}:{bit} {image['name']}")
+                system(f"sgdisk --attributes={idx + 1}:{action}:{bit} {image['name']}")
+                system(f"sgdisk --info={idx + 1} {image['name']}")
 
 # Hybrid also implies gpt, handled above.
 if image['format'] == 'hybrid':
@@ -138,6 +139,13 @@ for idx, partition in enumerate(image['partitions']):
         try:
             system(f"echo '{partition['luks_pass']}' | cryptsetup -y --use-random luksFormat {LOOP}p{idx + 1} -")
         except Exception as e:
+            raise exit(1)
+    elif fslabel := partition.get('fslabel'):
+        if partition['filesystem'] == 'vfat':
+            system(f"mkfs.{partition['filesystem']} -n {fslabel} {LOOP}p{idx + 1} {partition.get('args', '')}")
+        elif partition['filesystem'] == 'btrfs':
+            system(f"mkfs.{partition['filesystem']} -L {fslabel} {LOOP}p{idx + 1} {partition.get('args', '')}")
+        else:
             raise exit(1)
     else:
         system(f"mkfs.{partition['filesystem']} {LOOP}p{idx + 1} {partition.get('args', '')}")

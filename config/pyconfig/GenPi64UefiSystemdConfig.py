@@ -113,7 +113,8 @@ GenPi64UefiSystemd = Base | {
         'uuid': UUID,
         'partitions': [
             {
-              'name': 'EFI System Partition',
+              'partlabel': 'EFI System Partition',
+              'fslabel': 'EFI',
               'partuuid': partition1Uuid,
               'typeuuid': 'C12A7328-F81F-11D2-BA4B-00A0C93EC93B',
               'start': '0',
@@ -122,10 +123,14 @@ GenPi64UefiSystemd = Base | {
               'mount-point': '/efi',
               'mount-options': 'noatime',
               'fstab-dump': 0,
-              'fstab-fsck-pass': 1
+              'fstab-fsck-pass': 1,
+              'flags': {
+                  'boot': 'on'
+                }
             },
             {
-              'name': 'Extended Boot Loader Partition',
+              'partlabel': 'Extended Boot Loader Partition',
+              'fslabel': 'XBOOTLDR',
               'partuuid': partition2Uuid,
               'typeuuid': 'BC13C2FF-59E6-4262-A352-B275FD6F7172',
               'start': '0',
@@ -137,7 +142,8 @@ GenPi64UefiSystemd = Base | {
               'fstab-fsck-pass': 1
             },
             {
-              'name': 'Root Partition (64-bit AMD64/x86_64)',
+              'partlabel': 'Root Partition (64-bit AMD64/x86_64)',
+              'fslabel': 'ROOT',
               'partuuid': partition3Uuid,
               'typeuuid': '4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709',
               'start': '0',
@@ -150,7 +156,7 @@ GenPi64UefiSystemd = Base | {
               'fstab-fsck-pass': 0,
               'flags': {
                   'grow-file-system': 'on'
-                },
+                }
             }
         ]
     }

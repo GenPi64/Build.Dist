@@ -7,6 +7,13 @@ GenPi64Osuosl = GenPi64UefiSystemd | {
             "CHOST": "aarch64-unknown-linux-gnu"
         }
     },
+    "etc": GenPi64UefiSystemd["etc"] | {
+        "kernel/": {
+            "config.d/": {
+                "EFI_ZBOOT.config" : "osuosl/etc/kernel/config.d/EFI_ZBOOT.config"
+            }
+        }
+    },
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
     "stage3url": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/latest-stage3-arm64-systemd-mergedusr.txt",
     "stage3mirror": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/",

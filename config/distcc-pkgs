@@ -87,8 +87,8 @@ dev-util/glib-utils
 dev-util/gperf
 dev-util/intltool
 dev-util/itstool
-dev-util/meson
-dev-util/ninja
+dev-build/meson
+dev-build/ninja
 dev-util/pkgconf
 dev-util/re2c
 dev-vcs/git

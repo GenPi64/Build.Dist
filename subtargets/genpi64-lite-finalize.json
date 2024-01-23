@@ -5,7 +5,9 @@
     {"name": "add_kernel8_p4", "deps": ["add_kernel8"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "pi4", "kernel", "kernel8-p4.img"]},
     {"name": "enableuart", "deps": ["add_kernel8_p4"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "all", "enable_uart", "1"]},
     {"name": "disableoverscan", "deps": ["enableuart"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "all", "disable_overscan", "1"]},
-    {"name": "enable_vc4_kms_pi4", "deps": ["disableoverscan"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "pi4", "dtoverlay", "vc4-fkms-v3d-pi4.dtbo"]},
-    {"name": "packstage4", "deps": ["enable_vc4_kms_pi4"], "parser": "packstage4", "args": [""]},
+    {"name": "enable_vc4_kms", "deps": ["disableoverscan"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "all", "dtoverlay", "vc4-fkms-v3d"]},
+    {"name": "enable_camera_auto_detect", "deps": ["enable_vc4_kms"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "all", "camera_auto_detect", "1"]},
+    {"name": "enable_display_auto_detect", "deps": ["enable_camera_auto_detect"], "parser": "crudini", "args": ["--set", "--inplace", "--existing=file", "boot/config.txt", "all", "display_auto_detect", "1"]},
+    {"name": "packstage4", "deps": ["enable_display_auto_detect"], "parser": "packstage4", "args": [""]},
     {"name": "packgenpi", "deps": ["packstage4"], "parser": "includejson", "args": ["subtargets/pack-genpi.json"]}
 ]

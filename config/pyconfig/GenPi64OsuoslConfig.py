@@ -8,7 +8,7 @@ GenPi64Osuosl = GenAMD64UefiSystemd | {
         }
     },
     "etc": GenAMD64UefiSystemd["etc"] | {
-        "kernel/": {
+        "kernel/": GenAMD64UefiSystemd["etc"]["kernel/"] | {
             "config.d/": {
                 "EFI_ZBOOT.config" : "osuosl/etc/kernel/config.d/EFI_ZBOOT.config"
             }

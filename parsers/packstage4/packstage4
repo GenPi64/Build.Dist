@@ -1,6 +1,7 @@
 #!/bin/bash -ex
 
 rm "$CHROOT_DIR"/em-* || echo "no scripts to clean"
+rm -rv "$CHROOT_DIR"/usr/src/kernel/* || echo "no kernel sources to clean"
 
 tar --zstd -f $PROJECT_DIR/latest-$PROJECT.tar.zst --create --preserve-permissions --numeric-owner --xattrs --acls --directory "$CHROOT_DIR" .
 

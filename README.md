@@ -4,7 +4,6 @@ Build scripts for building GenPi64 images.
 ## Requirements
 Linux system (gcc, chroot, et cetera)
 Python3.9
-pychroot
 git
 dev-python/python-lockfile
 dev-python/iniparse
@@ -42,17 +41,26 @@ Then run `sh build.sh`.  Wait (a *long* time).  At the end, you should have your
 Packages are in `$PROJECT_DIR/packages`, the image file is in `$PROJECT_DIR/`.  There's also a stage4 generated, 
 in the same location.
 
-If you are building an arm target via qemu, you probably want a distcc server running with crossdev gcc.  
+There's a convenience script `source set-env.sh` that will export the useful variables for you, mostly used by the project maintainers to run a build of our own.
+
+If you are building an arm target via qemu, you probably want a distcc server running with crossdev gcc as it takes DAYS to build.
 
 ## Config
 
-You can configure the project via `config/config.py`, the default one is fairly fleshed out, so feel free to poke at it to see how it works.
+You can configure the project via `config/pyconfig/*.py`, each PROJECT has its own config file.  
+The default is `GenPi64`.  You can override the default by setting `PROJECT` in the environment.
 The steps to execute are governed by the `.json` files in the project root.
 
 ## Troubleshooting
 
 Compiling python often hangs running `compileall.py`.  It's safe to kill the hung tasks.  
 
-If you're getting "bad interpreter" errors, make sure you have qemu.
+If `. env.sh` you can manually run a parser and better assess its output.  You can also `./chroot.sh` and manually tweak things inside the prefix.
 
-If `. env.sh` you can manually run a parser and better assess its output.  You can also `pychroot $CHROOT_DIR` and manually tweak things inside the prefix.
+### QEMU
+
+If you're getting either of these errors, you probably need to install qemu user static and configure it for the target arch.
+```
+exec format
+bad interpreter
+```

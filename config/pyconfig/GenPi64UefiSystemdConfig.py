@@ -49,7 +49,7 @@ GenPi64UefiSystemd = Base | {
             "CXXFLAGS": "${CFLAGS}",
             "FCFLAGS": "${CFLAGS}",
             "FFLAGS": "${CFLAGS}",
-            "CHOST": "x86_64-pc-linux-gnu",
+            "CHOST": "aarch64-unknown-linux-gnu",
             "MAKEOPTS": "-j4 -l4",
             "FEATURES": Base["portage"]["make.conf"]["FEATURES"] + "-userpriv -usersandbox -network-sandbox -pid-sandbox".split(),
             "USE": Base["portage"]["make.conf"]["USE"] + ["gnuefi boot kernel-install"],

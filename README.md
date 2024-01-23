@@ -31,7 +31,7 @@ Edit `config/config.py` and update the path to the stage3 version you're using.
 
 Pick a target by running
 `export PROJECT=<projectname>` 
-default is `GenPi64`.  
+default is `GenPi64OpenRC`.  
 
 If you want to set where the build should happen, run
 `export PROJECT_DIR=</path/to/build/location>`
@@ -48,7 +48,7 @@ If you are building an arm target via qemu, you probably want a distcc server ru
 ## Config
 
 You can configure the project via `config/pyconfig/*.py`, each PROJECT has its own config file.  
-The default is `GenPi64`.  You can override the default by setting `PROJECT` in the environment.
+The default is `GenPi64OpenRC`.  You can override the default by setting `PROJECT` in the environment.
 The steps to execute are governed by the `.json` files in the project root.
 
 ## Troubleshooting

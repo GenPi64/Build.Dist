@@ -37,7 +37,7 @@ GenAMD64UefiSystemd = Base | {
     "kernel": [
         "sys-kernel/dracut",
         "sys-kernel/gentoo-kernel",
-        "sys-kernel/installkernel-systemd"
+        "sys-kernel/installkernel"
     ],
     "initramfs": "dracut",
     "initsystem": "systemd",
@@ -69,6 +69,9 @@ GenAMD64UefiSystemd = Base | {
                         i: "patches/sys-apps/systemd/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'patches/sys-apps/systemd'))
                     }
                 }
+            },
+            "package.use/": {
+                "installkernel": "sys-kernel/installkernel systemd"
             }
         },
         "repart.d/": {

@@ -12,7 +12,8 @@ GenPi64Osuosl = GenAMD64UefiSystemd | {
             "config.d/": {
                 "EFI_ZBOOT.config" : "osuosl/etc/kernel/config.d/EFI_ZBOOT.config"
             }
-        }
+        },
+        "portage/": GenAMD64UefiSystemd["etc"]["portage/"]
     },
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
     "stage3url": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/latest-stage3-arm64-systemd-mergedusr.txt",

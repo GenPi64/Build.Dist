@@ -37,7 +37,7 @@ GenAMD64UefiSystemd = Base | {
     "kernel": [
         "sys-kernel/dracut",
         "sys-kernel/gentoo-kernel",
-        "sys-kernel/installkernel-systemd"
+        "sys-kernel/installkernel"
     ],
     "initramfs": "dracut",
     "initsystem": "systemd",

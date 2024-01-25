@@ -71,7 +71,7 @@ GenAMD64UefiSystemd = Base | {
                 }
             },
             "package.use/": {
-                "installkernel": "sys-kernel/installkernel systemd"
+                "installkernel": "sys-kernel/installkernel systemd dracut"
             }
         },
         "repart.d/": {

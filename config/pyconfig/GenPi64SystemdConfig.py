@@ -21,11 +21,6 @@ GenPi64Systemd = GenPi64 | {
                 i: "systemd/network/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'systemd/network'))
             }
         },
-        "portage/": {
-            "package.use/": {
-                "installkernel": "sys-kernel/installkernel systemd"
-            }
-        },
         "repart.d/": {
             i: "repart.d/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'repart.d'))
         }

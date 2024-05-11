@@ -63,7 +63,7 @@ GenPi64 = Base | {
     "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
     "stage3url": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/latest-stage3-arm64-openrc.txt",
     "stage3mirror": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/",
-    "profile": "genpi64:default/linux/arm64/17.0/genpi64",
+    "profile": "genpi64:default/linux/arm64/23.0/genpi64",
     'users': [
         Base['users'][0] | dict(
             password="Raspberrypi64!",

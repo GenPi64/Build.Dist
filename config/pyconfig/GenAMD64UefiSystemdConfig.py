@@ -85,9 +85,9 @@ GenAMD64UefiSystemd = Base | {
         }
     },
     "stage3": os.environ.get("STAGE3", "stage3-amd64.tar.xz"),
-    "stage3url": "https://mirror.init7.net/gentoo/releases/amd64/autobuilds/latest-stage3-amd64-desktop-systemd-mergedusr.txt",
+    "stage3url": "https://mirror.init7.net/gentoo/releases/amd64/autobuilds/latest-stage3-amd64-systemd.txt",
     "stage3mirror": "https://mirror.init7.net/gentoo/releases/amd64/autobuilds/",
-    "profile": "gentoo:default/linux/amd64/17.1/systemd/merged-usr",
+    "profile": "gentoo:default/linux/amd64/23.0/systemd",
     "packages": [
         "dev-vcs/git",
         "app-portage/gentoolkit",

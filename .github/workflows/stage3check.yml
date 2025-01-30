@@ -9,13 +9,82 @@ on:
   - cron: '25 12 * * *'
 
 jobs:
-  stage3:
+  stage3-amd64:
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64]
+        init: [openrc,systemd]
+
+    env:
+      STAGE3_ARCH:  ${{ matrix.arch == 'arm64'  && 'arm64'  || 'amd64'   }}
+      STAGE3_INIT:  ${{ matrix.init == 'openrc' && 'openrc' || 'systemd' }}
+
+
+    steps:
+    - name: Run apt update
+      run: |
+        sudo apt update
+    - name: Install Dependencies
+      run: | 
+        sudo apt install -y systemd-container qemu-user-static
+
+    - name: Check Remote Resources
+      run: | 
+        wget https://bouncer.gentoo.org/fetch/root/all/releases/${STAGE3_ARCH}/autobuilds/latest-stage3-${STAGE3_ARCH}-${STAGE3_INIT}.txt -O - | awk '/-----BEGIN PGP SIGNATURE-----/{print x}{x=$0}' | tail -n 1 | tee latest-stage3.txt
+        git ls-remote https://github.com/gentoo-mirror/gentoo HEAD | tee gentoo-repo-head.txt
+
+    - name: Initialize Cache of Stage 3
+      uses: actions/cache@v2
+      id: stage3-cache
+      with:
+        path: stage3.tar.xz
+        key: ${{ matrix.arch }}-${{ matrix.init }}-${{ hashFiles('latest-stage3.txt') }}
+
+    - name: Deploy Latest Stage 3
+      run: | 
+        if [ ! -f "stage3.tar.xz" ]
+        then
+            STAGE3=$(tail -n 1 latest-stage3.txt | cut -d ' ' -f 1)
+            wget https://bouncer.gentoo.org/fetch/root/all/releases/${STAGE3_ARCH}/autobuilds/${STAGE3} -O stage3.tar.xz
+        fi
+        mkdir chroot
+        pushd chroot
+        sudo tar -xaf ../stage3.tar.xz
+
+    - name: Initialize Cache of Gentoo Repository
+      uses: actions/cache@v2
+      id: gentoo-repo-cache
+      with:
+        path: gentoo-repo
+        key: gentoo-repo-${{ hashFiles('gentoo-repo-head.txt') }}
+        restore-keys: |
+          gentoo-repo
+
+    - name: Deploy Gentoo Repo
+      run: | 
+        if [ -d "gentoo-repo" ]
+        then
+            sudo git -C gentoo-repo fetch --depth=10
+            sudo git -C gentoo-repo reset --hard origin/stable
+            sudo git -C gentoo-repo gc --prune=all
+        else
+            sudo git clone --depth=10 https://github.com/gentoo-mirror/gentoo gentoo-repo
+        fi
+
+    - name: Build
+      run: |
+        sudo systemd-nspawn --ephemeral --bind-ro=${PWD}/gentoo-repo:/var/db/repos/gentoo --directory=${PWD}/chroot/ /usr/bin/emerge --pretend -v --update --newuse @world
+  
+  stage3-arm:
     runs-on: ubuntu-24.04-arm
 
     strategy:
       fail-fast: false
       matrix:
-        arch: [arm64,amd64]
+        arch: [arm64]
         init: [openrc,systemd]
 
     env:

@@ -56,7 +56,8 @@ GenPi64 = Base | {
         "hostname": "hostname",
         "portage/": {
             "binrepos.conf/": {
-                "genpi64binhost.conf" : "genpi64binhost.conf"
+                "genpi64binhost.conf" : "genpi64binhost.conf",
+                "gentoobinhost.conf": "gentoobinhost-arm64.conf"
             }
         }
     },

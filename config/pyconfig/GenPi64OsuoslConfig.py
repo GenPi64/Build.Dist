@@ -15,7 +15,7 @@ GenPi64Osuosl = GenAMD64UefiSystemd | {
         },
         "portage/": GenAMD64UefiSystemd["etc"]["portage/"]
     },
-    "stage3": os.environ.get("STAGE3", "stage3-arm64.tar.xz"),
+    "stage3": os.environ.get("STAGE3", "stage3-arm64-systemd.tar.xz"),
     "stage3url": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/latest-stage3-arm64-systemd.txt",
     "stage3mirror": "https://mirror.init7.net/gentoo/releases/arm64/autobuilds/",
     "profile": "gentoo:default/linux/arm64/23.0/systemd",

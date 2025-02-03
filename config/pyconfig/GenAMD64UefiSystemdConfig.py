@@ -63,6 +63,9 @@ GenAMD64UefiSystemd = Base | {
             }
         },
         "portage/": {
+            "binrepos.conf/": {
+                "gentoobinhost.conf" : "gentoo-amd64-binhost.conf"
+            },
             "patches/": {
                 "sys-apps/": {
                     "systemd/": {
@@ -84,7 +87,7 @@ GenAMD64UefiSystemd = Base | {
             i: "dracut.conf.d/" + i for i in os.listdir(os.path.join(os.environ.get('CONFIG_DIR'), 'dracut.conf.d'))
         }
     },
-    "stage3": os.environ.get("STAGE3", "stage3-amd64.tar.xz"),
+    "stage3": os.environ.get("STAGE3", "stage3-amd64-systemd.tar.xz"),
     "stage3url": "https://mirror.init7.net/gentoo/releases/amd64/autobuilds/latest-stage3-amd64-systemd.txt",
     "stage3mirror": "https://mirror.init7.net/gentoo/releases/amd64/autobuilds/",
     "profile": "gentoo:default/linux/amd64/23.0/systemd",

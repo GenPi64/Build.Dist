@@ -22,26 +22,36 @@ sys.path.insert(0, CONFIG_DIR)
 from pyconfig import config
 
 def copyconf(conf, file):
+    print(f"Processing {file}: {conf}")
+
     if isinstance(conf, dict):
         with open(file, 'w') as f:
-
             for key, val in conf.items():
                 if isinstance(val, (list, tuple, set)):
-                    val = str.join(" ", val)
-                    val = json.dumps(val)
+                    val = " ".join(val)
                 print(f"{key}={val}", file=f)
-    else:
-        if not conf.startswith("/"):
-            conf = f'{CONFIG_DIR}/{conf}'
-        shutil.copy2(conf, file)
+
+    elif os.path.exists(os.path.join(CONFIG_DIR, conf)):  # If it's a file, copy it
+        src = os.path.join(CONFIG_DIR, conf)
+        print(f"Copying file {src} to {file}")
+        shutil.copy2(src, file)
+
+    else:  # Assume it's raw text and write it
+        print(f"Writing text to {file}")
+        with open(file, 'w') as f:
+            f.write(conf + '\n')
+
+
 
 def copydir(conf, dest):
     for node, content in conf.items():
         if node.endswith('/'):
             d = os.path.join(dest, node)
             system(f'mkdir -p {repr(d)}')
+            print(f"Created directory: {d}")
             copydir(content, d)
         else:
+            print(f"Copying {node} to {os.path.join(dest, node)}")
             copyconf(content, os.path.join(dest, node))
 
 

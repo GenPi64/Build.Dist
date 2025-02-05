@@ -14,6 +14,10 @@ pipeline
 					def gentoo_repo = '/home/jenkins/shared/overlays-cache/var/db/repos/gentoo'
 					def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
 
+					// Clean the directories entirely first
+					sh "sudo rm -rf ${gentoo_repo}"
+					sh "sudo rm -rf ${genpi_overlay}"
+
 					dir (gentoo_repo) {
 						git url: 'https://github.com/gentoo-mirror/gentoo.git'
 					}

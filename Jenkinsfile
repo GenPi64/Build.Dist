@@ -8,23 +8,23 @@ pipeline
 		label 'aarch64'
 	}}
 	stages {
-		stage('Prepare directories') {
-			steps {
-				script {
-					def gentoo_repo = '/home/jenkins/shared/overlays-cache/var/db/repos/gentoo'
-					def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
-					def sharedOverlayCacheDir = '/home/jenkins/shared/overlays-cache'
-
-					// Ensure Jenkins user has the necessary permissions
-					sh "sudo chown -R jenkins:jenkins ${sharedOverlayCacheDir}"
-					sh "sudo chmod -R 755 ${sharedOverlayCacheDir}"
-
-					// Clean the directories entirely first
-					sh "rm -rf ${gentoo_repo}"
-					sh "rm -rf ${genpi_overlay}"
-				}
-			}
-		}
+		//stage('Prepare directories') {
+		//	steps {
+		//		script {
+		//			def gentoo_repo = '/home/jenkins/shared/overlays-cache/var/db/repos/gentoo'
+		//			def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
+		//			def sharedOverlayCacheDir = '/home/jenkins/shared/overlays-cache'
+		//
+		//			// Ensure Jenkins user has the necessary permissions
+		//			sh "sudo chown -R jenkins:jenkins ${sharedOverlayCacheDir}"
+		//			sh "sudo chmod -R 755 ${sharedOverlayCacheDir}"
+		//
+		//			// Clean the directories entirely first
+		//			sh "rm -rf ${gentoo_repo}"
+		//			sh "rm -rf ${genpi_overlay}"
+		//		}
+		//	}
+		//}
 		stage('Clone gentoo and overlay repositories') {
 			steps {
 				script {
@@ -32,7 +32,7 @@ pipeline
 					def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
 
 					dir (gentoo_repo) {
-						git credentialsId: 'global-jenkins', url: 'ssh://git@git.skysolutions.fi:222/gentoo-mirror/gentoo.git'
+						git url: 'https://github.com/gentoo-mirror/gentoo.git'
 					}
 
 					dir (genpi_overlay) {

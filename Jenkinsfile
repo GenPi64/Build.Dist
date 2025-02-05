@@ -13,6 +13,7 @@ pipeline
 				script {
 					def gentoo_repo = '/home/jenkins/shared/overlays-cache/var/db/repos/gentoo'
 					def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
+					def sharedOverlayCacheDir = '/home/jenkins/shared/overlays-cache'
 
 					// Ensure Jenkins user has the necessary permissions
 					sh "sudo chown -R jenkins:jenkins ${sharedOverlayCacheDir}"

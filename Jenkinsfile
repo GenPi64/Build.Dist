@@ -6,9 +6,25 @@ pipeline
 	}
 	agent { node {
 		label 'aarch64'
-	} }
-	stages { stage('Build') { matrix
-	{
+	}}
+	stages {
+		stage('Clone gentoo and overlay repositories') {
+			steps {
+				script {
+					def gentoo_repo = '/home/jenkins/shared/overlays-cache/var/db/repos/gentoo'
+					def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
+
+					dir (gentoo_repo) {
+						git url: 'https://github.com/gentoo-mirror/gentoo.git'
+					}
+
+					dir (genpi_overlay) {
+						git url: 'https://github.com/GenPi64/genpi64-overlay.git', branch: 'master'
+					}
+				}
+			}
+		}
+		stage('Build') { matrix {
 		agent any
 		axes
 		{

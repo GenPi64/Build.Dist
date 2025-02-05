@@ -20,8 +20,8 @@ pipeline
 					sh "sudo chmod -R 755 ${sharedOverlayCacheDir}"
 
 					// Clean the directories entirely first
-					sh "rm -rf ${mainRepoDir}"
-					sh "rm -rf ${anotherRepoDir}"
+					sh "rm -rf ${gentoo_repo}"
+					sh "rm -rf ${genpi_overlay}"
 				}
 			}
 		}

@@ -32,7 +32,7 @@ pipeline
 					def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
 
 					dir (gentoo_repo) {
-						git url: 'https://git.skysolutions.fi/gentoo-mirror/gentoo.git'
+						git credentialsId: 'global-jenkins', url: 'ssh://git@git.skysolutions.fi:222/gentoo-mirror/gentoo.git'
 					}
 
 					dir (genpi_overlay) {

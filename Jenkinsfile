@@ -7,7 +7,6 @@ pipeline {
 
     options {
         timestamps()
-        skipDefaultCheckout(true)
     }
 
     environment {
@@ -172,6 +171,18 @@ pipeline {
 
 // Helper function to build a project
 def buildProject(project) {
+	stage('Print Environment') { steps
+	{
+		// Clear out anything from the previous build...
+		sh "env"
+		sh "ls -lah  $CCACHE_DIR"
+		sh "ls -lahR $BINPKGS_DIR"
+		sh "ls -lahR $DISTFILES_DIR"
+		sh "ls -lahR $BINARY_ASSETS"
+		// Will kill the build if doesn't exist otherwise..
+		sh "ls -lah  $OVERLAYS_CACHE_DIR"
+	}}
+
     def envVars = [
         "PROJECT=${project}",
         "CCACHE_DIR=${CCACHE_DIR}",

@@ -33,8 +33,8 @@ pipeline {
                 script {
                     sh """
                         mkdir -p ${CCACHE_DIR} ${BINPKGS_DIR} ${OVERLAYS_CACHE_DIR}
-                        chmod -R 755 ${SHARED_DIR}
-                        chown -R jenkins:jenkins ${SHARED_DIR}
+                        ${SUDO_CMD} chmod -R 755 ${SHARED_DIR}
+                        ${SUDO_CMD} chown -R jenkins:jenkins ${SHARED_DIR}
                     """
                 }
             }

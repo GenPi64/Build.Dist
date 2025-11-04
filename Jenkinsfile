@@ -1,268 +1,166 @@
-pipeline
-{
-	options
-	{
-		timestamps()
-	}
-	agent { node {
-		label 'aarch64'
-	}}
-	stages {
-		//stage('Prepare directories') {
-		//	steps {
-		//		script {
-		//			def gentoo_repo = '/home/jenkins/shared/overlays-cache/var/db/repos/gentoo'
-		//			def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
-		//			def sharedOverlayCacheDir = '/home/jenkins/shared/overlays-cache'
-		//
-		//			// Ensure Jenkins user has the necessary permissions
-		//			sh "sudo chown -R jenkins:jenkins ${sharedOverlayCacheDir}"
-		//			sh "sudo chmod -R 755 ${sharedOverlayCacheDir}"
-		//
-		//			// Clean the directories entirely first
-		//			sh "rm -rf ${gentoo_repo}"
-		//			sh "rm -rf ${genpi_overlay}"
-		//		}
-		//	}
-		//}
-		stage('Clone gentoo and overlay repositories') {
-			steps {
-				script {
-					def gentoo_repo = '/home/jenkins/shared/overlays-cache/var/db/repos/gentoo'
-					def genpi_overlay = '/home/jenkins/shared/overlays-cache/var/db/repos/genpi64'
+pipeline {
+    agent {
+        node {
+            label 'aarch64'
+        }
+    }
 
-					dir (gentoo_repo) {
-						git url: 'https://github.com/gentoo-mirror/gentoo.git'
-					}
+    options {
+        timestamps()
+        skipDefaultCheckout(true)
+    }
 
-					dir (genpi_overlay) {
-						git url: 'https://github.com/GenPi64/genpi64-overlay.git', branch: 'master'
-					}
-				}
-			}
-		}
-		stage('Build') { matrix {
-		agent any
-		axes
-		{
-			axis
-			{
-				name 'INIT_SYSTEM'
-				values 'OpenRC', 'Systemd', 'Osuosl'
-			}
-			axis
-			{
-				name 'LIBC'
-				values 'GlibC'
-			}
-			axis
-			{
-				name 'ARCH'
-				values 'aarch64'
-			}
-			axis
-			{
-				name 'LINK_TIME_OPTIMIZATION'
-				values 'No'
-			}
-			axis
-			{
-				name 'GENTOO_HARDENED'
-				values 'No'
-			}
-		}
-		environment
-		{
-			PROJECT="GenPi64${INIT_SYSTEM}"
-			CCACHE_DIR="${HOME}/shared/ccache"
-			BINPKGS_DIR="${HOME}/shared/binpkgs"
-			DISTFILES_DIR="${HOME}/shared/distfiles"
-			OVERLAYS_CACHE_DIR="${HOME}/shared/overlays-cache"
-			BINARY_ASSETS="${HOME}/shared/binary_assets"
-			NO_PARALLEL="yes"
-			def BUILDVERSION = sh(script: "echo `date +%d-%m-%y`", returnStdout: true).trim()
-		}
-		stages
-		{
-			stage('Clean Up') { steps
-			{
-				// Clear out anything from the previous build...
-				sh "cat /proc/mounts"
+    environment {
+        // Shared directories
+        SHARED_DIR = "/home/jenkins/shared"
+        CCACHE_DIR = "${SHARED_DIR}/ccache"
+        BINPKGS_DIR = "${SHARED_DIR}/binpkgs"
+        OVERLAYS_CACHE_DIR = "${SHARED_DIR}/overlays-cache"
+        BUILD_DIR = "${WORKSPACE}/build"
 
-				sh "for var in ./build/*/image/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
-				sh "for var in ./build/*/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+        // Build configuration
+        INIT_SYSTEMS = ['OpenRC', 'Systemd']
+        BUILDVERSION = sh(script: 'date +%d-%m-%y', returnStdout: true).trim()
+        SUDO_CMD = "sudo -E"
 
-				sh "sudo losetup -all --list --output NAME,BACK-FILE"
-				sh "for var in \$(sudo losetup -all --list --output NAME,BACK-FILE | grep deleted | cut -f1 -d' '); do losetup -d \$var || echo \"\$(sudo losetup -all --list --output NAME,BACK-FILE | grep \$var) cant be detached\"; done"
-				sh "sudo losetup -D"
+        // MinIO configuration (should match your Jenkins credentials)
+        MINIO_BUCKET = "images"
+    }
 
-				sh "sudo rm -rf ./*"
-				sh "git checkout ."
-			}}
-			stage('Setup') { steps
-			{
-				sh "sudo mkdir -p $CCACHE_DIR $BINPKGS_DIR $DISTFILES_DIR $BINARY_ASSETS $OVERLAYS_CACHE_DIR"
-			}}
-			stage('Print Environment') { steps
-			{
-				// Clear out anything from the previous build...
-				sh "env"
-				sh "ls -lah  $CCACHE_DIR"
-				sh "ls -lahR $BINPKGS_DIR"
-				sh "ls -lahR $DISTFILES_DIR"
-				sh "ls -lahR $BINARY_ASSETS"
-				// Will kill the build if doesn't exist otherwise..
-				sh "ls -lah  $OVERLAYS_CACHE_DIR"
-			}}
-			stage('Build Lite') { steps
-			{
-				// Here we want to only build the gentoo-base.json "subtarget"
-				// but with the config for the selected init system, libc, and so on
-				// since that has a big influence on the packages.
-				sh "sudo --preserve-env ./build.sh"
-			}}
-			// matrix blocks cannot be nested inside other matrix blocks...
-			//matrix
-			//{
-			//	agent any
-			//	axes
-			//	{
-			//		axis
-			//		{
-			//			name 'PARTITION_TABLE'
-			//			values 'msdos', 'hybrid', 'gpt'
-			//		}
-			//		axis
-			//		{
-			//			name 'BOOT_LOADER'
-			//			values 'raspberrypi', 'grub', 'uefi', 'systemd-boot'
-			//		}
-			//		axis
-			//		{
-			//			name 'INITRAMFS'
-			//			values 'None', 'dracut', 'raspberrypi-initramfs'
-			//		}
-			//	}
-			//	stages
-			//	{
-			stage('Package Lite') { steps
-			{
-				// Here we resume from the end of gentoo-base.json
-				// and want to launch one job per partition table scheme
-				// since the on-disk format will be different for each scheme
-				// we want to use btrfs subvolume snapshotting to give each
-				// partition type it's own build workspace.
-				// there *should* be a way to make jenkins dynamically schedule
-				// a single dimensional matrix of jobs to accomplish this
-				// so that the runner is fully occupied.
-				echo "Package Lite"
-			}}
-			stage('Upload Lite') { steps
-			{
-				sh "ls -lah *"
-				sh "ls -lah build/*"
-				
-				sh "sudo --preserve-env ./.ci/scripts/check-filename-is-renamed.sh"
+    stages {
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    sh """
+                        mkdir -p ${CCACHE_DIR} ${BINPKGS_DIR} ${OVERLAYS_CACHE_DIR}
+                        chmod -R 755 ${SHARED_DIR}
+                        chown -R jenkins:jenkins ${SHARED_DIR}
+                    """
+                }
+            }
+        }
 
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
-				echo "minio(bucket:\"images\", includes:\"bbuild/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
+        stage('Update Repositories') {
+            steps {
+                script {
+                    // Update Gentoo repo
+                    dir("${OVERLAYS_CACHE_DIR}/var/db/repos/gentoo") {
+                        sh '''
+                            if [ -d .git ]; then
+                                git pull
+                            else
+                                git clone https://github.com/gentoo-mirror/gentoo.git .
+                            fi
+                        '''
+                    }
 
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst")
-				echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
-				minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
-			}}
-				//}
-			//}
+                    // Update GenPi64 overlay
+                    dir("${OVERLAYS_CACHE_DIR}/var/db/repos/genpi64") {
+                        sh '''
+                            if [ -d .git ]; then
+                                git pull
+                            else
+                                git clone https://github.com/GenPi64/genpi64-overlay.git .
+                            fi
+                        '''
+                    }
+                }
+            }
+        }
 
-			stage('Build Desktop')
-			{
-				environment
-				{
-					PROJECT="GenPi64${INIT_SYSTEM}Desktop"
-				}
-				steps
-				{
-					// Here we need to spawn a matrix of jobs that starts from
-					// the gentoo-base.json for the current init system, libc, and so on
-					// and produces an image for each desktop varient we offer.
-					// E.g. xfce, lxqt, so on.
-					sh "sudo --preserve-env ./build.sh"
-				}
-			}
-			stage('Package Desktop')
-			{
-				environment
-				{
-					PROJECT="GenPi64${INIT_SYSTEM}Desktop"
-				}
-				steps
-				{
-					// here we resume from the end of the desktop job and produce an image
-					// file for each desktop job for each partition type. Ultimately
-					// producing a matrix of a matrix of a matrix of images.
-					// we have 5 matrix diminsions for the base image(arch, libc, init, lto, hardened)
-					// then some number of desktop environments (xfce, lxqt, gnome, kde, so on)
-					// then 3 potential partition schemes (msdos, hybrid, gpt)
-					// then 4 potential bootloaders (raspi native (excluded from x86), uefi "native", grub, systemd-boot)
-					// ultimately culminating in an 8 dimensional matrix of images that we can produce.
-					// though of course there are big holes in the matrix, and we would only produce images
-					// that someone is willing to put work into.
-					echo "Package Desktop"
-				}
-			}
-			stage('Upload Desktop')
-			{
-				environment
-				{
-					PROJECT="GenPi64${INIT_SYSTEM}Desktop"
-				}
-				steps
-				{
-					sh "ls -lah *"
-					sh "ls -lah build/*"
-					
-					sh "sudo --preserve-env ./.ci/scripts/check-filename-is-renamed.sh"
+        stage('Build Images') {
+            steps {
+                script {
+                    // Build base and desktop images for each init system
+                    for (initSystem in INIT_SYSTEMS) {
+                        def baseProject = "GenPi64${initSystem}"
+                        def desktopProject = "${baseProject}Desktop"
 
-					echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst\")"
-					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst")
-					echo "minio(bucket:\"images\", includes:\"bbuild/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
-					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
+                        echo "Building ${baseProject}..."
+                        buildProject(baseProject)
 
-					echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst\")"
-					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.tar.zst")
-					echo "minio(bucket:\"images\", includes:\"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum\")"
-					minio(bucket:"images", includes:"build/${PROJECT}/${PROJECT}-${BUILDVERSION}.img.zst.sum")
-				}
-			}
-			stage('Upload binary packages')
-			{
-				environment
-				{
-					BINPKGS_DIR="${HOME}/shared/binpkgs"
-				}
-				steps 
-				{
-				    sh "ls -lah ${BINPKGS_DIR}"
-				    minio(bucket:"binpkgs", includes:"${BINPKGS_DIR}/**")
-				}
-			}
-		}
-		post { always
-		{
-			// Clear out anything from the previous build...
-			sh "cat /proc/mounts"
+                        echo "Building ${desktopProject}..."
+                        buildProject(desktopProject)
+                    }
+                }
+            }
+        }
 
-			sh "for var in ./build/*/image/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
-			sh "for var in ./build/*/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
-			
-			sh "for var in \$(find . -maxdepth 1 -name './build/*/chroot/var/log/emerge.log' -print); do sudo cat \$var; done"
+        stage('Upload Artifacts') {
+            steps {
+                script {
+                    // Upload all built images using MinIO plugin
+                    def allProjects = []
+                    for (initSystem in INIT_SYSTEMS) {
+                        allProjects.add("GenPi64${initSystem}")
+                        allProjects.add("GenPi64${initSystem}Desktop")
+                    }
 
-			sh "sudo losetup -all --list --output NAME,BACK-FILE"
-			sh "for var in \$(sudo losetup -all --list --output NAME,BACK-FILE | grep deleted | cut -f1 -d' '); do losetup -d \$var || echo \"\$(sudo losetup -all --list --output NAME,BACK-FILE | grep \$var) cant be detached\"; done"
-			sh "sudo losetup -D"
-		}}
-	}}}
+                    for (project in allProjects) {
+                        uploadArtifacts(project)
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                // Cleanup with retries
+                echo "Cleaning up..."
+                sh """
+                    for i in {1..3}; do
+                        ${SUDO_CMD} umount -R ${BUILD_DIR}/* 2>/dev/null || true
+                        ${SUDO_CMD} losetup -D || true
+                        sleep 2
+                    done
+                """
+            }
+        }
+
+        success {
+            echo "Build completed successfully!"
+        }
+
+        failure {
+            echo "Build failed! Check logs for details."
+        }
+    }
+}
+
+// Helper function to build a project
+def buildProject(project) {
+    def envVars = [
+        "PROJECT=${project}",
+        "CCACHE_DIR=${CCACHE_DIR}",
+        "BINPKGS_DIR=${BINPKGS_DIR}",
+        "OVERLAYS_CACHE_DIR=${OVERLAYS_CACHE_DIR}",
+        "BUILDVERSION=${BUILDVERSION}",
+        "WORKSPACE=${WORKSPACE}"
+    ].join(' ')
+
+    sh "${envVars} ${SUDO_CMD} ${WORKSPACE}/build.sh"
+}
+
+// Helper function to upload artifacts using MinIO plugin
+def uploadArtifacts(project) {
+    def artifacts = [
+        "${project}-${BUILDVERSION}.img.zst",
+        "${project}-${BUILDVERSION}.tar.zst",
+        "${project}-${BUILDVERSION}.img.zst.sum"
+    ]
+
+    for (artifact in artifacts) {
+        def fullPath = "${BUILD_DIR}/${project}/${artifact}"
+        if (fileExists(fullPath)) {
+            echo "Uploading ${artifact} to MinIO..."
+            minio(
+                bucket: env.MINIO_BUCKET,
+                includes: fullPath
+            )
+        } else {
+            echo "Warning: Artifact ${fullPath} not found"
+        }
+    }
 }

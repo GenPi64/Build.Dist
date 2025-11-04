@@ -14,8 +14,11 @@ pipeline {
         SHARED_DIR = "/home/jenkins/shared"
         CCACHE_DIR = "${SHARED_DIR}/ccache"
         BINPKGS_DIR = "${SHARED_DIR}/binpkgs"
+		DISTFILES_DIR="${HOME}/shared/distfiles"
+		BINARY_ASSETS="${HOME}/shared/binary_assets"
         OVERLAYS_CACHE_DIR = "${SHARED_DIR}/overlays-cache"
         BUILD_DIR = "${WORKSPACE}/build"
+		NO_PARALLEL="yes"
 
         // Build configuration
         INIT_SYSTEMS_STR = "OpenRC,Systemd"

@@ -27,6 +27,7 @@ if 'CHROOT_CMD' in os.environ:
     elif chroot_cmd == 'systemd-nspawn':
         os.execvpe('systemd-nspawn',
                    ['systemd-nspawn',
+                    f'--as-pid2',
                     f'--timezone=off',
                     f'--resolv-conf=bind-host',
                     f'--machine={uuid.uuid4()}',
@@ -49,6 +50,7 @@ elif os.path.exists('/sbin/openrc-run'):
 elif 'systemd' in os.readlink('/proc/1/exe'):
     os.execvpe('systemd-nspawn',
                ['systemd-nspawn',
+                f'--as-pid2',
                 f'--timezone=off',
                 f'--resolv-conf=bind-host',
                 f'--machine={uuid.uuid4()}',

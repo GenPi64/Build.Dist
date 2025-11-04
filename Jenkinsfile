@@ -19,7 +19,7 @@ pipeline {
         BUILD_DIR = "${WORKSPACE}/build"
 
         // Build configuration
-        INIT_SYSTEMS = ["OpenRC", "Systemd"]
+        INIT_SYSTEMS_STR = "OpenRC,Systemd"
         BUILDVERSION = sh(script: "date +%d-%m-%y", returnStdout: true).trim()
         SUDO_CMD = "sudo -E"
 
@@ -71,6 +71,7 @@ pipeline {
         stage('Build Images') {
             steps {
                 script {
+                    def INIT_SYSTEMS = env.INIT_SYSTEMS_STR.split(',')
                     // Build base and desktop images for each init system
                     for (initSystem in INIT_SYSTEMS) {
                         def baseProject = "GenPi64${initSystem}"

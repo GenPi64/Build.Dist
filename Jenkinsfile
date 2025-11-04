@@ -14,8 +14,8 @@ pipeline {
         SHARED_DIR = "/home/jenkins/shared"
         CCACHE_DIR = "${SHARED_DIR}/ccache"
         BINPKGS_DIR = "${SHARED_DIR}/binpkgs"
-		DISTFILES_DIR="${HOME}/shared/distfiles"
-		BINARY_ASSETS="${HOME}/shared/binary_assets"
+		DISTFILES_DIR="${SHARED_DIR}/distfiles"
+		BINARY_ASSETS="${SHARED_DIR}/binary_assets"
         OVERLAYS_CACHE_DIR = "${SHARED_DIR}/overlays-cache"
         BUILD_DIR = "${WORKSPACE}/build"
 		NO_PARALLEL="yes"
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        mkdir -p ${CCACHE_DIR} ${BINPKGS_DIR} ${OVERLAYS_CACHE_DIR}
+                        mkdir -p ${CCACHE_DIR} ${DISTFILES_DIR} ${BINARY_ASSETS} ${BINPKGS_DIR} ${OVERLAYS_CACHE_DIR} 
                         ${SUDO_CMD} chmod -R 755 ${SHARED_DIR}
                         ${SUDO_CMD} chown -R jenkins:jenkins ${SHARED_DIR}
                     """

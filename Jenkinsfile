@@ -19,8 +19,8 @@ pipeline {
         BUILD_DIR = "${WORKSPACE}/build"
 
         // Build configuration
-        INIT_SYSTEMS = ['OpenRC', 'Systemd']
-        BUILDVERSION = sh(script: 'date +%d-%m-%y', returnStdout: true).trim()
+        INIT_SYSTEMS = ["OpenRC", "Systemd"]
+        BUILDVERSION = sh(script: "date +%d-%m-%y", returnStdout: true).trim()
         SUDO_CMD = "sudo -E"
 
         // MinIO configuration (should match your Jenkins credentials)

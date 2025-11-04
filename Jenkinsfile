@@ -43,30 +43,70 @@ pipeline {
         stage('Update Repositories') {
             steps {
                 script {
-                    // Update Gentoo repo
-                    dir("${OVERLAYS_CACHE_DIR}/var/db/repos/gentoo") {
-                        sh '''
-                            if [ -d .git ]; then
-                                git pull
-                            else
-                                git clone https://github.com/gentoo-mirror/gentoo.git .
-                            fi
-                        '''
+                    def updateRepo = { repoDir, repoUrl ->
+                        dir(repoDir) {
+                            // If repo exists, check if it's up-to-date
+                            if (fileExists('.git')) {
+                                // Get the default branch name (works for both 'master' and 'main')
+                                def defaultBranch = sh(
+                                    script: 'git remote show origin | grep "HEAD branch" | cut -d\' \' -f5',
+                                    returnStdout: true
+                                ).trim()
+
+                                if (!defaultBranch) {
+                                    defaultBranch = sh(
+                                        script: 'git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@"',
+                                        returnStdout: true
+                                    ).trim()
+                                }
+
+                                // Fallback to 'master' if detection fails (very old repos)
+                                defaultBranch = defaultBranch ?: 'master'
+
+                                // Compare local and remote
+                                def localHash = sh(
+                                    script: "git rev-parse @",
+                                    returnStdout: true
+                                ).trim()
+
+                                def remoteHash = sh(
+                                    script: "git rev-parse origin/${defaultBranch}",
+                                    returnStdout: true
+                                ).trim()
+
+                                // Update only if different
+                                if (localHash != remoteHash) {
+                                    sh """
+                                        git fetch --all
+                                        git reset --hard origin/${defaultBranch}
+                                        git clean -fd
+                                    """
+                                }
+                            } else {
+                                // Fresh clone if repo doesn't exist
+                                sh """
+                                    rm -rf * 2>/dev/null || true
+                                    git clone ${repoUrl} .
+                                """
+                            }
+                        }
                     }
 
+                    // Update Gentoo repo
+                    updateRepo(
+                        "${OVERLAYS_CACHE_DIR}/var/db/repos/gentoo",
+                        "'https://github.com/gentoo-mirror/gentoo.git'"
+                    )
+
                     // Update GenPi64 overlay
-                    dir("${OVERLAYS_CACHE_DIR}/var/db/repos/genpi64") {
-                        sh '''
-                            if [ -d .git ]; then
-                                git pull
-                            else
-                                git clone https://github.com/GenPi64/genpi64-overlay.git .
-                            fi
-                        '''
-                    }
+                    updateRepo(
+                        "${OVERLAYS_CACHE_DIR}/var/db/repos/genpi64",
+                        "'https://github.com/GenPi64/genpi64-overlay.git'"
+                    )
                 }
             }
         }
+
 
         stage('Build Images') {
             steps {

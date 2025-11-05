@@ -123,37 +123,49 @@ pipeline {
 
 
         stage('Build Images') {
-            steps {
-                script {
-                    def INIT_SYSTEMS = env.INIT_SYSTEMS_STR.split(',')
-                    // Build base and desktop images for each init system
-                    for (initSystem in INIT_SYSTEMS) {
-                        def baseProject = "GenPi64${initSystem}"
-                        def desktopProject = "${baseProject}Desktop"
+			matrix {
+				axes {
+					axis {
+						name 'INIT_SYSTEM'
+						values 'OpenRC', 'Systemd', 'Osuosl'
+					}
+					axis {
+						name 'VARIANT'
+						values '', 'Desktop'
+					}
+				}
+				stages {
+					stage('Build') {
+						steps {
+							script {
+								def project = "GenPi64${INIT_SYSTEM}${VARIANT}"
 
-                        echo "Building ${baseProject}..."
-                        buildProject(baseProject)
-
-                        echo "Building ${desktopProject}..."
-                        buildProject(desktopProject)
-                    }
-                }
-            }
+								echo "Building ${project}..."
+								buildProject(project)
+							}
+						}
+					}
+				}
+			}
         }
 
         stage('Upload Artifacts') {
             steps {
                 script {
-                    // Upload all built images using MinIO plugin
-                    def allProjects = []
-                    for (initSystem in INIT_SYSTEMS) {
-                        allProjects.add("GenPi64${initSystem}")
-                        allProjects.add("GenPi64${initSystem}Desktop")
-                    }
+					def initSystems = ['OpenRC', 'Systemd', 'Osuosl']
+					def variants = ['', 'Desktop']
 
-                    for (project in allProjects) {
-                        uploadArtifacts(project)
-                    }
+					for (initSystem in initSystems) {
+						if (initSystem == 'Osuosl') {
+							variants = [''] // Osuosl has no variants
+						} else {
+							variants = ['', 'Desktop']
+						}
+						for (variant in variants) {
+							def project = "GenPi64${initSystem}${variant}"
+							uploadArtifacts(project)
+						}
+					}
                 }
             }
         }

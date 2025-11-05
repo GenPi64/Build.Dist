@@ -21,4 +21,29 @@ fi
 mkdir -p "${BINARY_ASSETS}/stage3/"
 
 cat <<<"${stage3_digests}" > "${BINARY_ASSETS}/stage3/${stage3}.DIGESTS"
-wget ${stage3_mirror}/${stage3_image} -O "${BINARY_ASSETS}/stage3/${stage3}"
+
+# Download with retry on failure
+for attempt in 1 2; do
+    wget ${stage3_mirror}/${stage3_image} -O "${BINARY_ASSETS}/stage3/${stage3}"
+
+    # Verify the downloaded file is valid
+    if [ ! -f "${BINARY_ASSETS}/stage3/${stage3}" ] || [ ! -s "${BINARY_ASSETS}/stage3/${stage3}" ]; then
+        echo "ERROR: Downloaded stage3 file is missing or empty (attempt $attempt)"
+        rm -f "${BINARY_ASSETS}/stage3/${stage3}"
+        [ $attempt -eq 2 ] && exit 1
+        continue
+    fi
+
+    # Verify digest of downloaded file
+    expected_hash=$(grep -A1 "SHA512 HASH" "${BINARY_ASSETS}/stage3/${stage3}.DIGESTS" | tail -n1 | awk '{print $1}')
+    actual_hash=$(sha512sum "${BINARY_ASSETS}/stage3/${stage3}" | awk '{print $1}')
+    if [ "$expected_hash" != "$actual_hash" ]; then
+        echo "ERROR: Downloaded stage3 file failed SHA512 verification (attempt $attempt)"
+        rm -f "${BINARY_ASSETS}/stage3/${stage3}"
+        [ $attempt -eq 2 ] && exit 1
+        continue
+    fi
+
+    # Success
+    break
+done

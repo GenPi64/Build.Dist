@@ -22,7 +22,7 @@ GenPi64 = Base | {
             'sync-depth': '1',
             'sync-git-clone-extra-opts': '--single-branch --branch master',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-08-24"
+            "#clone-date": "2025-01-01"
         },
         {
             'name': 'genpi-tools',
@@ -34,7 +34,7 @@ GenPi64 = Base | {
             'clone-depth': '1',
             'sync-depth': '1',
             "#commit-hash": "HEAD",
-            "#clone-date": "2021-01-01"
+            "#clone-date": "2025-01-01"
         }
     ],
     "portage": Base["portage"] | {

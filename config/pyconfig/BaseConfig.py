@@ -89,7 +89,7 @@ Base = {
             'auto-sync': 'yes',
             'sync-git-verify-commit-signature': 'true',
             "#commit-hash": "HEAD",
-            "#clone-date": "2023-01-01",
+            "#clone-date": "2025-01-01",
         }
     ],
     'sets': [],

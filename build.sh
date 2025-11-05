@@ -29,7 +29,9 @@ ckmkdir "$PROJECT_DIR"
 
 if test -f "${PROJECT}.json"; then
     $PARSERS/includejson/includejson ${PROJECT}.json
+    exit_code=$?
     echo "run complete."
+    exit $exit_code
 else
     "No ${PROJECT}.json found. Try again."
 fi

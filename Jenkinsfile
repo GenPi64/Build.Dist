@@ -54,24 +54,19 @@ pipeline {
 			sh "ls -lah  $OVERLAYS_CACHE_DIR"
 		}}
 
-        stage('Build Images') {
+		stage('Build Base Images') {
 			matrix {
 				axes {
 					axis {
 						name 'INIT_SYSTEM'
 						values 'OpenRC', 'Systemd', 'Osuosl'
 					}
-					axis {
-						name 'VARIANT'
-						values '', 'Desktop'
-					}
 				}
 				stages {
-					stage('Build') {
+					stage('Build Base') {
 						steps {
 							script {
-								def project = "GenPi64${INIT_SYSTEM}${VARIANT}"
-
+								def project = "GenPi64${INIT_SYSTEM}"
 								echo "Building ${project}..."
 								buildProject(project)
 							}
@@ -79,7 +74,29 @@ pipeline {
 					}
 				}
 			}
-        }
+		}
+
+		stage('Build Desktop Images') {
+			matrix {
+				axes {
+					axis {
+						name 'INIT_SYSTEM'
+						values 'OpenRC', 'Systemd'
+					}
+				}
+				stages {
+					stage('Build Desktop') {
+						steps {
+							script {
+								def project = "GenPi64${INIT_SYSTEM}Desktop"
+								echo "Building ${project}..."
+								buildProject(project)
+							}
+						}
+					}
+				}
+			}
+		}
 
         stage('Upload Artifacts') {
             steps {

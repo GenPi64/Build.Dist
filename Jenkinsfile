@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        node {
-            label 'aarch64'
-        }
-    }
+    agent none
 
     options {
         timestamps()
@@ -30,20 +26,28 @@ pipeline {
     }
 
     stages {
-        stage('Prepare Environment') {
-            steps {
-                script {
-                    sh """
-                        mkdir -p ${CCACHE_DIR} ${DISTFILES_DIR} ${BINARY_ASSETS} ${BINPKGS_DIR} ${OVERLAYS_CACHE_DIR} 
-                        ${SUDO_CMD} chmod -R 755 ${SHARED_DIR}
-                        ${SUDO_CMD} chown -R jenkins:jenkins ${SHARED_DIR}
-                    """
-                }
-            }
-        }
+		// Initial cleanup and setup (runs in main workspace)
+		stage('Initial Setup') {
+			agent { label 'aarch64' }
+			steps {
+				sh "cat /proc/mounts"
 
-		stage('Print Environment') { steps
-		{
+				sh "for var in ./build/*/image/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+				sh "for var in ./build/*/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+
+				sh "sudo losetup -all --list --output NAME,BACK-FILE"
+				sh "for var in \$(sudo losetup -all --list --output NAME,BACK-FILE | grep deleted | cut -f1 -d' '); do losetup -d \$var || echo \"\$(sudo losetup -all --list --output NAME,BACK-FILE | grep \$var) cant be detached\"; done"
+				sh "sudo losetup -D"
+
+				sh "sudo rm -rf ./*"
+				sh "git checkout ."
+				sh "sudo mkdir -p $CCACHE_DIR $BINPKGS_DIR $DISTFILES_DIR $BINARY_ASSETS $OVERLAYS_CACHE_DIR"
+			}
+		}
+
+		stage('Print Environment'){
+			agent { label 'aarch64' }
+			steps {
 			// Clear out anything from the previous build...
 			sh "env"
 			sh "ls -lah  $CCACHE_DIR"
@@ -54,6 +58,7 @@ pipeline {
 			sh "ls -lah  $OVERLAYS_CACHE_DIR"
 		}}
 
+		// Base images - each gets its own native workspace (@1, @2, etc.)
 		stage('Build Base Images') {
 			matrix {
 				axes {
@@ -63,11 +68,18 @@ pipeline {
 					}
 				}
 				stages {
-					stage('Build Base') {
+					stage('Build') {
+						agent {
+							label 'aarch64'
+							// Jenkins will automatically assign @1, @2, etc.
+						}
 						steps {
 							script {
+								// Fresh checkout in this workspace
+								checkout scm
+
 								def project = "GenPi64${INIT_SYSTEM}"
-								echo "Building ${project}..."
+								echo "Building ${project} base in workspace ${env.WORKSPACE}"
 								buildProject(project)
 							}
 						}
@@ -75,7 +87,7 @@ pipeline {
 				}
 			}
 		}
-
+		// Desktop images - each gets its own native workspace
 		stage('Build Desktop Images') {
 			matrix {
 				axes {
@@ -85,11 +97,18 @@ pipeline {
 					}
 				}
 				stages {
-					stage('Build Desktop') {
+					stage('Build') {
+						agent {
+							label 'aarch64'
+							// Jenkins will automatically assign @3, @4, etc.
+						}
 						steps {
 							script {
+								// Fresh checkout in this workspace
+								checkout scm
+
 								def project = "GenPi64${INIT_SYSTEM}Desktop"
-								echo "Building ${project}..."
+								echo "Building ${project} in workspace ${env.WORKSPACE}"
 								buildProject(project)
 							}
 						}
@@ -98,7 +117,10 @@ pipeline {
 			}
 		}
 
+
+
         stage('Upload Artifacts') {
+			agent { label 'aarch64' }
             steps {
                 script {
 					def initSystems = ['OpenRC', 'Systemd', 'Osuosl']
@@ -118,20 +140,35 @@ pipeline {
                 }
             }
         }
-    }
+		stage('Upload binary packages') {
+			agent { label 'aarch64' }
+			environment {
+				BINPKGS_DIR="${HOME}/shared/binpkgs"
+			}
+			steps {
+				sh "ls -lah ${BINPKGS_DIR}"
+				minio(bucket:"binpkgs", includes:"${BINPKGS_DIR}/**")
+			}
+		}
+	}
 
     post {
         always {
+			agent { label 'aarch64' }
             script {
                 // Cleanup with retries
                 echo "Cleaning up..."
-                sh """
-                    for i in {1..3}; do
-                        ${SUDO_CMD} umount -R ${BUILD_DIR}/* 2>/dev/null || true
-                        ${SUDO_CMD} losetup -D || true
-                        sleep 2
-                    done
-                """
+				// Clear out anything from the previous build...
+				sh "cat /proc/mounts"
+
+				sh "for var in ./build/*/image/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+				sh "for var in ./build/*/*; do sudo umount -lfd \$var || sudo umount -ld \$var || sudo umount -l \$var ||  echo \"\$var not a mount point\"; done"
+
+				sh "for var in \$(find . -maxdepth 1 -name './build/*/chroot/var/log/emerge.log' -print); do sudo cat \$var; done"
+
+				sh "sudo losetup -all --list --output NAME,BACK-FILE"
+				sh "for var in \$(sudo losetup -all --list --output NAME,BACK-FILE | grep deleted | cut -f1 -d' '); do losetup -d \$var || echo \"\$(sudo losetup -all --list --output NAME,BACK-FILE | grep \$var) cant be detached\"; done"
+				sh "sudo losetup -D"
             }
         }
 
@@ -167,6 +204,8 @@ def uploadArtifacts(project) {
         "${project}-${BUILDVERSION}.tar.zst",
         "${project}-${BUILDVERSION}.img.zst.sum"
     ]
+
+	sh "sudo --preserve-env ./.ci/scripts/check-filename-is-renamed.sh"
 
     for (artifact in artifacts) {
         def fullPath = "${BUILD_DIR}/${project}/${artifact}"

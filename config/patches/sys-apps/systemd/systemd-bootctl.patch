@@ -1,5 +1,5 @@
---- src/shared/find-esp.c.orig	2025-11-06 23:52:37.895848138 -0000
-+++ src/shared/find-esp.c	2025-11-06 23:56:51.044657986 -0000
+--- b/src/shared/find-esp.c	2025-11-06 23:52:37.895848138 -0000
++++ a/src/shared/find-esp.c	2025-11-06 23:56:51.044657986 -0000
 @@ -403,15 +403,15 @@
                                                "File system \"%s\" is not a FAT EFI System Partition (ESP) file system.", p);
          }
@@ -14,7 +14,7 @@
                  goto finish;
 
 +        r = verify_fsroot_dir(pfd, p, flags, FLAGS_SET(flags, VERIFY_ESP_SKIP_DEVICE_CHECK) ? NULL : &devid);
-+ 	if (r < 0)
++        if (r < 0)
 +               	return r;
 +
          if (devnum_is_zero(devid))
@@ -32,7 +32,7 @@
                  goto finish;
 
 +        r = verify_fsroot_dir(pfd, p, flags, FLAGS_SET(flags, VERIFY_ESP_SKIP_DEVICE_CHECK) ? NULL : &devid);
-+ 	if (r < 0)
++        if (r < 0)
 +                return r;
 +
          if (devnum_is_zero(devid))

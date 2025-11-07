@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+	agent { label 'aarch64' }
 
     options {
         timestamps()
@@ -154,7 +154,6 @@ pipeline {
 
     post {
         always {
-			agent { label 'aarch64' }
             script {
                 // Cleanup with retries
                 echo "Cleaning up..."

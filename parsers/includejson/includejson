@@ -196,7 +196,8 @@ def execute(manifest):
   return jobs
 
 def checkjob(jobs):
-  print("running jobs", jobs)
+  job_names = [job[1] for job in jobs]
+  print("running jobs:", job_names)
   onefinished = False
   name = None
   while not onefinished and jobs:
